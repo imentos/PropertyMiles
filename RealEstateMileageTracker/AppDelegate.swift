@@ -22,4 +22,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         return true
     }
+    
+    // Force portrait mode only for all builds (dev and prod)
+    func application(
+        _ application: UIApplication,
+        supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
+        return .portrait
+    }
 }
