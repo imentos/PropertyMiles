@@ -1,0 +1,197 @@
+//
+//  TripStore.swift
+//  RealEstateMileageTracker
+//
+//  Created by Kuo, Ray on 3/8/26.
+//
+
+import Foundation
+import Combine
+import CoreLocation
+
+class TripStore: ObservableObject {
+    @Published var trips: [Trip] = []
+    @Published var properties: [Property] = []
+    
+    private let tripsKey = "saved_trips"
+    private let propertiesKey = "saved_properties"
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        loadTrips()
+        loadProperties()
+        
+        // Listen for completed trips
+        NotificationCenter.default.publisher(for: .tripCompleted)
+            .sink { [weak self] notification in
+                if let trip = notification.object as? Trip {
+                    self?.addTrip(trip)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Trips
+    func loadTrips() {
+        guard let data = UserDefaults.standard.data(forKey: tripsKey),
+              let decoded = try? JSONDecoder().decode([Trip].self, from: data) else {
+            trips = []
+            return
+        }
+        trips = decoded.sorted { $0.startTime > $1.startTime }
+    }
+    
+    func addTrip(_ trip: Trip) {
+        trips.insert(trip, at: 0)
+        saveTrips()
+    }
+    
+    func updateTrip(_ trip: Trip) {
+        if let index = trips.firstIndex(where: { $0.id == trip.id }) {
+            trips[index] = trip
+            saveTrips()
+        }
+    }
+    
+    func deleteTrip(_ trip: Trip) {
+        trips.removeAll { $0.id == trip.id }
+        saveTrips()
+    }
+    
+    private func saveTrips() {
+        if let encoded = try? JSONEncoder().encode(trips) {
+            UserDefaults.standard.set(encoded, forKey: tripsKey)
+        }
+    }
+    
+    // MARK: - Properties
+    func loadProperties() {
+        guard let data = UserDefaults.standard.data(forKey: propertiesKey),
+              let decoded = try? JSONDecoder().decode([Property].self, from: data) else {
+            properties = []
+            return
+        }
+        properties = decoded.sorted { $0.createdAt > $1.createdAt }
+    }
+    
+    func addProperty(_ property: Property) {
+        properties.insert(property, at: 0)
+        saveProperties()
+    }
+    
+    func updateProperty(_ property: Property) {
+        if let index = properties.firstIndex(where: { $0.id == property.id }) {
+            properties[index] = property
+            saveProperties()
+        }
+    }
+    
+    func deleteProperty(_ property: Property) {
+        properties.removeAll { $0.id == property.id }
+        saveProperties()
+    }
+    
+    private func saveProperties() {
+        if let encoded = try? JSONEncoder().encode(properties) {
+            UserDefaults.standard.set(encoded, forKey: propertiesKey)
+        }
+    }
+    
+    // MARK: - Reports
+    func tripsForDateRange(start: Date, end: Date) -> [Trip] {
+        trips.filter { trip in
+            trip.startTime >= start && trip.startTime <= end
+        }
+    }
+    
+    func totalMileageForDateRange(start: Date, end: Date) -> Double {
+        tripsForDateRange(start: start, end: end)
+            .reduce(0) { $0 + $1.distance }
+    }
+    
+    func totalAmountForDateRange(start: Date, end: Date) -> Double {
+        tripsForDateRange(start: start, end: end)
+            .reduce(0) { $0 + $1.mileageAmount }
+    }
+    
+    func generateCSV(for trips: [Trip]) -> String {
+        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Property,Amount\n"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.timeStyle = .short
+        
+        for trip in trips {
+            let date = dateFormatter.string(from: trip.startTime)
+            let startTime = timeFormatter.string(from: trip.startTime)
+            let endTime = trip.endTime.map { timeFormatter.string(from: $0) } ?? ""
+            let startAddr = trip.startLocation.address ?? "\(trip.startLocation.latitude),\(trip.startLocation.longitude)"
+            let endAddr = trip.endLocation?.address ?? (trip.endLocation.map { "\($0.latitude),\($0.longitude)" } ?? "")
+            let miles = String(format: "%.2f", trip.distance)
+            let purpose = trip.purpose?.rawValue ?? ""
+            let property = trip.property?.displayName ?? ""
+            let amount = String(format: "%.2f", trip.mileageAmount)
+            
+            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(property)\",\(amount)\n"
+        }
+        
+        return csv
+    }
+    
+    // MARK: - Debug
+    func generateSampleTrips() {
+        let sampleAddresses = [
+            ("123 Market St, San Francisco, CA", 37.7749, -122.4194),
+            ("456 Broadway, Oakland, CA", 37.8044, -122.2712),
+            ("789 Main St, Berkeley, CA", 37.8715, -122.2730),
+            ("321 Oak Ave, Palo Alto, CA", 37.4419, -122.1430),
+            ("654 Pine St, San Jose, CA", 37.3382, -121.8863)
+        ]
+        
+        let purposes: [TripPurpose] = [.showing, .openHouse, .inspection, .clientMeeting]
+        let distances = [5.2, 12.8, 3.4, 18.5, 7.9, 15.3, 4.6]
+        
+        // Generate 5 sample trips from the last week
+        for i in 0..<5 {
+            let daysAgo = Double(i + 1)
+            let startTime = Date().addingTimeInterval(-daysAgo * 24 * 3600)
+            let duration: TimeInterval = Double.random(in: 600...3600) // 10-60 minutes
+            
+            let startIdx = i % sampleAddresses.count
+            let endIdx = (i + 1) % sampleAddresses.count
+            
+            let startAddr = sampleAddresses[startIdx]
+            let endAddr = sampleAddresses[endIdx]
+            
+            let trip = Trip(
+                startTime: startTime,
+                endTime: startTime.addingTimeInterval(duration),
+                startLocation: LocationData(
+                    coordinate: CLLocationCoordinate2D(latitude: startAddr.1, longitude: startAddr.2),
+                    address: startAddr.0
+                ),
+                endLocation: LocationData(
+                    coordinate: CLLocationCoordinate2D(latitude: endAddr.1, longitude: endAddr.2),
+                    address: endAddr.0
+                ),
+                distance: distances[i % distances.count],
+                purpose: purposes[i % purposes.count],
+                property: properties.first,
+                notes: i == 0 ? "Sample trip for testing" : nil
+            )
+            
+            addTrip(trip)
+        }
+        
+        print("🎯 Generated 5 sample trips for testing")
+    }
+    
+    func clearAllTrips() {
+        trips.removeAll()
+        saveTrips()
+        print("🗑️ Cleared all trips")
+    }
+}
