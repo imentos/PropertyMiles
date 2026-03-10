@@ -14,6 +14,7 @@ struct TripDetailView: View {
     
     @State private var trip: Trip
     @State private var showingPropertyPicker = false
+    @State private var showingVehiclePicker = false
     
     init(trip: Trip) {
         _trip = State(initialValue: trip)
@@ -22,6 +23,62 @@ struct TripDetailView: View {
     var body: some View {
         NavigationView {
             Form {
+                Section("Purpose") {
+                    Picker("Trip Purpose", selection: Binding(
+                        get: { trip.purposeName ?? "" },
+                        set: { trip.purposeName = $0.isEmpty ? nil : $0 }
+                    )) {
+                        Text("None").tag("")
+                        
+                        ForEach(TripPurpose.allCases, id: \.self) { purpose in
+                            Text(purpose.rawValue).tag(purpose.rawValue)
+                        }
+                        
+                        if !tripStore.customPurposes.isEmpty {
+                            Divider()
+                            ForEach(tripStore.customPurposes, id: \.self) { purpose in
+                                Text(purpose).tag(purpose)
+                            }
+                        }
+                    }
+                }
+                
+                Section("Property") {
+                    Button {
+                        showingPropertyPicker = true
+                    } label: {
+                        HStack {
+                            Label("Property", systemImage: "building.2")
+                            Spacer()
+                            if let property = trip.property {
+                                Text(property.displayName)
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text("None")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+                
+                Section("Vehicle") {
+                    Button {
+                        showingVehiclePicker = true
+                    } label: {
+                        HStack {
+                            Label("Vehicle", systemImage: "car")
+                            Spacer()
+                            if let vehicle = trip.vehicle {
+                                Text(vehicle.displayName)
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text("None")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+                
                 Section("Trip Summary") {
                     HStack {
                         Label("Distance", systemImage: "road.lanes")
@@ -76,43 +133,6 @@ struct TripDetailView: View {
                     }
                 }
                 
-                Section("Purpose") {
-                    Picker("Trip Purpose", selection: $trip.purpose) {
-                        Text("None").tag(nil as TripPurpose?)
-                        ForEach(TripPurpose.allCases, id: \.self) { purpose in
-                            HStack {
-                                Image(systemName: purpose.icon)
-                                Text(purpose.rawValue)
-                            }
-                            .tag(purpose as TripPurpose?)
-                        }
-                    }
-                }
-                
-                Section("Property") {
-                    Button {
-                        showingPropertyPicker = true
-                    } label: {
-                        HStack {
-                            Label("Property", systemImage: "building.2")
-                            Spacer()
-                            if let property = trip.property {
-                                Text(property.displayName)
-                                    .foregroundColor(.secondary)
-                            } else {
-                                Text("None")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                    
-                    if trip.property != nil {
-                        Button("Clear Property", role: .destructive) {
-                            trip.property = nil
-                        }
-                    }
-                }
-                
                 Section("Notes") {
                     TextEditor(text: Binding(
                         get: { trip.notes ?? "" },
@@ -152,6 +172,9 @@ struct TripDetailView: View {
             }
             .sheet(isPresented: $showingPropertyPicker) {
                 PropertyPickerView(selectedProperty: $trip.property)
+            }
+            .sheet(isPresented: $showingVehiclePicker) {
+                VehiclePickerView(selectedVehicle: $trip.vehicle)
             }
         }
     }
@@ -224,8 +247,9 @@ struct MapPreview: View {
             address: "456 Broadway, Oakland, CA"
         ),
         distance: 12.5,
-        purpose: .showing,
+        purposeName: "Showing",
         property: nil,
+        vehicle: nil,
         notes: nil
     ))
     .environmentObject(TripStore())

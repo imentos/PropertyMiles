@@ -12,8 +12,7 @@ import CoreLocation
 struct TripsView: View {
     @EnvironmentObject var tripStore: TripStore
     @EnvironmentObject var tripManager: TripManager
-    @State private var showingTripDetail = false
-    @State private var selectedTrip: Trip?
+    @State private var selectedCurrentTrip: Trip?
     @State private var selectedMonth: Date = Date()
     @State private var showingMonthPicker = false
     
@@ -39,8 +38,7 @@ struct TripsView: View {
                     if let currentTrip = tripManager.currentTrip {
                         CurrentTripBanner(trip: currentTrip)
                             .onTapGesture {
-                                selectedTrip = currentTrip
-                                showingTripDetail = true
+                                selectedCurrentTrip = currentTrip
                             }
                     }
                     
@@ -48,10 +46,12 @@ struct TripsView: View {
                     List {
                         ForEach(filteredTrips) { trip in
                             TripRow(trip: trip)
-                                .onTapGesture {
-                                    selectedTrip = trip
-                                    showingTripDetail = true
-                                }
+                                .background(
+                                    NavigationLink(destination: TripDetailView(trip: trip)) {
+                                        EmptyView()
+                                    }
+                                    .opacity(0)
+                                )
                         }
                         .onDelete(perform: deleteTrips)
                     }
@@ -103,7 +103,7 @@ struct TripsView: View {
                     }
                 }
             }
-            .sheet(item: $selectedTrip) { trip in
+            .sheet(item: $selectedCurrentTrip) { trip in
                 TripDetailView(trip: trip)
             }
             .sheet(isPresented: $showingMonthPicker) {
@@ -186,7 +186,7 @@ struct TripRow: View {
     var body: some View {
         VStack(spacing: 12) {
             HStack {
-                Image(systemName: trip.purpose?.icon ?? "car")
+                Image(systemName: trip.purposeIcon)
                     .foregroundColor(.blue)
                     .font(.title3)
                     .frame(width: 30)
@@ -196,47 +196,61 @@ struct TripRow: View {
                         Text(formatDate(trip.startTime))
                             .font(.headline)
                         
-                        if let purpose = trip.purpose {
+                        if let purposeName = trip.purposeName {
                             Text("•")
                                 .foregroundColor(.secondary)
-                            Text(purpose.rawValue)
+                            Text(purposeName)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                     }
                     
-                    // Start and End Times
-                    HStack(spacing: 4) {
+                    // Start Time and Address
+                    if let startAddr = trip.startLocation.address {
+                        HStack(spacing: 4) {
+                            Text(formatTime(trip.startTime))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text("-")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text(shortAddress(startAddr))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    } else {
                         Text(formatTime(trip.startTime))
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        Text("→")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        if let endTime = trip.endTime {
+                    }
+                    
+                    // End Time and Address
+                    if let endTime = trip.endTime,
+                       let endAddr = trip.endLocation?.address {
+                        HStack(spacing: 4) {
                             Text(formatTime(endTime))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                        }
-                        if let duration = trip.duration {
-                            Text("(\(formatDuration(duration)))")
+                            Text("-")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                            Text(shortAddress(endAddr))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
                         }
+                    } else if let endTime = trip.endTime {
+                        Text(formatTime(endTime))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                     
+                    // Property
                     if let property = trip.property {
                         Text(property.displayName)
                             .font(.caption)
                             .foregroundColor(.blue)
-                    }
-                    
-                    if let startAddr = trip.startLocation.address,
-                       let endAddr = trip.endLocation?.address {
-                        Text("\(shortAddress(startAddr)) → \(shortAddress(endAddr))")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
                     }
                 }
                 
@@ -260,6 +274,10 @@ struct TripRow: View {
                 )
                 .frame(height: 120)
                 .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                )
             }
         }
         .padding(.vertical, 8)
@@ -290,7 +308,12 @@ struct TripRow: View {
     
     private func shortAddress(_ address: String) -> String {
         let components = address.components(separatedBy: ", ")
-        return components.first ?? address
+        // Return street address + city (first 3 components: number, street, city)
+        // e.g., "123 Main St, San Jose" instead of full "123 Main St, San Jose, CA, 95128"
+        if components.count >= 3 {
+            return components[0...2].joined(separator: ", ")
+        }
+        return address
     }
 }
 

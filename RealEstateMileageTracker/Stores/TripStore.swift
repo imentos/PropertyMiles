@@ -12,15 +12,21 @@ import CoreLocation
 class TripStore: ObservableObject {
     @Published var trips: [Trip] = []
     @Published var properties: [Property] = []
+    @Published var vehicles: [Vehicle] = []
+    @Published var customPurposes: [String] = []
     
     private let tripsKey = "saved_trips"
     private let propertiesKey = "saved_properties"
+    private let vehiclesKey = "saved_vehicles"
+    private let customPurposesKey = "custom_purposes"
     
     private var cancellables = Set<AnyCancellable>()
     
     init() {
         loadTrips()
         loadProperties()
+        loadVehicles()
+        loadCustomPurposes()
         
         // Listen for completed trips
         NotificationCenter.default.publisher(for: .tripCompleted)
@@ -98,6 +104,89 @@ class TripStore: ObservableObject {
         }
     }
     
+    // Find property near a location (within 200 meters)
+    func findNearbyProperty(coordinate: CLLocationCoordinate2D, within meters: Double = 200) -> Property? {
+        let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        
+        for property in properties {
+            guard let propertyLocation = property.location else { continue }
+            
+            let propertyCoordinate = propertyLocation.coordinate
+            let propertyLocationObj = CLLocation(latitude: propertyCoordinate.latitude, longitude: propertyCoordinate.longitude)
+            
+            let distance = targetLocation.distance(from: propertyLocationObj)
+            
+            if distance <= meters {
+                print("🎯 Found nearby property: '\(property.displayName)' at \(String(format: "%.0f", distance))m away")
+                return property
+            }
+        }
+        
+        return nil
+    }
+    
+    // MARK: - Vehicles
+    func loadVehicles() {
+        guard let data = UserDefaults.standard.data(forKey: vehiclesKey),
+              let decoded = try? JSONDecoder().decode([Vehicle].self, from: data) else {
+            vehicles = []
+            return
+        }
+        vehicles = decoded.sorted { $0.createdAt > $1.createdAt }
+    }
+    
+    func addVehicle(_ vehicle: Vehicle) {
+        vehicles.insert(vehicle, at: 0)
+        saveVehicles()
+    }
+    
+    func updateVehicle(_ vehicle: Vehicle) {
+        if let index = vehicles.firstIndex(where: { $0.id == vehicle.id }) {
+            vehicles[index] = vehicle
+            saveVehicles()
+        }
+    }
+    
+    func deleteVehicle(_ vehicle: Vehicle) {
+        vehicles.removeAll { $0.id == vehicle.id }
+        saveVehicles()
+    }
+    
+    private func saveVehicles() {
+        if let encoded = try? JSONEncoder().encode(vehicles) {
+            UserDefaults.standard.set(encoded, forKey: vehiclesKey)
+        }
+    }
+    
+    // MARK: - Custom Purposes
+    func loadCustomPurposes() {
+        guard let data = UserDefaults.standard.data(forKey: customPurposesKey),
+              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
+            customPurposes = []
+            return
+        }
+        customPurposes = decoded.sorted()
+    }
+    
+    func addCustomPurpose(_ purpose: String) {
+        let trimmed = purpose.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty && !customPurposes.contains(trimmed) else { return }
+        customPurposes.append(trimmed)
+        customPurposes.sort()
+        saveCustomPurposes()
+    }
+    
+    func deleteCustomPurpose(_ purpose: String) {
+        customPurposes.removeAll { $0 == purpose }
+        saveCustomPurposes()
+    }
+    
+    private func saveCustomPurposes() {
+        if let encoded = try? JSONEncoder().encode(customPurposes) {
+            UserDefaults.standard.set(encoded, forKey: customPurposesKey)
+        }
+    }
+    
     // MARK: - Reports
     func tripsForDateRange(start: Date, end: Date) -> [Trip] {
         trips.filter { trip in
@@ -116,7 +205,7 @@ class TripStore: ObservableObject {
     }
     
     func generateCSV(for trips: [Trip]) -> String {
-        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Property,Amount\n"
+        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Property,Vehicle,Amount\n"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -131,11 +220,12 @@ class TripStore: ObservableObject {
             let startAddr = trip.startLocation.address ?? "\(trip.startLocation.latitude),\(trip.startLocation.longitude)"
             let endAddr = trip.endLocation?.address ?? (trip.endLocation.map { "\($0.latitude),\($0.longitude)" } ?? "")
             let miles = String(format: "%.2f", trip.distance)
-            let purpose = trip.purpose?.rawValue ?? ""
+            let purpose = trip.purposeName ?? ""
             let property = trip.property?.displayName ?? ""
+            let vehicle = trip.vehicle?.displayName ?? ""
             let amount = String(format: "%.2f", trip.mileageAmount)
             
-            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(property)\",\(amount)\n"
+            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(property)\",\"\(vehicle)\",\(amount)\n"
         }
         
         return csv
@@ -151,7 +241,7 @@ class TripStore: ObservableObject {
             ("654 Pine St, San Jose, CA", 37.3382, -121.8863)
         ]
         
-        let purposes: [TripPurpose] = [.showing, .openHouse, .inspection, .clientMeeting]
+        let purposes: [TripPurpose] = [.repair, .openHouse, .propertyCheck, .supplyRun]
         let distances = [5.2, 12.8, 3.4, 18.5, 7.9, 15.3, 4.6]
         
         // Generate 5 sample trips from the last week
@@ -178,8 +268,9 @@ class TripStore: ObservableObject {
                     address: endAddr.0
                 ),
                 distance: distances[i % distances.count],
-                purpose: purposes[i % purposes.count],
+                purposeName: purposes[i % purposes.count].rawValue,
                 property: properties.first,
+                vehicle: vehicles.first,
                 notes: i == 0 ? "Sample trip for testing" : nil
             )
             

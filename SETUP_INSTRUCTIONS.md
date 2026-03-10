@@ -207,7 +207,7 @@ The app uses **Significant Location Changes** monitoring to provide true "set an
 2. **Keep Location Services On**: Don't disable location services globally
 3. **Don't Force Close**: iOS manages background apps efficiently - no need to force close
 4. **Check Periodically**: Review trips weekly to ensure proper tagging
-5. **Debug Mode**: Use debug mode (7-tap version in Settings) for walking-speed testing
+5. **Debug Mode**: Use debug mode (7-tap version in Settings) for faster trip ending during testing
 
 ### Privacy & Battery
 

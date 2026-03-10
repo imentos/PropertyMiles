@@ -6,16 +6,21 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct PropertiesView: View {
     @EnvironmentObject var tripStore: TripStore
     @State private var showingAddProperty = false
+    @State private var editingProperty: Property?
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(tripStore.properties) { property in
                     PropertyRow(property: property)
+                        .onTapGesture {
+                            editingProperty = property
+                        }
                 }
                 .onDelete(perform: deleteProperties)
             }
@@ -31,6 +36,9 @@ struct PropertiesView: View {
             }
             .sheet(isPresented: $showingAddProperty) {
                 AddPropertyView()
+            }
+            .sheet(item: $editingProperty) { property in
+                EditPropertyView(property: property)
             }
             .overlay {
                 if tripStore.properties.isEmpty {
@@ -97,6 +105,7 @@ struct AddPropertyView: View {
     
     @State private var address = ""
     @State private var nickname = ""
+    @State private var isGeocoding = false
     
     var body: some View {
         NavigationView {
@@ -109,7 +118,7 @@ struct AddPropertyView: View {
                 }
                 
                 Section {
-                    Text("Add properties to quickly tag trips and organize your mileage records.")
+                    Text("Add properties to quickly tag trips and organize your mileage records. The address will be geocoded to enable automatic trip matching.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -121,21 +130,130 @@ struct AddPropertyView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .disabled(isGeocoding)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
-                        let property = Property(
-                            address: address,
-                            nickname: nickname.isEmpty ? nil : nickname
-                        )
-                        tripStore.addProperty(property)
-                        dismiss()
+                        addProperty()
                     }
                     .fontWeight(.semibold)
-                    .disabled(address.isEmpty)
+                    .disabled(address.isEmpty || isGeocoding)
                 }
             }
+        }
+    }
+    
+    private func addProperty() {
+        isGeocoding = true
+        
+        // Geocode the address
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(address) { placemarks, error in
+            let location: LocationData?
+            
+            if let placemark = placemarks?.first, let coordinate = placemark.location?.coordinate {
+                location = LocationData(coordinate: coordinate)
+                print("📍 Geocoded property '\(address)' to: \(coordinate.latitude), \(coordinate.longitude)")
+            } else {
+                location = nil
+                print("⚠️ Could not geocode property address: \(address)")
+            }
+            
+            let property = Property(
+                address: address,
+                nickname: nickname.isEmpty ? nil : nickname,
+                location: location
+            )
+            tripStore.addProperty(property)
+            
+            isGeocoding = false
+            dismiss()
+        }
+    }
+}
+
+struct EditPropertyView: View {
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var tripStore: TripStore
+    
+    @State private var property: Property
+    @State private var address: String
+    @State private var nickname: String
+    @State private var isGeocoding = false
+    
+    init(property: Property) {
+        _property = State(initialValue: property)
+        _address = State(initialValue: property.address)
+        _nickname = State(initialValue: property.nickname ?? "")
+    }
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section("Property Information") {
+                    TextField("Address", text: $address)
+                        .textContentType(.fullStreetAddress)
+                    
+                    TextField("Nickname (Optional)", text: $nickname)
+                }
+                
+                Section {
+                    Text("Updating the address will re-geocode the location for automatic trip matching.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .navigationTitle("Edit Property")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .disabled(isGeocoding)
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Save") {
+                        saveProperty()
+                    }
+                    .fontWeight(.semibold)
+                    .disabled(address.isEmpty || isGeocoding)
+                }
+            }
+        }
+    }
+    
+    private func saveProperty() {
+        isGeocoding = true
+        
+        // Re-geocode if address changed
+        if address != property.address {
+            let geocoder = CLGeocoder()
+            geocoder.geocodeAddressString(address) { placemarks, error in
+                var updatedProperty = property
+                updatedProperty.address = address
+                updatedProperty.nickname = nickname.isEmpty ? nil : nickname
+                
+                if let placemark = placemarks?.first, let coordinate = placemark.location?.coordinate {
+                    updatedProperty.location = LocationData(coordinate: coordinate)
+                    print("📍 Re-geocoded property '\(address)' to: \(coordinate.latitude), \(coordinate.longitude)")
+                } else {
+                    // Keep old location if geocoding fails
+                    print("⚠️ Could not geocode property address: \(address)")
+                }
+                
+                tripStore.updateProperty(updatedProperty)
+                isGeocoding = false
+                dismiss()
+            }
+        } else {
+            // Just update nickname if address unchanged
+            var updatedProperty = property
+            updatedProperty.nickname = nickname.isEmpty ? nil : nickname
+            tripStore.updateProperty(updatedProperty)
+            dismiss()
         }
     }
 }

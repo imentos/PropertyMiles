@@ -37,6 +37,9 @@ struct MainTabView: View {
         .environmentObject(tripStore)
         .environmentObject(tripManager)
         .onAppear {
+            // Link tripStore to tripManager for property matching
+            tripManager.tripStore = tripStore
+            
             // Request location permission on first launch
             if tripManager.locationPermissionStatus == .notDetermined {
                 tripManager.requestLocationPermission()

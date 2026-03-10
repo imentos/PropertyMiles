@@ -15,7 +15,11 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Always allow location access to automatically track trips in the background for accurate mileage records.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Motion activity is used to detect when you're driving vs walking to accurately log only vehicle trips.</string>
+	<string>Motion activity is used to detect when you're driving or cycling to accurately log only vehicle trips.</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

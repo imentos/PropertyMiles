@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<gpx version="1.1" creator="Xcode">
+  <trk>
+    <name>Test Drive to Apple Park</name>
+    <trkseg>
+      <!-- Start: Downtown San Jose -->
+      <trkpt lat="37.3382" lon="-121.8863">
+        <ele>20</ele>
+        <time>2026-03-09T10:00:00Z</time>
+      </trkpt>
+      
+      <!-- Point 1: 1 minute later, moving -->
+      <trkpt lat="37.3450" lon="-121.9000">
+        <ele>25</ele>
+        <time>2026-03-09T10:01:00Z</time>
+      </trkpt>
+      
+      <!-- Point 2: 2 minutes, continuing -->
+      <trkpt lat="37.3520" lon="-121.9150">
+        <ele>30</ele>
+        <time>2026-03-09T10:02:00Z</time>
+      </trkpt>
+      
+      <!-- Point 3: 3 minutes -->
+      <trkpt lat="37.3600" lon="-121.9300">
+        <ele>35</ele>
+        <time>2026-03-09T10:03:00Z</time>
+      </trkpt>
+      
+      <!-- Point 4: 4 minutes -->
+      <trkpt lat="37.3700" lon="-121.9500">
+        <ele>40</ele>
+        <time>2026-03-09T10:04:00Z</time>
+      </trkpt>
+      
+      <!-- Point 5: 5 minutes -->
+      <trkpt lat="37.3800" lon="-121.9700">
+        <ele>45</ele>
+        <time>2026-03-09T10:05:00Z</time>
+      </trkpt>
+      
+      <!-- Destination: Near Apple Park (1 Infinite Loop area) -->
+      <trkpt lat="37.3318" lon="-122.0312">
+        <ele>50</ele>
+        <time>2026-03-09T10:08:00Z</time>
+      </trkpt>
+      
+      <!-- Stay at destination (for trip to end) -->
+      <trkpt lat="37.3318" lon="-122.0312">
+        <ele>50</ele>
+        <time>2026-03-09T10:09:00Z</time>
+      </trkpt>
+      
+      <trkpt lat="37.3318" lon="-122.0312">
+        <ele>50</ele>
+        <time>2026-03-09T10:10:00Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

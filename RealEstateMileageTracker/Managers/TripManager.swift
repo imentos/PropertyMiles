@@ -26,15 +26,13 @@ class TripManager: NSObject, ObservableObject {
     private var stoppedTimer: Timer?
     private let normalStoppedThreshold: TimeInterval = 180 // 3 minutes
     private let debugStoppedThreshold: TimeInterval = 30 // 30 seconds for testing
-    private let normalSpeedThreshold: CLLocationSpeed = 4.4704 // 10 mph in m/s
-    private let debugSpeedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s (increased from 0.5 to avoid walking)
+    private let speedThreshold: CLLocationSpeed = 4.4704 // 10 mph in m/s
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
-    private var isAutomotiveActivity: Bool = false
+    private var isVehicleActivity: Bool = false // Tracks automotive OR cycling
     
-    private var speedThreshold: CLLocationSpeed {
-        debugMode ? debugSpeedThreshold : normalSpeedThreshold
-    }
+    // Reference to TripStore for property matching
+    weak var tripStore: TripStore?
     
     private var stoppedThreshold: TimeInterval {
         debugMode ? debugStoppedThreshold : normalStoppedThreshold
@@ -82,18 +80,16 @@ class TripManager: NSObject, ObservableObject {
         
         locationManager.startUpdatingLocation()
         
-        // Start motion activity monitoring to detect automotive vs walking
+        // Start motion activity monitoring to detect driving/cycling
         if CMMotionActivityManager.isActivityAvailable() {
             motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
                 guard let activity = activity else { return }
                 self?.currentActivity = activity
-                self?.isAutomotiveActivity = activity.automotive
+                self?.isVehicleActivity = activity.automotive || activity.cycling
                 
                 let activityType = activity.automotive ? "🚗 Driving" : 
-                                   activity.walking ? "🚶 Walking" : 
-                                   activity.running ? "🏃 Running" :
                                    activity.cycling ? "🚴 Cycling" :
-                                   activity.stationary ? "🛑 Stationary" : "❓ Unknown"
+                                   activity.stationary ? "🛑 Stationary" : "❓ Other"
                 print("Activity: \(activityType), Confidence: \(activity.confidence.rawValue)")
             }
         } else {
@@ -149,6 +145,12 @@ class TripManager: NSObject, ObservableObject {
         trip.distance = totalDistance * 0.000621371 // Convert meters to miles
         
         print("🛑 Trip ended. Distance: \(trip.distance) miles")
+        
+        // Check for nearby property and auto-assign
+        if let nearbyProperty = tripStore?.findNearbyProperty(coordinate: lastLoc.coordinate) {
+            trip.property = nearbyProperty
+            print("🏠 Auto-assigned property: \(nearbyProperty.displayName)")
+        }
         
         // Geocode end location and then save trip
         geocodeLocation(lastLoc) { [weak self] address in
@@ -207,17 +209,17 @@ extension TripManager: CLLocationManagerDelegate {
         
         let speedMph = speed * 2.23694
         let thresholdMph = speedThreshold * 2.23694
-        let activityStatus = isAutomotiveActivity ? "🚗" : currentActivity?.walking == true ? "🚶" : "❓"
+        let activityStatus = isVehicleActivity ? (currentActivity?.cycling == true ? "🚴" : "🚗") : "❓"
         print("📍 Speed: \(String(format: "%.1f", speedMph)) mph (threshold: \(String(format: "%.1f", thresholdMph)) mph) \(activityStatus)\(debugMode ? " [DEBUG]" : "")")
         
-        // Trip start detection - require BOTH speed threshold AND automotive activity
+        // Trip start detection - require BOTH speed threshold AND vehicle activity (driving or cycling)
         if currentTrip == nil && speed > speedThreshold {
-            // Check if we're in automotive mode (or motion activity is unavailable)
-            if !CMMotionActivityManager.isActivityAvailable() || isAutomotiveActivity {
+            // Check if we're in vehicle mode (or motion activity is unavailable)
+            if !CMMotionActivityManager.isActivityAvailable() || isVehicleActivity {
                 startTrip(at: location)
                 return
             } else {
-                print("⚠️ Speed threshold met but not in automotive mode - ignoring (likely walking/cycling)")
+                print("⚠️ Speed threshold met but not in vehicle mode - ignoring")
             }
         }
         
@@ -233,21 +235,25 @@ extension TripManager: CLLocationManagerDelegate {
             
             lastLocation = location
             
-            // Trip end detection - end if stopped OR if activity changed to walking
-            let shouldEndTrip = speed < 0.5 || (currentActivity?.walking == true && !isAutomotiveActivity)
+            // Trip end detection - end if stopped OR if no longer in vehicle mode
+            let shouldEndTrip = speed < 0.5 || !isVehicleActivity
             
             if shouldEndTrip {
                 if stoppedTimer == nil {
-                    let reason = speed < 0.5 ? "stopped" : "walking detected"
-                    print("⏸️ Trip ending soon (\(reason))...")
-                    stoppedTimer = Timer.scheduledTimer(withTimeInterval: stoppedThreshold, repeats: false) { [weak self] _ in
+                    let reason = speed < 0.5 ? "stopped" : "no longer in vehicle"
+                    // End trip quickly if not in vehicle mode, otherwise wait for stopped threshold
+                    let timeToWait = !isVehicleActivity ? 10.0 : stoppedThreshold
+                    print("⏸️ Trip ending soon (\(reason)) - waiting \(Int(timeToWait))s...")
+                    stoppedTimer = Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { [weak self] _ in
                         self?.endCurrentTrip()
                     }
                 }
             } else {
-                // Moving again in automotive mode, cancel stop timer
-                stoppedTimer?.invalidate()
-                stoppedTimer = nil
+                // Cancel stop timer if back in vehicle mode
+                if isVehicleActivity {
+                    stoppedTimer?.invalidate()
+                    stoppedTimer = nil
+                }
             }
         }
     }

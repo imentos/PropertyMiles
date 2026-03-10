@@ -14,6 +14,8 @@ struct ReportsView: View {
     @State private var customEndDate = Date()
     @State private var showingShareSheet = false
     @State private var csvFileURL: URL?
+    @State private var showingExportAlert = false
+    @State private var exportMessage = ""
     
     var dateRange: (start: Date, end: Date) {
         switch selectedPeriod {
@@ -103,14 +105,37 @@ struct ReportsView: View {
                                 .font(.headline)
                                 .padding(.horizontal)
                             
+                            // Default purposes
                             ForEach(TripPurpose.allCases, id: \.self) { purpose in
-                                let purposeTrips = filteredTrips.filter { $0.purpose == purpose }
+                                let purposeTrips = filteredTrips.filter { $0.purposeName == purpose.rawValue }
                                 if !purposeTrips.isEmpty {
+                                    let tripCount = purposeTrips.count
+                                    let miles = purposeTrips.reduce(0.0) { $0 + $1.distance }
+                                    let amount = purposeTrips.reduce(0.0) { $0 + $1.mileageAmount }
                                     PurposeRow(
-                                        purpose: purpose,
-                                        trips: purposeTrips.count,
-                                        miles: purposeTrips.reduce(0) { $0 + $1.distance },
-                                        amount: purposeTrips.reduce(0) { $0 + $1.mileageAmount }
+                                        purposeName: purpose.rawValue,
+                                        icon: purpose.icon,
+                                        trips: tripCount,
+                                        miles: miles,
+                                        amount: amount
+                                    )
+                                    .padding(.horizontal)
+                                }
+                            }
+                            
+                            // Custom purposes
+                            ForEach(tripStore.customPurposes, id: \.self) { purposeName in
+                                let purposeTrips = filteredTrips.filter { $0.purposeName == purposeName }
+                                if !purposeTrips.isEmpty {
+                                    let tripCount = purposeTrips.count
+                                    let miles = purposeTrips.reduce(0.0) { $0 + $1.distance }
+                                    let amount = purposeTrips.reduce(0.0) { $0 + $1.mileageAmount }
+                                    PurposeRow(
+                                        purposeName: purposeName,
+                                        icon: "tag",
+                                        trips: tripCount,
+                                        miles: miles,
+                                        amount: amount
                                     )
                                     .padding(.horizontal)
                                 }
@@ -153,21 +178,53 @@ struct ReportsView: View {
                     ShareSheet(activityItems: [url])
                 }
             }
+            .alert("CSV Exported", isPresented: $showingExportAlert) {
+                Button("OK", role: .cancel) { }
+                if let url = csvFileURL {
+                    Button("Share File") {
+                        print("🔘 Share File button tapped")
+                        // Delay slightly to let alert dismiss first
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            print("📱 Setting showingShareSheet = true")
+                            showingShareSheet = true
+                        }
+                    }
+                }
+            } message: {
+                Text(exportMessage)
+            }
         }
     }
     
     private func exportCSV() {
+        print("🚀 exportCSV() called - generating CSV for \(filteredTrips.count) trips")
         let csv = tripStore.generateCSV(for: filteredTrips)
         
         let fileName = "mileage_report_\(formatDate(dateRange.start))_to_\(formatDate(dateRange.end)).csv"
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        
+        // Save to Documents directory (accessible via Files app)
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            exportMessage = "Could not access Documents directory"
+            showingExportAlert = true
+            return
+        }
+        
+        let fileURL = documentsURL.appendingPathComponent(fileName)
         
         do {
-            try csv.write(to: tempURL, atomically: true, encoding: .utf8)
-            csvFileURL = tempURL
-            showingShareSheet = true
+            try csv.write(to: fileURL, atomically: true, encoding: .utf8)
+            csvFileURL = fileURL
+            
+            // Show alert with options
+            exportMessage = "CSV file saved to Documents!\n\nFile: \(fileName)\n\nAccess it via:\n• Files app > On My iPhone > PropertyMiles\n• Or tap 'Share File' below"
+            print("⚠️ Setting showingExportAlert = true")
+            showingExportAlert = true
+            
+            print("✅ CSV exported to: \(fileURL.path)")
         } catch {
-            print("Error saving CSV: \(error)")
+            exportMessage = "Error saving CSV: \(error.localizedDescription)"
+            showingExportAlert = true
+            print("❌ Error saving CSV: \(error)")
         }
     }
     
@@ -257,19 +314,20 @@ struct SummaryCard: View {
 }
 
 struct PurposeRow: View {
-    let purpose: TripPurpose
+    let purposeName: String
+    let icon: String
     let trips: Int
     let miles: Double
     let amount: Double
     
     var body: some View {
         HStack {
-            Image(systemName: purpose.icon)
+            Image(systemName: icon)
                 .foregroundColor(.blue)
                 .frame(width: 30)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(purpose.rawValue)
+                Text(purposeName)
                     .font(.headline)
                 Text("\(trips) trip\(trips == 1 ? "" : "s")")
                     .font(.caption)
@@ -296,10 +354,14 @@ struct ShareSheet: UIViewControllerRepresentable {
     let activityItems: [Any]
     
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        print("📤 Creating UIActivityViewController with items: \(activityItems)")
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        return controller
     }
     
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
+        print("🔄 Updating UIActivityViewController")
+    }
 }
 
 #Preview {
