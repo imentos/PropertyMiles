@@ -13,7 +13,6 @@ struct TripDetailView: View {
     @EnvironmentObject var tripStore: TripStore
     
     @State private var trip: Trip
-    @State private var showingPlacePicker = false
     @State private var showingVehiclePicker = false
     
     init(trip: Trip) {
@@ -38,24 +37,6 @@ struct TripDetailView: View {
                             Divider()
                             ForEach(tripStore.customPurposes, id: \.self) { purpose in
                                 Text(purpose).tag(purpose)
-                            }
-                        }
-                    }
-                }
-                
-                Section("Place") {
-                    Button {
-                        showingPlacePicker = true
-                    } label: {
-                        HStack {
-                            Label("Place", systemImage: "building.2")
-                            Spacer()
-                            if let place = trip.place {
-                                Text(place.displayName)
-                                    .foregroundColor(.secondary)
-                            } else {
-                                Text("None")
-                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -229,9 +210,6 @@ struct TripDetailView: View {
                     }
                     .fontWeight(.semibold)
                 }
-            }
-            .sheet(isPresented: $showingPlacePicker) {
-                PlacePickerView(selectedPlace: $trip.place)
             }
             .sheet(isPresented: $showingVehiclePicker) {
                 VehiclePickerView(selectedVehicle: $trip.vehicle)

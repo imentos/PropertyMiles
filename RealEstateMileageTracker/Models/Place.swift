@@ -8,6 +8,11 @@
 import Foundation
 import CoreLocation
 
+// MARK: - Deprecated Place Model
+// Kept for backward compatibility with old saved trip data
+// Use LocationNickname instead for all new functionality
+
+@available(*, deprecated, message: "Use LocationNickname instead")
 struct Place: Identifiable, Codable {
     var id: UUID = UUID()
     var address: String

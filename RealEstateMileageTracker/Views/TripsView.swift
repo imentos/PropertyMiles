@@ -240,13 +240,6 @@ struct TripRow: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    
-                    // Place
-                    if let place = trip.place {
-                        Text(place.displayName)
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                    }
                 }
                 
                 Spacer()

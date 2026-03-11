@@ -97,7 +97,7 @@ class TripStore: ObservableObject {
         }
     }
     
-    // MARK: - Places
+    // MARK: - Places (Deprecated - use LocationNicknames instead)
     func loadPlaces() {
         guard let data = UserDefaults.standard.data(forKey: placesKey),
               let decoded = try? JSONDecoder().decode([Place].self, from: data) else {
@@ -107,48 +107,11 @@ class TripStore: ObservableObject {
         places = decoded.sorted { $0.createdAt > $1.createdAt }
     }
     
-    func addPlace(_ place: Place) {
-        places.insert(place, at: 0)
-        savePlaces()
-    }
-    
-    func updatePlace(_ place: Place) {
-        if let index = places.firstIndex(where: { $0.id == place.id }) {
-            places[index] = place
-            savePlaces()
-        }
-    }
-    
-    func deletePlace(_ place: Place) {
-        places.removeAll { $0.id == place.id }
-        savePlaces()
-    }
-    
     private func savePlaces() {
+        // Deprecated: Places no longer actively used
         if let encoded = try? JSONEncoder().encode(places) {
             UserDefaults.standard.set(encoded, forKey: placesKey)
         }
-    }
-    
-    // Find place near a location (within 200 meters)
-    func findNearbyPlace(coordinate: CLLocationCoordinate2D, within meters: Double = 200) -> Place? {
-        let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        
-        for place in places {
-            guard let placeLocation = place.location else { continue }
-            
-            let placeCoordinate = placeLocation.coordinate
-            let placeLocationObj = CLLocation(latitude: placeCoordinate.latitude, longitude: placeCoordinate.longitude)
-            
-            let distance = targetLocation.distance(from: placeLocationObj)
-            
-            if distance <= meters {
-                print("🎯 Found nearby place: '\(place.displayName)' at \(String(format: "%.0f", distance))m away")
-                return place
-            }
-        }
-        
-        return nil
     }
     
     // MARK: - Location Nicknames
