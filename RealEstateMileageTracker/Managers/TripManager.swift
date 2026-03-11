@@ -145,10 +145,10 @@ class TripManager: NSObject, ObservableObject {
         if let nearbyStartPlace = tripStore?.findNearbyPlace(coordinate: trip.startLocation.coordinate) {
             trip.startLocation.nickname = nearbyStartPlace.nickname
             print("🏠 Auto-assigned from nickname (place): \(nearbyStartPlace.displayName)")
-        } else if let nearbyNickname = tripStore?.findNearbyTripNickname(coordinate: trip.startLocation.coordinate) {
-            // If no nearby place, check for nearby trips with nicknames
+        } else if let nearbyNickname = tripStore?.findLocationNickname(coordinate: trip.startLocation.coordinate, address: nil) {
+            // If no nearby place, check location nicknames map
             trip.startLocation.nickname = nearbyNickname
-            print("🏠 Auto-assigned from nickname (trip): \(nearbyNickname)")
+            print("🏠 Auto-assigned from nickname (location map): \(nearbyNickname)")
         }
         
         // Check for nearby place at end location and auto-assign nickname (and legacy place)
@@ -156,10 +156,10 @@ class TripManager: NSObject, ObservableObject {
             trip.place = nearbyPlace
             trip.endLocation?.nickname = nearbyPlace.nickname
             print("🏠 Auto-assigned to nickname (place): \(nearbyPlace.displayName)")
-        } else if let nearbyNickname = tripStore?.findNearbyTripNickname(coordinate: lastLoc.coordinate) {
-            // If no nearby place, check for nearby trips with nicknames
+        } else if let nearbyNickname = tripStore?.findLocationNickname(coordinate: lastLoc.coordinate, address: nil) {
+            // If no nearby place, check location nicknames map
             trip.endLocation?.nickname = nearbyNickname
-            print("🏠 Auto-assigned to nickname (trip): \(nearbyNickname)")
+            print("🏠 Auto-assigned to nickname (location map): \(nearbyNickname)")
         }
         
         // Geocode end location and then save trip
@@ -169,9 +169,31 @@ class TripManager: NSObject, ObservableObject {
             // Update trip with end address
             trip.endLocation?.address = address
             
+            // Re-check nickname with actual address (might find exact address match)
+            if trip.endLocation?.nickname == nil, let address = address {
+                if let addressNickname = self.tripStore?.findLocationNickname(coordinate: lastLoc.coordinate, address: address) {
+                    trip.endLocation?.nickname = addressNickname
+                    print("🏠 Auto-assigned to nickname with address: \(addressNickname)")
+                }
+            } else if let nickname = trip.endLocation?.nickname, let address = address {
+                // Save auto-assigned nickname to location map for future reuse
+                self.tripStore?.setLocationNickname(coordinate: lastLoc.coordinate, address: address, nickname: nickname)
+            }
+            
             // Also ensure we have the start address from currentTrip
             if let currentTripStartAddr = self.currentTrip?.startLocation.address {
                 trip.startLocation.address = currentTripStartAddr
+                
+                // Re-check start nickname with actual address too
+                if trip.startLocation.nickname == nil {
+                    if let startNickname = self.tripStore?.findLocationNickname(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr) {
+                        trip.startLocation.nickname = startNickname
+                        print("🏠 Auto-assigned from nickname with address: \(startNickname)")
+                    }
+                } else if let nickname = trip.startLocation.nickname {
+                    // Save auto-assigned nickname to location map for future reuse
+                    self.tripStore?.setLocationNickname(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr, nickname: nickname)
+                }
             }
             
             print("📍 Trip addresses - From: \(trip.startLocation.address ?? "Unknown") → To: \(trip.endLocation?.address ?? "Unknown")")

@@ -14,11 +14,13 @@ class TripStore: ObservableObject {
     @Published var places: [Place] = []
     @Published var vehicles: [Vehicle] = []
     @Published var customPurposes: [String] = []
+    @Published var locationNicknames: [LocationNickname] = []
     
     private let tripsKey = "saved_trips"
     private let placesKey = "saved_properties" // kept as 'properties' for backward compatibility
     private let vehiclesKey = "saved_vehicles"
     private let customPurposesKey = "custom_purposes"
+    private let locationNicknamesKey = "location_nicknames"
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -27,6 +29,10 @@ class TripStore: ObservableObject {
         loadPlaces()
         loadVehicles()
         loadCustomPurposes()
+        loadLocationNicknames()
+        
+        // Migrate old trips to populate location nicknames
+        migrateLocationNicknames()
         
         // Listen for completed trips
         NotificationCenter.default.publisher(for: .tripCompleted)
@@ -55,8 +61,24 @@ class TripStore: ObservableObject {
     
     func updateTrip(_ trip: Trip) {
         if let index = trips.firstIndex(where: { $0.id == trip.id }) {
+            let oldTrip = trips[index]
             trips[index] = trip
             saveTrips()
+            
+            // Update location nicknames map when user manually adds/changes nicknames
+            if let newNickname = trip.startLocation.nickname, !newNickname.isEmpty,
+               newNickname != oldTrip.startLocation.nickname {
+                setLocationNickname(coordinate: trip.startLocation.coordinate,
+                                  address: trip.startLocation.address,
+                                  nickname: newNickname)
+            }
+            
+            if let endLocation = trip.endLocation, let newNickname = endLocation.nickname, !newNickname.isEmpty,
+               newNickname != oldTrip.endLocation?.nickname {
+                setLocationNickname(coordinate: endLocation.coordinate,
+                                  address: endLocation.address,
+                                  nickname: newNickname)
+            }
         }
     }
     
@@ -125,43 +147,120 @@ class TripStore: ObservableObject {
         return nil
     }
     
-    // Find trip with nickname near a location (within 200 meters)
-    func findNearbyTripNickname(coordinate: CLLocationCoordinate2D, within meters: Double = 200) -> String? {
+    // MARK: - Location Nicknames
+    func loadLocationNicknames() {
+        guard let data = UserDefaults.standard.data(forKey: locationNicknamesKey),
+              let decoded = try? JSONDecoder().decode([LocationNickname].self, from: data) else {
+            locationNicknames = []
+            return
+        }
+        locationNicknames = decoded.sorted { $0.lastUsed > $1.lastUsed }
+    }
+    
+    func saveLocationNicknames() {
+        if let encoded = try? JSONEncoder().encode(locationNicknames) {
+            UserDefaults.standard.set(encoded, forKey: locationNicknamesKey)
+        }
+    }
+    
+    // Add or update location nickname
+    func setLocationNickname(coordinate: CLLocationCoordinate2D, address: String?, nickname: String) {
+        let locationData = LocationData(coordinate: coordinate, address: address, nickname: nickname)
+        
+        // Check if we already have a nickname for this location
+        if let index = locationNicknames.firstIndex(where: { location in
+            let loc1 = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            let loc2 = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            return loc1.distance(from: loc2) <= 50 // Same location if within 50m
+        }) {
+            // Update existing
+            locationNicknames[index].nickname = nickname
+            locationNicknames[index].lastUsed = Date()
+        } else {
+            // Add new
+            let newLocation = LocationNickname(coordinate: locationData, nickname: nickname)
+            locationNicknames.insert(newLocation, at: 0)
+        }
+        
+        saveLocationNicknames()
+    }
+    
+    // Find nickname for a location (exact address match or nearby location)
+    func findLocationNickname(coordinate: CLLocationCoordinate2D, address: String?, within meters: Double = 200) -> String? {
         let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         var closestNickname: String?
         var closestDistance: Double = meters
         
-        // Check start locations
-        for trip in trips {
-            if let nickname = trip.startLocation.nickname, !nickname.isEmpty {
-                let startCoordinate = trip.startLocation.coordinate
-                let tripLocation = CLLocation(latitude: startCoordinate.latitude, longitude: startCoordinate.longitude)
-                let distance = targetLocation.distance(from: tripLocation)
-                
-                if distance <= closestDistance {
-                    closestDistance = distance
-                    closestNickname = nickname
-                }
+        for locationNickname in locationNicknames {
+            let locationCoordinate = locationNickname.coordinate.coordinate
+            let location = CLLocation(latitude: locationCoordinate.latitude, longitude: locationCoordinate.longitude)
+            let distance = targetLocation.distance(from: location)
+            
+            // Check if addresses match exactly (if both have addresses)
+            if let targetAddr = address, let locAddr = locationNickname.coordinate.address,
+               targetAddr == locAddr {
+                print("🎯 Found exact address match: '\(locationNickname.nickname)'")
+                return locationNickname.nickname
             }
             
-            // Check end locations
-            if let endLocation = trip.endLocation, let nickname = endLocation.nickname, !nickname.isEmpty {
-                let endCoordinate = endLocation.coordinate
-                let tripLocation = CLLocation(latitude: endCoordinate.latitude, longitude: endCoordinate.longitude)
-                let distance = targetLocation.distance(from: tripLocation)
-                
-                if distance <= closestDistance {
-                    closestDistance = distance
-                    closestNickname = nickname
-                }
+            // Otherwise find closest
+            if distance <= closestDistance {
+                closestDistance = distance
+                closestNickname = locationNickname.nickname
             }
         }
         
         if let nickname = closestNickname {
-            print("🎯 Found nearby trip nickname: '\(nickname)' at \(String(format: "%.0f", closestDistance))m away")
+            print("🎯 Found nearby location nickname: '\(nickname)' at \(String(format: "%.0f", closestDistance))m away")
         }
         
         return closestNickname
+    }
+    
+    // Migrate existing trips to populate location nicknames
+    private func migrateLocationNicknames() {
+        var hasChanges = false
+        
+        for trip in trips {
+            // Migrate start location nicknames
+            if let nickname = trip.startLocation.nickname, !nickname.isEmpty {
+                let coordinate = trip.startLocation.coordinate
+                let address = trip.startLocation.address
+                
+                // Check if this location isn't already in our map
+                let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+                let exists = locationNicknames.contains { location in
+                    let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                    return targetLocation.distance(from: loc) <= 50
+                }
+                
+                if !exists {
+                    setLocationNickname(coordinate: coordinate, address: address, nickname: nickname)
+                    hasChanges = true
+                }
+            }
+            
+            // Migrate end location nicknames
+            if let endLocation = trip.endLocation, let nickname = endLocation.nickname, !nickname.isEmpty {
+                let coordinate = endLocation.coordinate
+                let address = endLocation.address
+                
+                let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+                let exists = locationNicknames.contains { location in
+                    let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                    return targetLocation.distance(from: loc) <= 50
+                }
+                
+                if !exists {
+                    setLocationNickname(coordinate: coordinate, address: address, nickname: nickname)
+                    hasChanges = true
+                }
+            }
+        }
+        
+        if hasChanges {
+            print("✅ Migrated \(locationNicknames.count) location nicknames from existing trips")
+        }
     }
     
     // MARK: - Vehicles

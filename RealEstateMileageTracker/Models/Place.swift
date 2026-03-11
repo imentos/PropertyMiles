@@ -22,3 +22,15 @@ struct Place: Identifiable, Codable {
 
 // Backward compatibility alias
 typealias Property = Place
+
+// Location nickname mapping for auto-assignment
+struct LocationNickname: Identifiable, Codable {
+    var id: UUID = UUID()
+    var coordinate: LocationData
+    var nickname: String
+    var lastUsed: Date = Date()
+    
+    var displayName: String {
+        nickname
+    }
+}
