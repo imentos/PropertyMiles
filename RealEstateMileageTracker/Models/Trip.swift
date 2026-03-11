@@ -135,18 +135,14 @@ struct Trip: Identifiable, Codable {
             return locationNickname.nickname
         }
         
-        // Fall back to searching by address/coordinate
+        // Fall back to searching by address/coordinate (location map is source of truth)
         if let tripStore = tripStore,
            let nickname = tripStore.findLocationNickname(coordinate: startLocation.coordinate, address: startLocation.address) {
             return nickname
         }
         
-        // Legacy: trip's stored nickname
-        if let nickname = startLocation.nickname, !nickname.isEmpty {
-            return nickname
-        }
-        
-        // Finally fall back to address or coordinates
+        // Fall back to address or coordinates
+        // Note: Stored nickname is ignored - location map is the only source of truth
         return startLocation.address ?? "\(startLocation.latitude), \(startLocation.longitude)"
     }
     
@@ -161,18 +157,14 @@ struct Trip: Identifiable, Codable {
             return locationNickname.nickname
         }
         
-        // Fall back to searching by address/coordinate
+        // Fall back to searching by address/coordinate (location map is source of truth)
         if let tripStore = tripStore,
            let nickname = tripStore.findLocationNickname(coordinate: endLocation.coordinate, address: endLocation.address) {
             return nickname
         }
         
-        // Legacy: trip's stored nickname
-        if let nickname = endLocation.nickname, !nickname.isEmpty {
-            return nickname
-        }
-        
-        // Finally fall back to address or coordinates
+        // Fall back to address or coordinates
+        // Note: Stored nickname is ignored - location map is the only source of truth
         return endLocation.address ?? "\(endLocation.latitude), \(endLocation.longitude)"
     }
 }

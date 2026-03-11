@@ -19,9 +19,9 @@ struct MainTabView: View {
                     Label("Trips", systemImage: "car")
                 }
             
-            PlacesView()
+            LocationNicknamesView()
                 .tabItem {
-                    Label("Places", systemImage: "building.2")
+                    Label("Locations", systemImage: "map")
                 }
             
             ReportsView()

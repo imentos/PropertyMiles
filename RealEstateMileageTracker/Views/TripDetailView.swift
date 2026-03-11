@@ -113,37 +113,54 @@ struct TripDetailView: View {
                     }
                     
                     // From location with nickname
-                    if let startAddr = trip.startLocation.address {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Label("From", systemImage: "location.circle")
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label("From", systemImage: "location.circle")
+                        
+                        if let startAddr = trip.startLocation.address {
                             Text(startAddr)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .padding(.leading, 28)
-                            
-                            HStack {
-                                Text("Nickname:")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .padding(.leading, 28)
-                                TextField("Optional", text: Binding(
-                                    get: { trip.startLocation.nickname ?? "" },
-                                    set: { trip.startLocation.nickname = $0.isEmpty ? nil : $0 }
-                                ))
+                        }
+                        
+                        HStack {
+                            Text("Nickname:")
                                 .font(.caption)
-                                .textFieldStyle(.roundedBorder)
-                            }
+                                .foregroundColor(.secondary)
+                                .padding(.leading, 28)
+                            TextField("Optional", text: Binding(
+                                get: {
+                                    // Show nickname from location map (any source: reference, search, or stored)
+                                    let displayName = trip.startLocationDisplayName(tripStore: tripStore)
+                                    // If it's an address or coordinates, return empty
+                                    if let addr = trip.startLocation.address, displayName == addr {
+                                        return ""
+                                    }
+                                    if displayName.contains(",") && displayName.contains(".") {
+                                        return "" // Coordinates
+                                    }
+                                    return displayName
+                                },
+                                set: { newValue in
+                                    trip.startLocation.nickname = newValue.isEmpty ? nil : newValue
+                                }
+                            ))
+                            .font(.caption)
+                            .textFieldStyle(.roundedBorder)
                         }
                     }
                     
                     // To location with nickname
-                    if let endAddr = trip.endLocation?.address {
+                    if trip.endLocation != nil {
                         VStack(alignment: .leading, spacing: 4) {
                             Label("To", systemImage: "location.circle.fill")
-                            Text(endAddr)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.leading, 28)
+                            
+                            if let endAddr = trip.endLocation?.address {
+                                Text(endAddr)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.leading, 28)
+                            }
                             
                             HStack {
                                 Text("Nickname:")
@@ -151,7 +168,20 @@ struct TripDetailView: View {
                                     .foregroundColor(.secondary)
                                     .padding(.leading, 28)
                                 TextField("Optional", text: Binding(
-                                    get: { trip.endLocation?.nickname ?? "" },
+                                    get: {
+                                        // Show nickname from location map (any source: reference, search, or stored)
+                                        if let displayName = trip.endLocationDisplayName(tripStore: tripStore) {
+                                            // If it's an address or coordinates, return empty
+                                            if let addr = trip.endLocation?.address, displayName == addr {
+                                                return ""
+                                            }
+                                            if displayName.contains(",") && displayName.contains(".") {
+                                                return "" // Coordinates
+                                            }
+                                            return displayName
+                                        }
+                                        return ""
+                                    },
                                     set: { newValue in
                                         trip.endLocation?.nickname = newValue.isEmpty ? nil : newValue
                                     }

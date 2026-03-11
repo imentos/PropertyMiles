@@ -141,24 +141,15 @@ class TripManager: NSObject, ObservableObject {
         
         print("🛑 Trip ended. Distance: \(trip.distance) miles")
         
-        // Check for nearby place at start location and auto-assign nickname
-        if let nearbyStartPlace = tripStore?.findNearbyPlace(coordinate: trip.startLocation.coordinate) {
-            trip.startLocation.nickname = nearbyStartPlace.nickname
-            print("🏠 Auto-assigned from nickname (place): \(nearbyStartPlace.displayName)")
-        } else if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: nil) {
-            // If no nearby place, check location nicknames map
+        // Check for nearby location at start and auto-assign nickname
+        if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: nil) {
             trip.startLocation.locationNicknameId = nearbyEntry.id
             trip.startLocation.nickname = nearbyEntry.nickname  // Keep for backward compat
             print("🏠 Auto-assigned from nickname (location map): \(nearbyEntry.nickname)")
         }
         
-        // Check for nearby place at end location and auto-assign nickname (and legacy place)
-        if let nearbyPlace = tripStore?.findNearbyPlace(coordinate: lastLoc.coordinate) {
-            trip.place = nearbyPlace
-            trip.endLocation?.nickname = nearbyPlace.nickname
-            print("🏠 Auto-assigned to nickname (place): \(nearbyPlace.displayName)")
-        } else if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: lastLoc.coordinate, address: nil) {
-            // If no nearby place, check location nicknames map
+        // Check for nearby location at end and auto-assign nickname
+        if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: lastLoc.coordinate, address: nil) {
             trip.endLocation?.locationNicknameId = nearbyEntry.id
             trip.endLocation?.nickname = nearbyEntry.nickname  // Keep for backward compat
             print("🏠 Auto-assigned to nickname (location map): \(nearbyEntry.nickname)")

@@ -171,7 +171,23 @@ class TripStore: ObservableObject {
     func setLocationNickname(coordinate: CLLocationCoordinate2D, address: String?, nickname: String) -> UUID {
         let locationData = LocationData(coordinate: coordinate, address: address, nickname: nickname)
         
-        // Check if we already have a nickname for this location
+        // First check for exact address match (if both have addresses)
+        if let targetAddr = address,
+           let index = locationNicknames.firstIndex(where: { location in
+               guard let locAddr = location.coordinate.address else { return false }
+               return targetAddr == locAddr
+           }) {
+            // Update existing entry with exact address match
+            locationNicknames[index].nickname = nickname
+            locationNicknames[index].lastUsed = Date()
+            // Update coordinate to latest (GPS might vary slightly)
+            locationNicknames[index].coordinate = locationData
+            saveLocationNicknames()
+            print("📝 Updated nickname '\(nickname)' for exact address match (ID: \(locationNicknames[index].id))")
+            return locationNicknames[index].id
+        }
+        
+        // Otherwise check if we already have a nickname for this location by proximity
         if let index = locationNicknames.firstIndex(where: { location in
             let loc1 = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             let loc2 = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -181,12 +197,14 @@ class TripStore: ObservableObject {
             locationNicknames[index].nickname = nickname
             locationNicknames[index].lastUsed = Date()
             saveLocationNicknames()
+            print("📝 Updated nickname '\(nickname)' for nearby location (ID: \(locationNicknames[index].id))")
             return locationNicknames[index].id
         } else {
             // Add new
             let newLocation = LocationNickname(coordinate: locationData, nickname: nickname)
             locationNicknames.insert(newLocation, at: 0)
             saveLocationNicknames()
+            print("📝 Added new nickname '\(nickname)' (ID: \(newLocation.id))")
             return newLocation.id
         }
     }
@@ -237,7 +255,6 @@ class TripStore: ObservableObject {
             // Check if addresses match exactly (if both have addresses)
             if let targetAddr = address, let locAddr = locationNickname.coordinate.address,
                targetAddr == locAddr {
-                print("🎯 Found exact address match: '\(locationNickname.nickname)'")
                 return locationNickname.nickname
             }
             
@@ -246,10 +263,6 @@ class TripStore: ObservableObject {
                 closestDistance = distance
                 closestNickname = locationNickname.nickname
             }
-        }
-        
-        if let nickname = closestNickname {
-            print("🎯 Found nearby location nickname: '\(nickname)' at \(String(format: "%.0f", closestDistance))m away")
         }
         
         return closestNickname
