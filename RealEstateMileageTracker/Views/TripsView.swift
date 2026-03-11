@@ -202,7 +202,7 @@ struct TripRow: View {
                                 .foregroundColor(.secondary)
                             Text(purposeName)
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.primary)
                         }
                     }
                     
