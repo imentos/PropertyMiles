@@ -144,14 +144,22 @@ class TripManager: NSObject, ObservableObject {
         // Check for nearby place at start location and auto-assign nickname
         if let nearbyStartPlace = tripStore?.findNearbyPlace(coordinate: trip.startLocation.coordinate) {
             trip.startLocation.nickname = nearbyStartPlace.nickname
-            print("🏠 Auto-assigned from nickname: \(nearbyStartPlace.displayName)")
+            print("🏠 Auto-assigned from nickname (place): \(nearbyStartPlace.displayName)")
+        } else if let nearbyNickname = tripStore?.findNearbyTripNickname(coordinate: trip.startLocation.coordinate) {
+            // If no nearby place, check for nearby trips with nicknames
+            trip.startLocation.nickname = nearbyNickname
+            print("🏠 Auto-assigned from nickname (trip): \(nearbyNickname)")
         }
         
         // Check for nearby place at end location and auto-assign nickname (and legacy place)
         if let nearbyPlace = tripStore?.findNearbyPlace(coordinate: lastLoc.coordinate) {
             trip.place = nearbyPlace
             trip.endLocation?.nickname = nearbyPlace.nickname
-            print("🏠 Auto-assigned to nickname: \(nearbyPlace.displayName)")
+            print("🏠 Auto-assigned to nickname (place): \(nearbyPlace.displayName)")
+        } else if let nearbyNickname = tripStore?.findNearbyTripNickname(coordinate: lastLoc.coordinate) {
+            // If no nearby place, check for nearby trips with nicknames
+            trip.endLocation?.nickname = nearbyNickname
+            print("🏠 Auto-assigned to nickname (trip): \(nearbyNickname)")
         }
         
         // Geocode end location and then save trip

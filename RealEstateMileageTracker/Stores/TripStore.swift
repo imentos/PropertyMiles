@@ -125,6 +125,45 @@ class TripStore: ObservableObject {
         return nil
     }
     
+    // Find trip with nickname near a location (within 200 meters)
+    func findNearbyTripNickname(coordinate: CLLocationCoordinate2D, within meters: Double = 200) -> String? {
+        let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        var closestNickname: String?
+        var closestDistance: Double = meters
+        
+        // Check start locations
+        for trip in trips {
+            if let nickname = trip.startLocation.nickname, !nickname.isEmpty {
+                let startCoordinate = trip.startLocation.coordinate
+                let tripLocation = CLLocation(latitude: startCoordinate.latitude, longitude: startCoordinate.longitude)
+                let distance = targetLocation.distance(from: tripLocation)
+                
+                if distance <= closestDistance {
+                    closestDistance = distance
+                    closestNickname = nickname
+                }
+            }
+            
+            // Check end locations
+            if let endLocation = trip.endLocation, let nickname = endLocation.nickname, !nickname.isEmpty {
+                let endCoordinate = endLocation.coordinate
+                let tripLocation = CLLocation(latitude: endCoordinate.latitude, longitude: endCoordinate.longitude)
+                let distance = targetLocation.distance(from: tripLocation)
+                
+                if distance <= closestDistance {
+                    closestDistance = distance
+                    closestNickname = nickname
+                }
+            }
+        }
+        
+        if let nickname = closestNickname {
+            print("🎯 Found nearby trip nickname: '\(nickname)' at \(String(format: "%.0f", closestDistance))m away")
+        }
+        
+        return closestNickname
+    }
+    
     // MARK: - Vehicles
     func loadVehicles() {
         guard let data = UserDefaults.standard.data(forKey: vehiclesKey),
