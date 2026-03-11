@@ -222,8 +222,8 @@ class TripStore: ObservableObject {
             let miles = String(format: "%.2f", trip.distance)
             let purpose = trip.purposeName ?? ""
             let place = trip.place?.displayName ?? ""
-            let fromPlace = trip.fromPlace?.displayName ?? ""
-            let toPlace = trip.toPlace?.displayName ?? ""
+            let fromPlace = trip.fromPlace?.address ?? ""
+            let toPlace = trip.toPlace?.address ?? ""
             let vehicle = trip.vehicle?.displayName ?? ""
             let amount = String(format: "%.2f", trip.mileageAmount)
             

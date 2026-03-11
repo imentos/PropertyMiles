@@ -124,7 +124,7 @@ struct TripDetailView: View {
                                     showingFromPlacePicker = true
                                 } label: {
                                     if let fromPlace = trip.fromPlace {
-                                        Text(fromPlace.displayName)
+                                        Text(fromPlace.address)
                                             .font(.caption)
                                             .foregroundColor(.blue)
                                     } else {
@@ -151,7 +151,7 @@ struct TripDetailView: View {
                                     showingToPlacePicker = true
                                 } label: {
                                     if let toPlace = trip.toPlace {
-                                        Text(toPlace.displayName)
+                                        Text(toPlace.address)
                                             .font(.caption)
                                             .foregroundColor(.blue)
                                     } else {
