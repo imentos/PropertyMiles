@@ -145,10 +145,11 @@ class TripManager: NSObject, ObservableObject {
         if let nearbyStartPlace = tripStore?.findNearbyPlace(coordinate: trip.startLocation.coordinate) {
             trip.startLocation.nickname = nearbyStartPlace.nickname
             print("🏠 Auto-assigned from nickname (place): \(nearbyStartPlace.displayName)")
-        } else if let nearbyNickname = tripStore?.findLocationNickname(coordinate: trip.startLocation.coordinate, address: nil) {
+        } else if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: nil) {
             // If no nearby place, check location nicknames map
-            trip.startLocation.nickname = nearbyNickname
-            print("🏠 Auto-assigned from nickname (location map): \(nearbyNickname)")
+            trip.startLocation.locationNicknameId = nearbyEntry.id
+            trip.startLocation.nickname = nearbyEntry.nickname  // Keep for backward compat
+            print("🏠 Auto-assigned from nickname (location map): \(nearbyEntry.nickname)")
         }
         
         // Check for nearby place at end location and auto-assign nickname (and legacy place)
@@ -156,10 +157,11 @@ class TripManager: NSObject, ObservableObject {
             trip.place = nearbyPlace
             trip.endLocation?.nickname = nearbyPlace.nickname
             print("🏠 Auto-assigned to nickname (place): \(nearbyPlace.displayName)")
-        } else if let nearbyNickname = tripStore?.findLocationNickname(coordinate: lastLoc.coordinate, address: nil) {
+        } else if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: lastLoc.coordinate, address: nil) {
             // If no nearby place, check location nicknames map
-            trip.endLocation?.nickname = nearbyNickname
-            print("🏠 Auto-assigned to nickname (location map): \(nearbyNickname)")
+            trip.endLocation?.locationNicknameId = nearbyEntry.id
+            trip.endLocation?.nickname = nearbyEntry.nickname  // Keep for backward compat
+            print("🏠 Auto-assigned to nickname (location map): \(nearbyEntry.nickname)")
         }
         
         // Geocode end location and then save trip
@@ -170,14 +172,16 @@ class TripManager: NSObject, ObservableObject {
             trip.endLocation?.address = address
             
             // Re-check nickname with actual address (might find exact address match)
-            if trip.endLocation?.nickname == nil, let address = address {
-                if let addressNickname = self.tripStore?.findLocationNickname(coordinate: lastLoc.coordinate, address: address) {
-                    trip.endLocation?.nickname = addressNickname
-                    print("🏠 Auto-assigned to nickname with address: \(addressNickname)")
+            if trip.endLocation?.locationNicknameId == nil, let address = address {
+                if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: lastLoc.coordinate, address: address) {
+                    trip.endLocation?.locationNicknameId = entry.id
+                    trip.endLocation?.nickname = entry.nickname
+                    print("🏠 Auto-assigned to nickname with address: \(entry.nickname)")
                 }
-            } else if let nickname = trip.endLocation?.nickname, let address = address {
-                // Save auto-assigned nickname to location map for future reuse
-                self.tripStore?.setLocationNickname(coordinate: lastLoc.coordinate, address: address, nickname: nickname)
+            } else if let nickname = trip.endLocation?.nickname, let address = address, trip.endLocation?.locationNicknameId != nil {
+                // Already has nickname reference - ensure it's in the map
+                let nicknameId = self.tripStore?.setLocationNickname(coordinate: lastLoc.coordinate, address: address, nickname: nickname)
+                trip.endLocation?.locationNicknameId = nicknameId
             }
             
             // Also ensure we have the start address from currentTrip
@@ -185,14 +189,16 @@ class TripManager: NSObject, ObservableObject {
                 trip.startLocation.address = currentTripStartAddr
                 
                 // Re-check start nickname with actual address too
-                if trip.startLocation.nickname == nil {
-                    if let startNickname = self.tripStore?.findLocationNickname(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr) {
-                        trip.startLocation.nickname = startNickname
-                        print("🏠 Auto-assigned from nickname with address: \(startNickname)")
+                if trip.startLocation.locationNicknameId == nil {
+                    if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr) {
+                        trip.startLocation.locationNicknameId = entry.id
+                        trip.startLocation.nickname = entry.nickname
+                        print("🏠 Auto-assigned from nickname with address: \(entry.nickname)")
                     }
                 } else if let nickname = trip.startLocation.nickname {
-                    // Save auto-assigned nickname to location map for future reuse
-                    self.tripStore?.setLocationNickname(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr, nickname: nickname)
+                    // Already has nickname reference - ensure it's in the map
+                    let nicknameId = self.tripStore?.setLocationNickname(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr, nickname: nickname)
+                    trip.startLocation.locationNicknameId = nicknameId
                 }
             }
             

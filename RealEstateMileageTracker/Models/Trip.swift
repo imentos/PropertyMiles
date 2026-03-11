@@ -126,39 +126,53 @@ struct Trip: Identifiable, Codable {
         return "tag"
     }
     
-    // Get display name for start location (with fallback to location map)
+    // Get display name for start location (location map is source of truth)
     func startLocationDisplayName(tripStore: TripStore?) -> String {
-        // If trip has nickname, use it
-        if let nickname = startLocation.nickname, !nickname.isEmpty {
-            return nickname
+        // First check if we have a reference to location map
+        if let locationNicknameId = startLocation.locationNicknameId,
+           let tripStore = tripStore,
+           let locationNickname = tripStore.locationNicknames.first(where: { $0.id == locationNicknameId }) {
+            return locationNickname.nickname
         }
         
-        // Otherwise look up from location map
+        // Fall back to searching by address/coordinate
         if let tripStore = tripStore,
            let nickname = tripStore.findLocationNickname(coordinate: startLocation.coordinate, address: startLocation.address) {
             return nickname
         }
         
-        // Fall back to address or coordinates
-        return startLocation.address ?? "\(startLocation.latitude), \(startLocation.longitude)"
-    }
-    
-    // Get display name for end location (with fallback to location map)
-    func endLocationDisplayName(tripStore: TripStore?) -> String? {
-        guard let endLocation = endLocation else { return nil }
-        
-        // If trip has nickname, use it
-        if let nickname = endLocation.nickname, !nickname.isEmpty {
+        // Legacy: trip's stored nickname
+        if let nickname = startLocation.nickname, !nickname.isEmpty {
             return nickname
         }
         
-        // Otherwise look up from location map
+        // Finally fall back to address or coordinates
+        return startLocation.address ?? "\(startLocation.latitude), \(startLocation.longitude)"
+    }
+    
+    // Get display name for end location (location map is source of truth)
+    func endLocationDisplayName(tripStore: TripStore?) -> String? {
+        guard let endLocation = endLocation else { return nil }
+        
+        // First check if we have a reference to location map
+        if let locationNicknameId = endLocation.locationNicknameId,
+           let tripStore = tripStore,
+           let locationNickname = tripStore.locationNicknames.first(where: { $0.id == locationNicknameId }) {
+            return locationNickname.nickname
+        }
+        
+        // Fall back to searching by address/coordinate
         if let tripStore = tripStore,
            let nickname = tripStore.findLocationNickname(coordinate: endLocation.coordinate, address: endLocation.address) {
             return nickname
         }
         
-        // Fall back to address or coordinates
+        // Legacy: trip's stored nickname
+        if let nickname = endLocation.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        
+        // Finally fall back to address or coordinates
         return endLocation.address ?? "\(endLocation.latitude), \(endLocation.longitude)"
     }
 }
@@ -167,19 +181,22 @@ struct LocationData: Codable {
     var latitude: Double
     var longitude: Double
     var address: String?
-    var nickname: String?
+    var nickname: String?  // Deprecated: kept for backward compatibility, use locationNicknameId instead
+    var locationNicknameId: UUID?  // Reference to LocationNickname entry
     
-    init(coordinate: CLLocationCoordinate2D, address: String? = nil, nickname: String? = nil) {
+    init(coordinate: CLLocationCoordinate2D, address: String? = nil, nickname: String? = nil, locationNicknameId: UUID? = nil) {
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
         self.address = address
         self.nickname = nickname
+        self.locationNicknameId = locationNicknameId
     }
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
+    // Display name - should look up from location map using locationNicknameId
     var displayName: String {
         nickname ?? address ?? "\(latitude), \(longitude)"
     }
