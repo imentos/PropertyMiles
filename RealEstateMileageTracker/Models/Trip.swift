@@ -125,6 +125,42 @@ struct Trip: Identifiable, Codable {
         // Custom purpose default icon
         return "tag"
     }
+    
+    // Get display name for start location (with fallback to location map)
+    func startLocationDisplayName(tripStore: TripStore?) -> String {
+        // If trip has nickname, use it
+        if let nickname = startLocation.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        
+        // Otherwise look up from location map
+        if let tripStore = tripStore,
+           let nickname = tripStore.findLocationNickname(coordinate: startLocation.coordinate, address: startLocation.address) {
+            return nickname
+        }
+        
+        // Fall back to address or coordinates
+        return startLocation.address ?? "\(startLocation.latitude), \(startLocation.longitude)"
+    }
+    
+    // Get display name for end location (with fallback to location map)
+    func endLocationDisplayName(tripStore: TripStore?) -> String? {
+        guard let endLocation = endLocation else { return nil }
+        
+        // If trip has nickname, use it
+        if let nickname = endLocation.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        
+        // Otherwise look up from location map
+        if let tripStore = tripStore,
+           let nickname = tripStore.findLocationNickname(coordinate: endLocation.coordinate, address: endLocation.address) {
+            return nickname
+        }
+        
+        // Fall back to address or coordinates
+        return endLocation.address ?? "\(endLocation.latitude), \(endLocation.longitude)"
+    }
 }
 
 struct LocationData: Codable {

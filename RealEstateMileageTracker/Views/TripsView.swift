@@ -36,7 +36,7 @@ struct TripsView: View {
                 VStack(spacing: 0) {
                     // Current trip banner
                     if let currentTrip = tripManager.currentTrip {
-                        CurrentTripBanner(trip: currentTrip)
+                        CurrentTripBanner(trip: currentTrip, tripStore: tripStore)
                             .onTapGesture {
                                 selectedCurrentTrip = currentTrip
                             }
@@ -45,7 +45,7 @@ struct TripsView: View {
                     // Trip list
                     List {
                         ForEach(filteredTrips) { trip in
-                            TripRow(trip: trip)
+                            TripRow(trip: trip, tripStore: tripStore)
                                 .background(
                                     NavigationLink(destination: TripDetailView(trip: trip)) {
                                         EmptyView()
@@ -130,6 +130,7 @@ struct TripsView: View {
 
 struct CurrentTripBanner: View {
     let trip: Trip
+    let tripStore: TripStore
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -142,12 +143,10 @@ struct CurrentTripBanner: View {
                     Text("Trip in Progress")
                         .font(.headline)
                     
-                    if let startAddress = trip.startLocation.address {
-                        Text(startAddress)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    }
+                    Text(trip.startLocationDisplayName(tripStore: tripStore))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
                 }
                 
                 Spacer()
@@ -182,6 +181,7 @@ struct CurrentTripBanner: View {
 
 struct TripRow: View {
     let trip: Trip
+    let tripStore: TripStore
     
     var body: some View {
         VStack(spacing: 12) {
@@ -206,28 +206,22 @@ struct TripRow: View {
                     }
                     
                     // Start Time and Address
-                    if let startAddr = trip.startLocation.address {
-                        HStack(spacing: 4) {
-                            Text(formatTime(trip.startTime))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Text("-")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            Text(shortAddress(startAddr))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .lineLimit(1)
-                        }
-                    } else {
+                    HStack(spacing: 4) {
                         Text(formatTime(trip.startTime))
                             .font(.caption)
                             .foregroundColor(.secondary)
+                        Text("-")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(shortAddress(trip.startLocationDisplayName(tripStore: tripStore)))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
                     }
                     
                     // End Time and Address
                     if let endTime = trip.endTime,
-                       let endAddr = trip.endLocation?.address {
+                       let endDisplayName = trip.endLocationDisplayName(tripStore: tripStore) {
                         HStack(spacing: 4) {
                             Text(formatTime(endTime))
                                 .font(.caption)
@@ -235,7 +229,7 @@ struct TripRow: View {
                             Text("-")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            Text(shortAddress(endAddr))
+                            Text(shortAddress(endDisplayName))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .lineLimit(1)
