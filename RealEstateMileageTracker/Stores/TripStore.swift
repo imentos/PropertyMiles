@@ -14,6 +14,7 @@ class TripStore: ObservableObject {
     @Published var vehicles: [Vehicle] = []
     @Published var customPurposes: [String] = []
     @Published var locationNicknames: [LocationNickname] = []
+    @Published var locationNicknamesLastModified: Date = Date()
     
     private let tripsKey = "saved_trips"
     private let vehiclesKey = "saved_vehicles"
@@ -102,6 +103,7 @@ class TripStore: ObservableObject {
             locationNicknames[index].lastUsed = Date()
             // Update coordinate to latest (GPS might vary slightly)
             locationNicknames[index].coordinate = locationData
+            locationNicknamesLastModified = Date()
             saveLocationNicknames()
             print("📝 Updated nickname '\(nickname)' for exact address match (ID: \(locationNicknames[index].id))")
             return locationNicknames[index].id
@@ -116,6 +118,7 @@ class TripStore: ObservableObject {
             // Update existing
             locationNicknames[index].nickname = nickname
             locationNicknames[index].lastUsed = Date()
+            locationNicknamesLastModified = Date()
             saveLocationNicknames()
             print("📝 Updated nickname '\(nickname)' for nearby location (ID: \(locationNicknames[index].id))")
             return locationNicknames[index].id
@@ -123,6 +126,7 @@ class TripStore: ObservableObject {
             // Add new
             let newLocation = LocationNickname(coordinate: locationData, nickname: nickname)
             locationNicknames.insert(newLocation, at: 0)
+            locationNicknamesLastModified = Date()
             saveLocationNicknames()
             print("📝 Added new nickname '\(nickname)' (ID: \(newLocation.id))")
             return newLocation.id

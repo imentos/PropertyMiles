@@ -46,7 +46,7 @@ struct TripsView: View {
                     List {
                         ForEach(filteredTrips) { trip in
                             TripRow(trip: trip, tripStore: tripStore)
-                                .id("\(trip.id)-\(tripStore.locationNicknames.count)-\(tripStore.locationNicknames.first?.lastUsed.timeIntervalSince1970 ?? 0)")
+                                .id("\(trip.id)-\(tripStore.locationNicknamesLastModified.timeIntervalSince1970)")
                                 .background(
                                     NavigationLink(destination: TripDetailView(trip: trip)) {
                                         EmptyView()

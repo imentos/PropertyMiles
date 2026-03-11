@@ -57,6 +57,7 @@ struct LocationNicknamesView: View {
             let location = sortedLocations[index]
             tripStore.locationNicknames.removeAll { $0.id == location.id }
         }
+        tripStore.locationNicknamesLastModified = Date()
         tripStore.saveLocationNicknames()
     }
 }
@@ -145,6 +146,7 @@ struct EditLocationNicknameView: View {
         if let index = tripStore.locationNicknames.firstIndex(where: { $0.id == location.id }) {
             tripStore.locationNicknames[index].nickname = nickname
             tripStore.locationNicknames[index].lastUsed = Date()
+            tripStore.locationNicknamesLastModified = Date()
             tripStore.saveLocationNicknames()
         }
         dismiss()
