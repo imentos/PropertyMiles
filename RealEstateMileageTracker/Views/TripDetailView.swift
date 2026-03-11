@@ -102,14 +102,15 @@ struct TripDetailView: View {
                             Spacer()
                             if let startAddr = trip.startLocation.address {
                                 Text(startAddr)
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.secondary)
                             }
                         }
                         
-                        TextField("Add nickname (optional)", text: $startNickname)
-                            .font(.caption)
-                            .textFieldStyle(.roundedBorder)
+                        HStack {
+                            Spacer()
+                            TextField("Add nickname (optional)", text: $startNickname)
+                                .textFieldStyle(.roundedBorder)
+                        }
                     }
                     
                     // To location with nickname
@@ -120,14 +121,15 @@ struct TripDetailView: View {
                                 Spacer()
                                 if let endAddr = trip.endLocation?.address {
                                     Text(endAddr)
-                                        .font(.subheadline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.secondary)
                                 }
                             }
                             
-                            TextField("Add nickname (optional)", text: $endNickname)
-                                .font(.caption)
-                                .textFieldStyle(.roundedBorder)
+                            HStack {
+                                Spacer()
+                                TextField("Add nickname (optional)", text: $endNickname)
+                                    .textFieldStyle(.roundedBorder)
+                            }
                         }
                     }
                 }
