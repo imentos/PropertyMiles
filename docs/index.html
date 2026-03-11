@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Miles - Automatic Mileage Tracker for Real Estate</title>
+    <meta name="description" content="Automatic mileage tracking for real estate professionals. Never miss a tax deduction. Track trips, tag properties, export IRS-compliant reports.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1d1d1f;
+            background-color: #fff;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 26px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #1d1d1f;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .feature-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .feature h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+        }
+        
+        .feature p {
+            font-size: 16px;
+            color: #424245;
+            line-height: 1.6;
+        }
+        
+        .highlight-section {
+            background: #f5f5f7;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .stat {
+            flex: 1;
+            min-width: 200px;
+            margin: 20px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            color: #86868b;
+        }
+        
+        .footer {
+            background: #1d1d1f;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            opacity: 0.8;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="app-icon" style="background: white; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; font-size: 60px;">
+            🚗
+        </div>
+        <h1>Property Miles</h1>
+        <p>Automatic Mileage Tracking for Real Estate Professionals</p>
+        <a href="#" class="cta-button">Download on the App Store</a>
+    </div>
+    
+    <div class="container">
+        <h2 class="section-title">Why Property Miles?</h2>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🚗</div>
+                <h3>Automatic Tracking</h3>
+                <p>No buttons to press. Detects trips automatically when you drive over 10 mph. Works in the background.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">📍</div>
+                <h3>Property Tagging</h3>
+                <p>Tag trips to specific properties or save frequent locations. Perfect for showings, open houses, and inspections.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">💰</div>
+                <h3>IRS-Compliant Reports</h3>
+                <p>Built-in IRS standard rate ($0.67/mile). One-tap CSV export for your accountant or tax filing.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Privacy First</h3>
+                <p>All data stays on your device. No accounts, no cloud sync, no data sharing. Your privacy is guaranteed.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🚙</div>
+                <h3>Multiple Vehicles</h3>
+                <p>Track multiple vehicles. Assign trips to specific cars, trucks, or bikes. Great for teams.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Smart Reports</h3>
+                <p>View monthly, quarterly, or yearly summaries. Filter by purpose. See exactly where your miles go.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="highlight-section">
+        <div class="container">
+            <h2 class="section-title">Maximize Your Tax Deductions</h2>
+            <p style="font-size: 18px; color: #424245; max-width: 700px; margin: 0 auto 40px;">
+                Real estate agents drive an average of 1,000-2,000 miles per month for business. 
+                That's $8,040-$16,080 in annual tax deductions at $0.67/mile. 
+                Don't leave money on the table.
+            </p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">$0.67</div>
+                    <div class="stat-label">per mile (IRS 2026)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">$670</div>
+                    <div class="stat-label">monthly deduction (1,000 mi)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">$8,040</div>
+                    <div class="stat-label">annual savings (1,000 mi/mo)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        
+        <div class="features">
+            <div class="feature">
+                <h3 style="color: #667eea;">1. Install & Grant Permission</h3>
+                <p>Download the app and allow "Always" location access. This enables automatic trip detection.</p>
+            </div>
+            
+            <div class="feature">
+                <h3 style="color: #667eea;">2. Drive Normally</h3>
+                <p>That's it! The app automatically detects trips when you drive. No need to open the app.</p>
+            </div>
+            
+            <div class="feature">
+                <h3 style="color: #667eea;">3. Review & Tag</h3>
+                <p>After trips are recorded, tap to add purpose, property, and notes. Takes seconds.</p>
+            </div>
+            
+            <div class="feature">
+                <h3 style="color: #667eea;">4. Export for Taxes</h3>
+                <p>At tax time (or anytime), export a complete CSV report with one tap. Done.</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="#" class="cta-button">Get Started Free</a>
+        </div>
+    </div>
+    
+    <div class="highlight-section">
+        <div class="container">
+            <h2 class="section-title">Perfect For</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 900px; margin: 0 auto;">
+                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="font-size: 40px; margin-bottom: 15px;">🏠</div>
+                    <h3 style="margin-bottom: 10px;">Real Estate Agents</h3>
+                    <p style="color: #424245;">Track showings, open houses, and property visits</p>
+                </div>
+                
+                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="font-size: 40px; margin-bottom: 15px;">🔧</div>
+                    <h3 style="margin-bottom: 10px;">Property Managers</h3>
+                    <p style="color: #424245;">Log trips to rental properties and maintenance calls</p>
+                </div>
+                
+                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="font-size: 40px; margin-bottom: 15px;">📸</div>
+                    <h3 style="margin-bottom: 10px;">Real Estate Photographers</h3>
+                    <p style="color: #424245;">Track travel to listing shoots</p>
+                </div>
+                
+                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
+                    <h3 style="margin-bottom: 10px;">Home Inspectors</h3>
+                    <p style="color: #424245;">Automatically log mileage between inspections</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; 2026 Property Miles. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="support.html">Support</a>
+            <a href="mailto:support.propertymiles@gmail.com">Contact</a>
+        </div>
+        <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+            Made with ❤️ for real estate professionals
+        </p>
+    </div>
+</body>
+</html>
