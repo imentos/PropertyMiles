@@ -103,13 +103,11 @@ struct TripDetailView: View {
                             Text(startAddr)
                                 .font(.subheadline)
                                 .foregroundColor(.primary)
-                                .padding(.leading, 28)
                         }
                         
                         TextField("Add nickname (optional)", text: $startNickname)
                             .font(.caption)
                             .textFieldStyle(.roundedBorder)
-                            .padding(.leading, 28)
                     }
                     
                     // To location with nickname
@@ -121,13 +119,11 @@ struct TripDetailView: View {
                                 Text(endAddr)
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
-                                    .padding(.leading, 28)
                             }
                             
                             TextField("Add nickname (optional)", text: $endNickname)
                                 .font(.caption)
                                 .textFieldStyle(.roundedBorder)
-                                .padding(.leading, 28)
                         }
                     }
                 }
