@@ -106,15 +106,10 @@ struct TripDetailView: View {
                                 .padding(.leading, 28)
                         }
                         
-                        HStack {
-                            Text("Nickname:")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.leading, 28)
-                            TextField("Optional", text: $startNickname)
+                        TextField("Add nickname (optional)", text: $startNickname)
                             .font(.caption)
                             .textFieldStyle(.roundedBorder)
-                        }
+                            .padding(.leading, 28)
                     }
                     
                     // To location with nickname
@@ -129,15 +124,10 @@ struct TripDetailView: View {
                                     .padding(.leading, 28)
                             }
                             
-                            HStack {
-                                Text("Nickname:")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .padding(.leading, 28)
-                                TextField("Optional", text: $endNickname)
+                            TextField("Add nickname (optional)", text: $endNickname)
                                 .font(.caption)
                                 .textFieldStyle(.roundedBorder)
-                            }
+                                .padding(.leading, 28)
                         }
                     }
                 }
