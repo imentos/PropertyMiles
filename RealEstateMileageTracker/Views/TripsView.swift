@@ -249,8 +249,8 @@ struct TripRow: View {
                         .font(.headline)
                     
                     Text(String(format: "$%.2f", trip.mileageAmount))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
                 }
             }
             
