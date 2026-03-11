@@ -100,11 +100,7 @@ struct TripDetailView: View {
                         HStack {
                             Label("From", systemImage: "location.circle")
                             Spacer()
-                        }
-                        
-                        if let startAddr = trip.startLocation.address {
-                            HStack {
-                                Spacer()
+                            if let startAddr = trip.startLocation.address {
                                 Text(startAddr)
                                     .font(.subheadline)
                                     .foregroundColor(.primary)
@@ -122,11 +118,7 @@ struct TripDetailView: View {
                             HStack {
                                 Label("To", systemImage: "location.circle.fill")
                                 Spacer()
-                            }
-                            
-                            if let endAddr = trip.endLocation?.address {
-                                HStack {
-                                    Spacer()
+                                if let endAddr = trip.endLocation?.address {
                                     Text(endAddr)
                                         .font(.subheadline)
                                         .foregroundColor(.primary)
