@@ -16,7 +16,9 @@ struct Trip: Identifiable, Codable {
     var endLocation: LocationData?
     var distance: Double // in miles
     var purposeName: String? // Changed to support custom purposes
-    var place: Place?
+    var place: Place?  // Legacy field - kept for backward compatibility
+    var fromPlace: Place?  // Place for starting location
+    var toPlace: Place?    // Place for ending location
     var vehicle: Vehicle?
     var notes: String?
     
@@ -27,11 +29,13 @@ struct Trip: Identifiable, Codable {
         case purpose // old key for backward compatibility
         case property // old key for backward compatibility (now place)
         case place
+        case fromPlace, toPlace
     }
     
     init(id: UUID = UUID(), startTime: Date, endTime: Date? = nil, 
          startLocation: LocationData, endLocation: LocationData? = nil,
          distance: Double, purposeName: String? = nil, place: Place? = nil,
+         fromPlace: Place? = nil, toPlace: Place? = nil,
          vehicle: Vehicle? = nil, notes: String? = nil) {
         self.id = id
         self.startTime = startTime
@@ -41,6 +45,8 @@ struct Trip: Identifiable, Codable {
         self.distance = distance
         self.purposeName = purposeName
         self.place = place
+        self.fromPlace = fromPlace
+        self.toPlace = toPlace
         self.vehicle = vehicle
         self.notes = notes
     }
@@ -65,6 +71,10 @@ struct Trip: Identifiable, Codable {
             self.place = nil
         }
         
+        // Decode fromPlace and toPlace
+        fromPlace = try container.decodeIfPresent(Place.self, forKey: .fromPlace)
+        toPlace = try container.decodeIfPresent(Place.self, forKey: .toPlace)
+        
         // Try new format first
         if let purposeName = try container.decodeIfPresent(String.self, forKey: .purposeName) {
             self.purposeName = purposeName
@@ -87,6 +97,8 @@ struct Trip: Identifiable, Codable {
         try container.encode(distance, forKey: .distance)
         try container.encodeIfPresent(purposeName, forKey: .purposeName)
         try container.encodeIfPresent(place, forKey: .place)
+        try container.encodeIfPresent(fromPlace, forKey: .fromPlace)
+        try container.encodeIfPresent(toPlace, forKey: .toPlace)
         try container.encodeIfPresent(vehicle, forKey: .vehicle)
         try container.encodeIfPresent(notes, forKey: .notes)
     }

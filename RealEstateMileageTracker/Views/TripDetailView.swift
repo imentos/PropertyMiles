@@ -14,6 +14,8 @@ struct TripDetailView: View {
     
     @State private var trip: Trip
     @State private var showingPlacePicker = false
+    @State private var showingFromPlacePicker = false
+    @State private var showingToPlacePicker = false
     @State private var showingVehiclePicker = false
     
     init(trip: Trip) {
@@ -112,9 +114,26 @@ struct TripDetailView: View {
                             .foregroundColor(.secondary)
                     }
                     
+                    // From location with place picker
                     if let startAddr = trip.startLocation.address {
                         VStack(alignment: .leading, spacing: 4) {
-                            Label("From", systemImage: "location.circle")
+                            HStack {
+                                Label("From", systemImage: "location.circle")
+                                Spacer()
+                                Button {
+                                    showingFromPlacePicker = true
+                                } label: {
+                                    if let fromPlace = trip.fromPlace {
+                                        Text(fromPlace.displayName)
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                    } else {
+                                        Image(systemName: "link")
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                            }
                             Text(startAddr)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -122,9 +141,26 @@ struct TripDetailView: View {
                         }
                     }
                     
+                    // To location with place picker
                     if let endAddr = trip.endLocation?.address {
                         VStack(alignment: .leading, spacing: 4) {
-                            Label("To", systemImage: "location.circle.fill")
+                            HStack {
+                                Label("To", systemImage: "location.circle.fill")
+                                Spacer()
+                                Button {
+                                    showingToPlacePicker = true
+                                } label: {
+                                    if let toPlace = trip.toPlace {
+                                        Text(toPlace.displayName)
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                    } else {
+                                        Image(systemName: "link")
+                                            .font(.caption)
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                            }
                             Text(endAddr)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -172,6 +208,12 @@ struct TripDetailView: View {
             }
             .sheet(isPresented: $showingPlacePicker) {
                 PlacePickerView(selectedPlace: $trip.place)
+            }
+            .sheet(isPresented: $showingFromPlacePicker) {
+                PlacePickerView(selectedPlace: $trip.fromPlace)
+            }
+            .sheet(isPresented: $showingToPlacePicker) {
+                PlacePickerView(selectedPlace: $trip.toPlace)
             }
             .sheet(isPresented: $showingVehiclePicker) {
                 VehiclePickerView(selectedVehicle: $trip.vehicle)
