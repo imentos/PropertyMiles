@@ -193,17 +193,13 @@ struct TripRow: View {
                     .frame(width: 30)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(formatDate(trip.startTime))
-                            .font(.headline)
-                        
-                        if let purposeName = trip.purposeName {
-                            Text("•")
-                                .foregroundColor(.secondary)
-                            Text(purposeName)
-                                .font(.subheadline)
-                                .foregroundColor(.primary)
-                        }
+                    Text(formatDate(trip.startTime))
+                        .font(.headline)
+                    
+                    if let purposeName = trip.purposeName {
+                        Text(purposeName)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
                     }
                     
                     // Start Time and Address
