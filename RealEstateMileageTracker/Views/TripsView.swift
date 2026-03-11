@@ -196,12 +196,6 @@ struct TripRow: View {
                     Text(formatDate(trip.startTime))
                         .font(.headline)
                     
-                    if let purposeName = trip.purposeName {
-                        Text(purposeName)
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
-                    }
-                    
                     // Start Time and Address
                     HStack(spacing: 4) {
                         Text(formatTime(trip.startTime))
