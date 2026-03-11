@@ -14,8 +14,6 @@ struct TripDetailView: View {
     
     @State private var trip: Trip
     @State private var showingPlacePicker = false
-    @State private var showingFromPlacePicker = false
-    @State private var showingToPlacePicker = false
     @State private var showingVehiclePicker = false
     
     init(trip: Trip) {
@@ -114,57 +112,53 @@ struct TripDetailView: View {
                             .foregroundColor(.secondary)
                     }
                     
-                    // From location with place picker
+                    // From location with nickname
                     if let startAddr = trip.startLocation.address {
                         VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Label("From", systemImage: "location.circle")
-                                Spacer()
-                                Button {
-                                    showingFromPlacePicker = true
-                                } label: {
-                                    if let fromPlace = trip.fromPlace {
-                                        Text(fromPlace.address)
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
-                                    } else {
-                                        Image(systemName: "link")
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                            }
+                            Label("From", systemImage: "location.circle")
                             Text(startAddr)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .padding(.leading, 28)
+                            
+                            HStack {
+                                Text("Nickname:")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.leading, 28)
+                                TextField("Optional", text: Binding(
+                                    get: { trip.startLocation.nickname ?? "" },
+                                    set: { trip.startLocation.nickname = $0.isEmpty ? nil : $0 }
+                                ))
+                                .font(.caption)
+                                .textFieldStyle(.roundedBorder)
+                            }
                         }
                     }
                     
-                    // To location with place picker
+                    // To location with nickname
                     if let endAddr = trip.endLocation?.address {
                         VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Label("To", systemImage: "location.circle.fill")
-                                Spacer()
-                                Button {
-                                    showingToPlacePicker = true
-                                } label: {
-                                    if let toPlace = trip.toPlace {
-                                        Text(toPlace.address)
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
-                                    } else {
-                                        Image(systemName: "link")
-                                            .font(.caption)
-                                            .foregroundColor(.blue)
-                                    }
-                                }
-                            }
+                            Label("To", systemImage: "location.circle.fill")
                             Text(endAddr)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .padding(.leading, 28)
+                            
+                            HStack {
+                                Text("Nickname:")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.leading, 28)
+                                TextField("Optional", text: Binding(
+                                    get: { trip.endLocation?.nickname ?? "" },
+                                    set: { newValue in
+                                        trip.endLocation?.nickname = newValue.isEmpty ? nil : newValue
+                                    }
+                                ))
+                                .font(.caption)
+                                .textFieldStyle(.roundedBorder)
+                            }
                         }
                     }
                 }
@@ -208,12 +202,6 @@ struct TripDetailView: View {
             }
             .sheet(isPresented: $showingPlacePicker) {
                 PlacePickerView(selectedPlace: $trip.place)
-            }
-            .sheet(isPresented: $showingFromPlacePicker) {
-                PlacePickerView(selectedPlace: $trip.fromPlace)
-            }
-            .sheet(isPresented: $showingToPlacePicker) {
-                PlacePickerView(selectedPlace: $trip.toPlace)
             }
             .sheet(isPresented: $showingVehiclePicker) {
                 VehiclePickerView(selectedVehicle: $trip.vehicle)

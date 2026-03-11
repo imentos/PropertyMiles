@@ -141,17 +141,17 @@ class TripManager: NSObject, ObservableObject {
         
         print("🛑 Trip ended. Distance: \(trip.distance) miles")
         
-        // Check for nearby place at start location and auto-assign as fromPlace
+        // Check for nearby place at start location and auto-assign nickname
         if let nearbyStartPlace = tripStore?.findNearbyPlace(coordinate: trip.startLocation.coordinate) {
-            trip.fromPlace = nearbyStartPlace
-            print("🏠 Auto-assigned from place: \(nearbyStartPlace.displayName)")
+            trip.startLocation.nickname = nearbyStartPlace.nickname
+            print("🏠 Auto-assigned from nickname: \(nearbyStartPlace.displayName)")
         }
         
-        // Check for nearby place at end location and auto-assign as toPlace (and legacy place)
+        // Check for nearby place at end location and auto-assign nickname (and legacy place)
         if let nearbyPlace = tripStore?.findNearbyPlace(coordinate: lastLoc.coordinate) {
             trip.place = nearbyPlace
-            trip.toPlace = nearbyPlace
-            print("🏠 Auto-assigned to place: \(nearbyPlace.displayName)")
+            trip.endLocation?.nickname = nearbyPlace.nickname
+            print("🏠 Auto-assigned to nickname: \(nearbyPlace.displayName)")
         }
         
         // Geocode end location and then save trip

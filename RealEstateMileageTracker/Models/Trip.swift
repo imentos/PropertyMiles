@@ -17,8 +17,6 @@ struct Trip: Identifiable, Codable {
     var distance: Double // in miles
     var purposeName: String? // Changed to support custom purposes
     var place: Place?  // Legacy field - kept for backward compatibility
-    var fromPlace: Place?  // Place for starting location
-    var toPlace: Place?    // Place for ending location
     var vehicle: Vehicle?
     var notes: String?
     
@@ -29,13 +27,12 @@ struct Trip: Identifiable, Codable {
         case purpose // old key for backward compatibility
         case property // old key for backward compatibility (now place)
         case place
-        case fromPlace, toPlace
+        case fromPlace, toPlace // old keys for backward compatibility
     }
     
     init(id: UUID = UUID(), startTime: Date, endTime: Date? = nil, 
          startLocation: LocationData, endLocation: LocationData? = nil,
          distance: Double, purposeName: String? = nil, place: Place? = nil,
-         fromPlace: Place? = nil, toPlace: Place? = nil,
          vehicle: Vehicle? = nil, notes: String? = nil) {
         self.id = id
         self.startTime = startTime
@@ -45,8 +42,6 @@ struct Trip: Identifiable, Codable {
         self.distance = distance
         self.purposeName = purposeName
         self.place = place
-        self.fromPlace = fromPlace
-        self.toPlace = toPlace
         self.vehicle = vehicle
         self.notes = notes
     }
@@ -56,11 +51,22 @@ struct Trip: Identifiable, Codable {
         id = try container.decode(UUID.self, forKey: .id)
         startTime = try container.decode(Date.self, forKey: .startTime)
         endTime = try container.decodeIfPresent(Date.self, forKey: .endTime)
-        startLocation = try container.decode(LocationData.self, forKey: .startLocation)
-        endLocation = try container.decodeIfPresent(LocationData.self, forKey: .endLocation)
+        var decodedStartLocation = try container.decode(LocationData.self, forKey: .startLocation)
+        var decodedEndLocation = try container.decodeIfPresent(LocationData.self, forKey: .endLocation)
         distance = try container.decode(Double.self, forKey: .distance)
         vehicle = try container.decodeIfPresent(Vehicle.self, forKey: .vehicle)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
+        
+        // Migrate old fromPlace/toPlace to LocationData.nickname
+        if decodedStartLocation.nickname == nil, let fromPlace = try? container.decodeIfPresent(Place.self, forKey: .fromPlace) {
+            decodedStartLocation.nickname = fromPlace.nickname
+        }
+        if decodedEndLocation?.nickname == nil, let toPlace = try? container.decodeIfPresent(Place.self, forKey: .toPlace) {
+            decodedEndLocation?.nickname = toPlace.nickname
+        }
+        
+        startLocation = decodedStartLocation
+        endLocation = decodedEndLocation
         
         // Try new format first, then fall back to old 'property' key
         if let place = try container.decodeIfPresent(Place.self, forKey: .place) {
@@ -70,10 +76,6 @@ struct Trip: Identifiable, Codable {
         } else {
             self.place = nil
         }
-        
-        // Decode fromPlace and toPlace
-        fromPlace = try container.decodeIfPresent(Place.self, forKey: .fromPlace)
-        toPlace = try container.decodeIfPresent(Place.self, forKey: .toPlace)
         
         // Try new format first
         if let purposeName = try container.decodeIfPresent(String.self, forKey: .purposeName) {
@@ -97,8 +99,6 @@ struct Trip: Identifiable, Codable {
         try container.encode(distance, forKey: .distance)
         try container.encodeIfPresent(purposeName, forKey: .purposeName)
         try container.encodeIfPresent(place, forKey: .place)
-        try container.encodeIfPresent(fromPlace, forKey: .fromPlace)
-        try container.encodeIfPresent(toPlace, forKey: .toPlace)
         try container.encodeIfPresent(vehicle, forKey: .vehicle)
         try container.encodeIfPresent(notes, forKey: .notes)
     }
@@ -131,15 +131,21 @@ struct LocationData: Codable {
     var latitude: Double
     var longitude: Double
     var address: String?
+    var nickname: String?
     
-    init(coordinate: CLLocationCoordinate2D, address: String? = nil) {
+    init(coordinate: CLLocationCoordinate2D, address: String? = nil, nickname: String? = nil) {
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
         self.address = address
+        self.nickname = nickname
     }
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    var displayName: String {
+        nickname ?? address ?? "\(latitude), \(longitude)"
     }
 }
 

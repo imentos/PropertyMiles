@@ -205,7 +205,7 @@ class TripStore: ObservableObject {
     }
     
     func generateCSV(for trips: [Trip]) -> String {
-        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Place,From Place,To Place,Vehicle,Amount\n"
+        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Place,From Nickname,To Nickname,Vehicle,Amount\n"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -222,12 +222,12 @@ class TripStore: ObservableObject {
             let miles = String(format: "%.2f", trip.distance)
             let purpose = trip.purposeName ?? ""
             let place = trip.place?.displayName ?? ""
-            let fromPlace = trip.fromPlace?.address ?? ""
-            let toPlace = trip.toPlace?.address ?? ""
+            let fromNickname = trip.startLocation.nickname ?? ""
+            let toNickname = trip.endLocation?.nickname ?? ""
             let vehicle = trip.vehicle?.displayName ?? ""
             let amount = String(format: "%.2f", trip.mileageAmount)
             
-            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(place)\",\"\(fromPlace)\",\"\(toPlace)\",\"\(vehicle)\",\(amount)\n"
+            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(place)\",\"\(fromNickname)\",\"\(toNickname)\",\"\(vehicle)\",\(amount)\n"
         }
         
         return csv
