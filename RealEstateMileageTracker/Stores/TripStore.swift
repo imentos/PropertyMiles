@@ -11,13 +11,11 @@ import CoreLocation
 
 class TripStore: ObservableObject {
     @Published var trips: [Trip] = []
-    @Published var places: [Place] = []
     @Published var vehicles: [Vehicle] = []
     @Published var customPurposes: [String] = []
     @Published var locationNicknames: [LocationNickname] = []
     
     private let tripsKey = "saved_trips"
-    private let placesKey = "saved_properties" // kept as 'properties' for backward compatibility
     private let vehiclesKey = "saved_vehicles"
     private let customPurposesKey = "custom_purposes"
     private let locationNicknamesKey = "location_nicknames"
@@ -26,13 +24,9 @@ class TripStore: ObservableObject {
     
     init() {
         loadTrips()
-        loadPlaces()
         loadVehicles()
         loadCustomPurposes()
         loadLocationNicknames()
-        
-        // Migrate old trips to populate location nicknames
-        migrateLocationNicknames()
         
         // Listen for completed trips
         NotificationCenter.default.publisher(for: .tripCompleted)
@@ -61,27 +55,7 @@ class TripStore: ObservableObject {
     
     func updateTrip(_ trip: Trip) {
         if let index = trips.firstIndex(where: { $0.id == trip.id }) {
-            let oldTrip = trips[index]
-            var updatedTrip = trip
-            
-            // Update location nicknames map when user manually adds/changes nicknames
-            if let newNickname = trip.startLocation.nickname, !newNickname.isEmpty,
-               newNickname != oldTrip.startLocation.nickname {
-                let nicknameId = setLocationNickname(coordinate: trip.startLocation.coordinate,
-                                                    address: trip.startLocation.address,
-                                                    nickname: newNickname)
-                updatedTrip.startLocation.locationNicknameId = nicknameId
-            }
-            
-            if let endLocation = trip.endLocation, let newNickname = endLocation.nickname, !newNickname.isEmpty,
-               newNickname != oldTrip.endLocation?.nickname {
-                let nicknameId = setLocationNickname(coordinate: endLocation.coordinate,
-                                                    address: endLocation.address,
-                                                    nickname: newNickname)
-                updatedTrip.endLocation?.locationNicknameId = nicknameId
-            }
-            
-            trips[index] = updatedTrip
+            trips[index] = trip
             saveTrips()
         }
     }
@@ -94,23 +68,6 @@ class TripStore: ObservableObject {
     private func saveTrips() {
         if let encoded = try? JSONEncoder().encode(trips) {
             UserDefaults.standard.set(encoded, forKey: tripsKey)
-        }
-    }
-    
-    // MARK: - Places (Deprecated - use LocationNicknames instead)
-    func loadPlaces() {
-        guard let data = UserDefaults.standard.data(forKey: placesKey),
-              let decoded = try? JSONDecoder().decode([Place].self, from: data) else {
-            places = []
-            return
-        }
-        places = decoded.sorted { $0.createdAt > $1.createdAt }
-    }
-    
-    private func savePlaces() {
-        // Deprecated: Places no longer actively used
-        if let encoded = try? JSONEncoder().encode(places) {
-            UserDefaults.standard.set(encoded, forKey: placesKey)
         }
     }
     
@@ -132,7 +89,7 @@ class TripStore: ObservableObject {
     
     // Add or update location nickname, returns the ID for reference
     func setLocationNickname(coordinate: CLLocationCoordinate2D, address: String?, nickname: String) -> UUID {
-        let locationData = LocationData(coordinate: coordinate, address: address, nickname: nickname)
+        let locationData = LocationData(coordinate: coordinate, address: address)
         
         // First check for exact address match (if both have addresses)
         if let targetAddr = address,
@@ -231,52 +188,6 @@ class TripStore: ObservableObject {
         return closestNickname
     }
     
-    // Migrate existing trips to populate location nicknames
-    private func migrateLocationNicknames() {
-        var hasChanges = false
-        
-        for trip in trips {
-            // Migrate start location nicknames
-            if let nickname = trip.startLocation.nickname, !nickname.isEmpty {
-                let coordinate = trip.startLocation.coordinate
-                let address = trip.startLocation.address
-                
-                // Check if this location isn't already in our map
-                let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-                let exists = locationNicknames.contains { location in
-                    let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-                    return targetLocation.distance(from: loc) <= 50
-                }
-                
-                if !exists {
-                    _ = setLocationNickname(coordinate: coordinate, address: address, nickname: nickname)
-                    hasChanges = true
-                }
-            }
-            
-            // Migrate end location nicknames
-            if let endLocation = trip.endLocation, let nickname = endLocation.nickname, !nickname.isEmpty {
-                let coordinate = endLocation.coordinate
-                let address = endLocation.address
-                
-                let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-                let exists = locationNicknames.contains { location in
-                    let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-                    return targetLocation.distance(from: loc) <= 50
-                }
-                
-                if !exists {
-                    _ = setLocationNickname(coordinate: coordinate, address: address, nickname: nickname)
-                    hasChanges = true
-                }
-            }
-        }
-        
-        if hasChanges {
-            print("✅ Migrated \(locationNicknames.count) location nicknames from existing trips")
-        }
-    }
-    
     // MARK: - Vehicles
     func loadVehicles() {
         guard let data = UserDefaults.standard.data(forKey: vehiclesKey),
@@ -357,7 +268,7 @@ class TripStore: ObservableObject {
     }
     
     func generateCSV(for trips: [Trip]) -> String {
-        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Place,From Nickname,To Nickname,Vehicle,Amount\n"
+        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,From Nickname,To Nickname,Vehicle,Amount\n"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -373,13 +284,12 @@ class TripStore: ObservableObject {
             let endAddr = trip.endLocation?.address ?? (trip.endLocation.map { "\($0.latitude),\($0.longitude)" } ?? "")
             let miles = String(format: "%.2f", trip.distance)
             let purpose = trip.purposeName ?? ""
-            let place = trip.place?.displayName ?? ""
-            let fromNickname = trip.startLocation.nickname ?? ""
-            let toNickname = trip.endLocation?.nickname ?? ""
+            let fromNickname = trip.startLocationDisplayName(tripStore: self)
+            let toNickname = trip.endLocationDisplayName(tripStore: self) ?? ""
             let vehicle = trip.vehicle?.displayName ?? ""
             let amount = String(format: "%.2f", trip.mileageAmount)
             
-            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(place)\",\"\(fromNickname)\",\"\(toNickname)\",\"\(vehicle)\",\(amount)\n"
+            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(fromNickname)\",\"\(toNickname)\",\"\(vehicle)\",\(amount)\n"
         }
         
         return csv
@@ -423,7 +333,6 @@ class TripStore: ObservableObject {
                 ),
                 distance: distances[i % distances.count],
                 purposeName: purposes[i % purposes.count].rawValue,
-                place: places.first,
                 vehicle: vehicles.first,
                 notes: i == 0 ? "Sample trip for testing" : nil
             )

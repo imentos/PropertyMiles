@@ -123,7 +123,17 @@ struct TripDetailView: View {
                                     return displayName
                                 },
                                 set: { newValue in
-                                    trip.startLocation.nickname = newValue.isEmpty ? nil : newValue
+                                    // Update location map with new nickname
+                                    if !newValue.isEmpty {
+                                        let nicknameId = tripStore.setLocationNickname(
+                                            coordinate: trip.startLocation.coordinate,
+                                            address: trip.startLocation.address,
+                                            nickname: newValue
+                                        )
+                                        trip.startLocation.locationNicknameId = nicknameId
+                                    } else {
+                                        trip.startLocation.locationNicknameId = nil
+                                    }
                                 }
                             ))
                             .font(.caption)
@@ -164,7 +174,17 @@ struct TripDetailView: View {
                                         return ""
                                     },
                                     set: { newValue in
-                                        trip.endLocation?.nickname = newValue.isEmpty ? nil : newValue
+                                        // Update location map with new nickname
+                                        if !newValue.isEmpty, let endLocation = trip.endLocation {
+                                            let nicknameId = tripStore.setLocationNickname(
+                                                coordinate: endLocation.coordinate,
+                                                address: endLocation.address,
+                                                nickname: newValue
+                                            )
+                                            trip.endLocation?.locationNicknameId = nicknameId
+                                        } else {
+                                            trip.endLocation?.locationNicknameId = nil
+                                        }
                                     }
                                 ))
                                 .font(.caption)
@@ -286,7 +306,6 @@ struct MapPreview: View {
         ),
         distance: 12.5,
         purposeName: "Showing",
-        place: nil,
         vehicle: nil,
         notes: nil
     ))
