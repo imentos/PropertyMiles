@@ -106,13 +106,13 @@ struct TripDetailView: View {
                                     .foregroundColor(.secondary)
                             }
                         }
-                        
+                        Spacer()
                         HStack {
                             Text("Nickname")
                                 .foregroundColor(.secondary)
-                                .padding(.leading, 24)
+                                .padding(.leading, 36)
                             Spacer()
-                            TextField("Add nickname (optional)", text: $startNickname)
+                            TextField("", text: $startNickname)
                                 .textFieldStyle(.roundedBorder)
                                 .multilineTextAlignment(.trailing)
                         }
@@ -130,13 +130,13 @@ struct TripDetailView: View {
                                         .foregroundColor(.secondary)
                                 }
                             }
-                            
+                            Spacer()
                             HStack {
                                 Text("Nickname")
                                     .foregroundColor(.secondary)
-                                    .padding(.leading, 24)
+                                    .padding(.leading, 36)
                                 Spacer()
-                                TextField("Add nickname (optional)", text: $endNickname)
+                                TextField("", text: $endNickname)
                                     .textFieldStyle(.roundedBorder)
                                     .multilineTextAlignment(.trailing)
                             }
