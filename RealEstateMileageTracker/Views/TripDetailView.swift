@@ -101,8 +101,8 @@ struct TripDetailView: View {
                         
                         if let startAddr = trip.startLocation.address {
                             Text(startAddr)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
                                 .padding(.leading, 28)
                         }
                         
@@ -119,8 +119,8 @@ struct TripDetailView: View {
                             
                             if let endAddr = trip.endLocation?.address {
                                 Text(endAddr)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
                                     .padding(.leading, 28)
                             }
                             

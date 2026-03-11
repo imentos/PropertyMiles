@@ -215,8 +215,8 @@ struct TripRow: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text(shortAddress(trip.startLocationDisplayName(tripStore: tripStore)))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
                             .lineLimit(1)
                     }
                     
@@ -231,8 +231,8 @@ struct TripRow: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             Text(shortAddress(endDisplayName))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                                .foregroundColor(.primary)
                                 .lineLimit(1)
                         }
                     } else if let endTime = trip.endTime {
