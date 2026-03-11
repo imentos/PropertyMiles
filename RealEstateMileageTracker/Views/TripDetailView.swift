@@ -99,6 +99,7 @@ struct TripDetailView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             Label("From", systemImage: "location.circle")
+                                .foregroundColor(.secondary)
                             Spacer()
                         }
                         
@@ -121,6 +122,7 @@ struct TripDetailView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
                                 Label("To", systemImage: "location.circle.fill")
+                                    .foregroundColor(.secondary)
                                 Spacer()
                             }
                             
