@@ -1,6 +1,6 @@
 # Property Miles - App Store Submission Plan
 
-## 📱 App Information
+## App Information
 
 **App Name:** Property Miles  
 **Subtitle:** Mileage Tracker for Real Estate  
@@ -9,13 +9,13 @@
 
 ---
 
-## 🎯 ASO (App Store Optimization)
+## ASO (App Store Optimization)
 
 ### App Name Strategy
 **Property Miles** - Short, memorable, includes primary keyword "Miles"
 
 ### Subtitle (30 characters max)
-**Option 1:** `Mileage Tracker for Real Estate` (30 chars) ✅  
+**Option 1:** `Mileage Tracker for Real Estate` (30 chars) [RECOMMENDED]  
 **Option 2:** `Real Estate Mileage Logger` (27 chars)  
 **Option 3:** `Auto Track Agent Drives` (23 chars)
 
@@ -33,14 +33,14 @@ mileage,tracker,real estate,agent,tax,deduction,irs,property,driving,log,automat
 
 ### Promotional Text (170 characters max)
 ```
-🚗 Automatic trip detection for real estate professionals
-📊 IRS-compliant mileage logs at $0.67/mile
-📍 Tag trips to properties for easy tax reporting
+Automatic trip detection for real estate professionals
+IRS-compliant mileage logs at $0.67/mile
+Tag trips to properties for easy tax reporting
 ```
 
 ---
 
-## 📝 App Description
+## App Description
 
 ### Short Description (First 3 lines - critical for ASO)
 ```
@@ -51,68 +51,68 @@ Save time and maximize deductions with automatic trip detection, property taggin
 
 ### Full Description
 ```
-**AUTOMATIC MILEAGE TRACKING FOR REAL ESTATE AGENTS**
+AUTOMATIC MILEAGE TRACKING FOR REAL ESTATE AGENTS
 
 Property Miles is designed specifically for real estate agents, property managers, and real estate professionals who need accurate mileage logs for tax deductions.
 
-**KEY FEATURES:**
+KEY FEATURES:
 
-🚗 AUTOMATIC TRIP DETECTION
+AUTOMATIC TRIP DETECTION
 • Detects drives automatically when you exceed 10 mph
 • Works in the background - no need to remember to start tracking
 • Ends trips after 3 minutes stopped
 • Tracks both driving and cycling
 
-📍 PROPERTY & LOCATION TAGGING
+PROPERTY & LOCATION TAGGING
 • Tag trips to specific properties
 • Save frequent locations (office, staging warehouse, etc.)
 • Auto-assign trips to saved locations
 • Organize trips by purpose: showings, open houses, inspections
 
-💰 IRS-COMPLIANT REPORTING
+IRS-COMPLIANT REPORTING
 • Built-in IRS standard mileage rate ($0.67/mile for 2026)
 • Generate period reports (monthly, quarterly, yearly)
 • One-tap CSV export for tax filing
 • Detailed trip history with dates, times, and distances
 
-🚙 VEHICLE MANAGEMENT
+VEHICLE MANAGEMENT
 • Track multiple vehicles
 • Add vehicle details (make, model, year, VIN)
 • Assign trips to specific vehicles
 
-📊 SMART ANALYTICS
+SMART ANALYTICS
 • View total miles and tax deductions
 • Filter by date range
 • Breakdown by trip purpose
 • Track personal vs. business miles
 
-**PERFECT FOR:**
+PERFECT FOR:
 • Real estate agents tracking property showings
 • Property managers visiting rental units
 • Real estate photographers traveling to listings
 • Home inspectors visiting multiple properties
 • Anyone in real estate who drives for business
 
-**PRIVACY & SECURITY:**
+PRIVACY & SECURITY:
 • All data stored locally on your device
 • No account required
 • Location data never shared or sold
 • Export your data anytime
 
-**TAX DEDUCTION EXAMPLE:**
+TAX DEDUCTION EXAMPLE:
 Drive 1,000 miles per month for property visits = $670/month in tax deductions = $8,040/year saved!
 
 Download Property Miles today and start maximizing your mileage deductions.
 
-**BACKGROUND LOCATION USAGE:**
+BACKGROUND LOCATION USAGE:
 Property Miles uses location services in the background to automatically detect and track your trips. This allows the app to work seamlessly without needing to open it before each drive. You can disable automatic tracking anytime in Settings.
 
-**NOTE:** Continued use of GPS running in the background can dramatically decrease battery life. Property Miles is optimized for automotive navigation to minimize battery impact.
+NOTE: Continued use of GPS running in the background can dramatically decrease battery life. Property Miles is optimized for automotive navigation to minimize battery impact.
 ```
 
 ---
 
-## 📸 Screenshots Plan
+## Screenshots Plan
 
 ### iPhone (Required: 3-10 screenshots, 6.7" display - iPhone 15 Pro Max)
 
@@ -140,9 +140,6 @@ Property Miles uses location services in the background to automatically detect 
 - Export share sheet or CSV preview
 - Caption: "One-Tap Export for Your Accountant"
 
-### iPad (Optional but recommended)
-- Same 6 screenshots adapted for iPad layout
-
 ### Design Guidelines:
 - Use device frames
 - Add text overlays with key benefits
@@ -153,7 +150,7 @@ Property Miles uses location services in the background to automatically detect 
 
 ---
 
-## 🎨 App Icon Checklist
+## App Icon Checklist
 
 - [ ] 1024x1024 PNG (no transparency, no alpha channel)
 - [ ] Professional design
@@ -170,7 +167,7 @@ Property Miles uses location services in the background to automatically detect 
 
 ---
 
-## 📋 App Store Connect Checklist
+## App Store Connect Checklist
 
 ### App Information
 - [ ] App name: Property Miles
@@ -244,7 +241,7 @@ No sensitive or personal data beyond location coordinates is collected.
 
 ---
 
-## 🔒 Privacy Policy (Required)
+## Privacy Policy (Required)
 
 ### Create Privacy Policy Page
 
@@ -288,7 +285,7 @@ No sensitive or personal data beyond location coordinates is collected.
 
 ---
 
-## 📱 TestFlight Beta Testing (Optional but Recommended)
+## TestFlight Beta Testing (Optional but Recommended)
 
 ### Beta Testing Plan
 1. **Internal Testing** (1-2 days)
@@ -315,7 +312,7 @@ No sensitive or personal data beyond location coordinates is collected.
 
 ---
 
-## 🚀 Launch Strategy
+## Launch Strategy
 
 ### Pre-Launch (2 weeks before)
 - [ ] Prepare all screenshots
@@ -347,7 +344,7 @@ No sensitive or personal data beyond location coordinates is collected.
 
 ---
 
-## 🎯 Target Keywords to Rank For
+## Target Keywords to Rank For
 
 ### Primary Keywords (High Priority)
 1. mileage tracker
@@ -372,7 +369,7 @@ No sensitive or personal data beyond location coordinates is collected.
 
 ---
 
-## 💡 Future Premium Features Ideas (IAP)
+## Future Premium Features Ideas (IAP)
 
 Consider for v1.1 or v2.0:
 - Cloud sync across devices
@@ -392,13 +389,12 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## ✅ Pre-Submission Checklist
+## Pre-Submission Checklist
 
 ### Technical Requirements
 - [ ] Build compiles without errors
 - [ ] No crashes during testing
-- [ ] Tested on iOS 16+ devices
-- [ ] Tested on iPhone and iPad
+- [ ] Tested on iOS 16+ devices (iPhone only)
 - [ ] Location permission prompt has clear explanation
 - [ ] Background location justified in Info.plist
 - [ ] App works without internet (offline first)
@@ -407,7 +403,6 @@ Consider for v1.1 or v2.0:
 ### Content Requirements
 - [ ] App icon (1024x1024)
 - [ ] 6 iPhone screenshots (6.7" display)
-- [ ] Optional: 6 iPad screenshots
 - [ ] Optional: App preview video (15-30 seconds)
 - [ ] Privacy policy hosted and accessible
 - [ ] Support URL or email
@@ -437,7 +432,7 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## 📞 Support Plan
+## Support Plan
 
 ### Support Channels
 1. **In-App:** Settings → Help & Support (mailto link)
@@ -458,7 +453,7 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## 📊 Success Metrics
+## Success Metrics
 
 ### Week 1 Goals
 - 100 downloads
@@ -480,7 +475,7 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## 🎬 App Preview Video Script (Optional)
+## App Preview Video Script (Optional)
 
 **Length:** 15-30 seconds
 
@@ -502,7 +497,7 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## 📅 Timeline
+## Timeline
 
 ### Week 1: Preparation
 - Day 1-2: Create all screenshots
@@ -514,7 +509,7 @@ Consider for v1.1 or v2.0:
 ### Week 2: Review & Launch
 - Day 8-10: Waiting for review (typical: 24-48 hours)
 - Day 11: Respond to any review questions
-- Day 12: LAUNCH DAY 🚀
+- Day 12: LAUNCH DAY
 - Day 13-14: Monitor reviews, fix urgent bugs
 
 ### Week 3-4: Post-Launch
@@ -525,7 +520,7 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## 🔗 URLs Needed
+## URLs Needed
 
 1. **Privacy Policy:** `https://imentos.github.io/PropertyMiles/privacy-policy.html`
 2. **Support/Help:** `https://imentos.github.io/PropertyMiles/support.html`
@@ -534,7 +529,7 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## 📝 Notes
+## Notes
 
 - Real estate is a competitive niche but underserved in App Store
 - Key differentiator: Automatic tracking + property-specific features
@@ -545,18 +540,18 @@ Consider for v1.1 or v2.0:
 
 ---
 
-## ✨ Launch Announcement Template
+## Launch Announcement Template
 
 ### Social Media Post
 ```
-🚗 Introducing Property Miles! 
+Introducing Property Miles! 
 
 The mileage tracker built specifically for real estate agents.
 
-✅ Automatic trip detection
-✅ Property tagging
-✅ IRS-compliant reports
-✅ One-tap CSV export
+• Automatic trip detection
+• Property tagging
+• IRS-compliant reports
+• One-tap CSV export
 
 Available now on the App Store!
 
@@ -567,7 +562,7 @@ Available now on the App Store!
 
 ### Email to Real Estate Contacts
 ```
-Subject: Save time on mileage tracking 🚗
+Subject: Save time on mileage tracking
 
 Hi [Name],
 

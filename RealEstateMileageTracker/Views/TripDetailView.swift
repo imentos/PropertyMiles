@@ -110,7 +110,7 @@ struct TripDetailView: View {
                         HStack {
                             Text("Nickname")
                                 .foregroundColor(.secondary)
-                                .padding(.leading, 36)
+                                .padding(.leading, 40)
                             Spacer()
                             TextField("", text: $startNickname)
                                 .textFieldStyle(.roundedBorder)
@@ -134,7 +134,7 @@ struct TripDetailView: View {
                             HStack {
                                 Text("Nickname")
                                     .foregroundColor(.secondary)
-                                    .padding(.leading, 36)
+                                    .padding(.leading, 40)
                                 Spacer()
                                 TextField("", text: $endNickname)
                                     .textFieldStyle(.roundedBorder)
