@@ -25,18 +25,13 @@ class TripManager: NSObject, ObservableObject {
     private var lastLocation: CLLocation?
     private var stoppedTimer: Timer?
     private let normalStoppedThreshold: TimeInterval = 180 // 3 minutes
-    private let debugStoppedThreshold: TimeInterval = 30 // 30 seconds for testing
     private let speedThreshold: CLLocationSpeed = 4.4704 // 10 mph in m/s
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
     private var isVehicleActivity: Bool = false // Tracks automotive OR cycling
     
-    // Reference to TripStore for property matching
+    // Reference to TripStore for place matching
     weak var tripStore: TripStore?
-    
-    private var stoppedThreshold: TimeInterval {
-        debugMode ? debugStoppedThreshold : normalStoppedThreshold
-    }
     
     private let geocoder = CLGeocoder()
     
@@ -146,10 +141,10 @@ class TripManager: NSObject, ObservableObject {
         
         print("🛑 Trip ended. Distance: \(trip.distance) miles")
         
-        // Check for nearby property and auto-assign
-        if let nearbyProperty = tripStore?.findNearbyProperty(coordinate: lastLoc.coordinate) {
-            trip.property = nearbyProperty
-            print("🏠 Auto-assigned property: \(nearbyProperty.displayName)")
+        // Check for nearby place and auto-assign
+        if let nearbyPlace = tripStore?.findNearbyPlace(coordinate: lastLoc.coordinate) {
+            trip.place = nearbyPlace
+            print("🏠 Auto-assigned place: \(nearbyPlace.displayName)")
         }
         
         // Geocode end location and then save trip
@@ -235,22 +230,19 @@ extension TripManager: CLLocationManagerDelegate {
             
             lastLocation = location
             
-            // Trip end detection - end if stopped OR if no longer in vehicle mode
-            let shouldEndTrip = speed < 0.5 || !isVehicleActivity
+            // Trip end detection - end if stopped
+            let shouldEndTrip = speed < 0.5
             
             if shouldEndTrip {
                 if stoppedTimer == nil {
-                    let reason = speed < 0.5 ? "stopped" : "no longer in vehicle"
-                    // End trip quickly if not in vehicle mode, otherwise wait for stopped threshold
-                    let timeToWait = !isVehicleActivity ? 10.0 : stoppedThreshold
-                    print("⏸️ Trip ending soon (\(reason)) - waiting \(Int(timeToWait))s...")
-                    stoppedTimer = Timer.scheduledTimer(withTimeInterval: timeToWait, repeats: false) { [weak self] _ in
+                    print("⏸️ Trip ending soon (stopped) - waiting \(Int(normalStoppedThreshold))s...")
+                    stoppedTimer = Timer.scheduledTimer(withTimeInterval: normalStoppedThreshold, repeats: false) { [weak self] _ in
                         self?.endCurrentTrip()
                     }
                 }
             } else {
-                // Cancel stop timer if back in vehicle mode
-                if isVehicleActivity {
+                // Cancel stop timer if moving again
+                if stoppedTimer != nil {
                     stoppedTimer?.invalidate()
                     stoppedTimer = nil
                 }

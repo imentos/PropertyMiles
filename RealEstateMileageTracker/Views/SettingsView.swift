@@ -90,7 +90,7 @@ struct SettingsView: View {
                                 Text("Debug Mode Active")
                                     .font(.headline)
                                     .foregroundColor(.orange)
-                                Text("Trips end after 30s stopped instead of 3 min")
+                                Text("Generate sample trips for testing")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -160,9 +160,9 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 if tripManager.debugMode {
-                    Text("Faster testing: Trips end after 30 seconds stopped instead of 3 minutes. Speed threshold remains 10+ mph.")
+                    Text("You can now generate sample trips for testing.")
                 } else {
-                    Text("Normal mode: Trips require 10+ mph speed and stop after 3 minutes.")
+                    Text("Debug mode disabled.")
                 }
             }
         }

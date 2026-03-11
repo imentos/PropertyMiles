@@ -11,12 +11,12 @@ import CoreLocation
 
 class TripStore: ObservableObject {
     @Published var trips: [Trip] = []
-    @Published var properties: [Property] = []
+    @Published var places: [Place] = []
     @Published var vehicles: [Vehicle] = []
     @Published var customPurposes: [String] = []
     
     private let tripsKey = "saved_trips"
-    private let propertiesKey = "saved_properties"
+    private let placesKey = "saved_properties" // kept as 'properties' for backward compatibility
     private let vehiclesKey = "saved_vehicles"
     private let customPurposesKey = "custom_purposes"
     
@@ -24,7 +24,7 @@ class TripStore: ObservableObject {
     
     init() {
         loadTrips()
-        loadProperties()
+        loadPlaces()
         loadVehicles()
         loadCustomPurposes()
         
@@ -71,54 +71,54 @@ class TripStore: ObservableObject {
         }
     }
     
-    // MARK: - Properties
-    func loadProperties() {
-        guard let data = UserDefaults.standard.data(forKey: propertiesKey),
-              let decoded = try? JSONDecoder().decode([Property].self, from: data) else {
-            properties = []
+    // MARK: - Places
+    func loadPlaces() {
+        guard let data = UserDefaults.standard.data(forKey: placesKey),
+              let decoded = try? JSONDecoder().decode([Place].self, from: data) else {
+            places = []
             return
         }
-        properties = decoded.sorted { $0.createdAt > $1.createdAt }
+        places = decoded.sorted { $0.createdAt > $1.createdAt }
     }
     
-    func addProperty(_ property: Property) {
-        properties.insert(property, at: 0)
-        saveProperties()
+    func addPlace(_ place: Place) {
+        places.insert(place, at: 0)
+        savePlaces()
     }
     
-    func updateProperty(_ property: Property) {
-        if let index = properties.firstIndex(where: { $0.id == property.id }) {
-            properties[index] = property
-            saveProperties()
+    func updatePlace(_ place: Place) {
+        if let index = places.firstIndex(where: { $0.id == place.id }) {
+            places[index] = place
+            savePlaces()
         }
     }
     
-    func deleteProperty(_ property: Property) {
-        properties.removeAll { $0.id == property.id }
-        saveProperties()
+    func deletePlace(_ place: Place) {
+        places.removeAll { $0.id == place.id }
+        savePlaces()
     }
     
-    private func saveProperties() {
-        if let encoded = try? JSONEncoder().encode(properties) {
-            UserDefaults.standard.set(encoded, forKey: propertiesKey)
+    private func savePlaces() {
+        if let encoded = try? JSONEncoder().encode(places) {
+            UserDefaults.standard.set(encoded, forKey: placesKey)
         }
     }
     
-    // Find property near a location (within 200 meters)
-    func findNearbyProperty(coordinate: CLLocationCoordinate2D, within meters: Double = 200) -> Property? {
+    // Find place near a location (within 200 meters)
+    func findNearbyPlace(coordinate: CLLocationCoordinate2D, within meters: Double = 200) -> Place? {
         let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         
-        for property in properties {
-            guard let propertyLocation = property.location else { continue }
+        for place in places {
+            guard let placeLocation = place.location else { continue }
             
-            let propertyCoordinate = propertyLocation.coordinate
-            let propertyLocationObj = CLLocation(latitude: propertyCoordinate.latitude, longitude: propertyCoordinate.longitude)
+            let placeCoordinate = placeLocation.coordinate
+            let placeLocationObj = CLLocation(latitude: placeCoordinate.latitude, longitude: placeCoordinate.longitude)
             
-            let distance = targetLocation.distance(from: propertyLocationObj)
+            let distance = targetLocation.distance(from: placeLocationObj)
             
             if distance <= meters {
-                print("🎯 Found nearby property: '\(property.displayName)' at \(String(format: "%.0f", distance))m away")
-                return property
+                print("🎯 Found nearby place: '\(place.displayName)' at \(String(format: "%.0f", distance))m away")
+                return place
             }
         }
         
@@ -205,7 +205,7 @@ class TripStore: ObservableObject {
     }
     
     func generateCSV(for trips: [Trip]) -> String {
-        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Property,Vehicle,Amount\n"
+        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,Place,Vehicle,Amount\n"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -221,11 +221,11 @@ class TripStore: ObservableObject {
             let endAddr = trip.endLocation?.address ?? (trip.endLocation.map { "\($0.latitude),\($0.longitude)" } ?? "")
             let miles = String(format: "%.2f", trip.distance)
             let purpose = trip.purposeName ?? ""
-            let property = trip.property?.displayName ?? ""
+            let place = trip.place?.displayName ?? ""
             let vehicle = trip.vehicle?.displayName ?? ""
             let amount = String(format: "%.2f", trip.mileageAmount)
             
-            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(property)\",\"\(vehicle)\",\(amount)\n"
+            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(place)\",\"\(vehicle)\",\(amount)\n"
         }
         
         return csv
@@ -269,7 +269,7 @@ class TripStore: ObservableObject {
                 ),
                 distance: distances[i % distances.count],
                 purposeName: purposes[i % purposes.count].rawValue,
-                property: properties.first,
+                place: places.first,
                 vehicle: vehicles.first,
                 notes: i == 0 ? "Sample trip for testing" : nil
             )

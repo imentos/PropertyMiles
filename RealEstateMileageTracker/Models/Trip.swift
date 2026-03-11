@@ -16,20 +16,22 @@ struct Trip: Identifiable, Codable {
     var endLocation: LocationData?
     var distance: Double // in miles
     var purposeName: String? // Changed to support custom purposes
-    var property: Property?
+    var place: Place?
     var vehicle: Vehicle?
     var notes: String?
     
     // Legacy support - decode old purpose enum if present
     enum CodingKeys: String, CodingKey {
         case id, startTime, endTime, startLocation, endLocation, distance
-        case purposeName, property, vehicle, notes
-        case purpose // old key
+        case purposeName, vehicle, notes
+        case purpose // old key for backward compatibility
+        case property // old key for backward compatibility (now place)
+        case place
     }
     
     init(id: UUID = UUID(), startTime: Date, endTime: Date? = nil, 
          startLocation: LocationData, endLocation: LocationData? = nil,
-         distance: Double, purposeName: String? = nil, property: Property? = nil,
+         distance: Double, purposeName: String? = nil, place: Place? = nil,
          vehicle: Vehicle? = nil, notes: String? = nil) {
         self.id = id
         self.startTime = startTime
@@ -38,7 +40,7 @@ struct Trip: Identifiable, Codable {
         self.endLocation = endLocation
         self.distance = distance
         self.purposeName = purposeName
-        self.property = property
+        self.place = place
         self.vehicle = vehicle
         self.notes = notes
     }
@@ -51,9 +53,17 @@ struct Trip: Identifiable, Codable {
         startLocation = try container.decode(LocationData.self, forKey: .startLocation)
         endLocation = try container.decodeIfPresent(LocationData.self, forKey: .endLocation)
         distance = try container.decode(Double.self, forKey: .distance)
-        property = try container.decodeIfPresent(Property.self, forKey: .property)
         vehicle = try container.decodeIfPresent(Vehicle.self, forKey: .vehicle)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
+        
+        // Try new format first, then fall back to old 'property' key
+        if let place = try container.decodeIfPresent(Place.self, forKey: .place) {
+            self.place = place
+        } else if let oldProperty = try container.decodeIfPresent(Place.self, forKey: .property) {
+            self.place = oldProperty
+        } else {
+            self.place = nil
+        }
         
         // Try new format first
         if let purposeName = try container.decodeIfPresent(String.self, forKey: .purposeName) {
@@ -76,7 +86,7 @@ struct Trip: Identifiable, Codable {
         try container.encodeIfPresent(endLocation, forKey: .endLocation)
         try container.encode(distance, forKey: .distance)
         try container.encodeIfPresent(purposeName, forKey: .purposeName)
-        try container.encodeIfPresent(property, forKey: .property)
+        try container.encodeIfPresent(place, forKey: .place)
         try container.encodeIfPresent(vehicle, forKey: .vehicle)
         try container.encodeIfPresent(notes, forKey: .notes)
     }

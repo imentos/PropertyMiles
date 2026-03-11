@@ -246,9 +246,9 @@ struct TripRow: View {
                             .foregroundColor(.secondary)
                     }
                     
-                    // Property
-                    if let property = trip.property {
-                        Text(property.displayName)
+                    // Place
+                    if let place = trip.place {
+                        Text(place.displayName)
                             .font(.caption)
                             .foregroundColor(.blue)
                     }

@@ -19,9 +19,9 @@ struct MainTabView: View {
                     Label("Trips", systemImage: "car")
                 }
             
-            PropertiesView()
+            PlacesView()
                 .tabItem {
-                    Label("Properties", systemImage: "building.2")
+                    Label("Places", systemImage: "building.2")
                 }
             
             ReportsView()
@@ -37,7 +37,7 @@ struct MainTabView: View {
         .environmentObject(tripStore)
         .environmentObject(tripManager)
         .onAppear {
-            // Link tripStore to tripManager for property matching
+            // Link tripStore to tripManager for place matching
             tripManager.tripStore = tripStore
             
             // Request location permission on first launch

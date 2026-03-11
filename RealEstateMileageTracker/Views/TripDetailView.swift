@@ -13,7 +13,7 @@ struct TripDetailView: View {
     @EnvironmentObject var tripStore: TripStore
     
     @State private var trip: Trip
-    @State private var showingPropertyPicker = false
+    @State private var showingPlacePicker = false
     @State private var showingVehiclePicker = false
     
     init(trip: Trip) {
@@ -43,15 +43,15 @@ struct TripDetailView: View {
                     }
                 }
                 
-                Section("Property") {
+                Section("Place") {
                     Button {
-                        showingPropertyPicker = true
+                        showingPlacePicker = true
                     } label: {
                         HStack {
-                            Label("Property", systemImage: "building.2")
+                            Label("Place", systemImage: "building.2")
                             Spacer()
-                            if let property = trip.property {
-                                Text(property.displayName)
+                            if let place = trip.place {
+                                Text(place.displayName)
                                     .foregroundColor(.secondary)
                             } else {
                                 Text("None")
@@ -170,8 +170,8 @@ struct TripDetailView: View {
                     .fontWeight(.semibold)
                 }
             }
-            .sheet(isPresented: $showingPropertyPicker) {
-                PropertyPickerView(selectedProperty: $trip.property)
+            .sheet(isPresented: $showingPlacePicker) {
+                PlacePickerView(selectedPlace: $trip.place)
             }
             .sheet(isPresented: $showingVehiclePicker) {
                 VehiclePickerView(selectedVehicle: $trip.vehicle)
@@ -248,7 +248,7 @@ struct MapPreview: View {
         ),
         distance: 12.5,
         purposeName: "Showing",
-        property: nil,
+        place: nil,
         vehicle: nil,
         notes: nil
     ))

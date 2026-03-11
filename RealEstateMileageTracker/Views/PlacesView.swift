@@ -1,5 +1,5 @@
 //
-//  PropertiesView.swift
+//  PlacesView.swift
 //  RealEstateMileageTracker
 //
 //  Created by Kuo, Ray on 3/8/26.
@@ -8,57 +8,57 @@
 import SwiftUI
 import CoreLocation
 
-struct PropertiesView: View {
+struct PlacesView: View {
     @EnvironmentObject var tripStore: TripStore
-    @State private var showingAddProperty = false
-    @State private var editingProperty: Property?
+    @State private var showingAddPlace = false
+    @State private var editingPlace: Place?
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(tripStore.properties) { property in
-                    PropertyRow(property: property)
+                ForEach(tripStore.places) { place in
+                    PlaceRow(place: place)
                         .onTapGesture {
-                            editingProperty = property
+                            editingPlace = place
                         }
                 }
-                .onDelete(perform: deleteProperties)
+                .onDelete(perform: deletePlaces)
             }
-            .navigationTitle("Properties")
+            .navigationTitle("Places")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showingAddProperty = true
+                        showingAddPlace = true
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showingAddProperty) {
-                AddPropertyView()
+            .sheet(isPresented: $showingAddPlace) {
+                AddPlaceView()
             }
-            .sheet(item: $editingProperty) { property in
-                EditPropertyView(property: property)
+            .sheet(item: $editingPlace) { place in
+                EditPlaceView(place: place)
             }
             .overlay {
-                if tripStore.properties.isEmpty {
+                if tripStore.places.isEmpty {
                     VStack(spacing: 16) {
                         Image(systemName: "building.2")
                             .font(.system(size: 60))
                             .foregroundColor(.secondary)
                         
-                        Text("No Properties")
+                        Text("No Places")
                             .font(.title2)
                             .fontWeight(.semibold)
                         
-                        Text("Add properties to tag your trips")
+                        Text("Add places to tag your trips")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
                         Button {
-                            showingAddProperty = true
+                            showingAddPlace = true
                         } label: {
-                            Label("Add Property", systemImage: "plus.circle.fill")
+                            Label("Add Place", systemImage: "plus.circle.fill")
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 10)
                                 .background(Color.blue)
@@ -72,26 +72,26 @@ struct PropertiesView: View {
         }
     }
     
-    private func deleteProperties(at offsets: IndexSet) {
+    private func deletePlaces(at offsets: IndexSet) {
         for index in offsets {
-            tripStore.deleteProperty(tripStore.properties[index])
+            tripStore.deletePlace(tripStore.places[index])
         }
     }
 }
 
-struct PropertyRow: View {
-    let property: Property
+struct PlaceRow: View {
+    let place: Place
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let nickname = property.nickname {
+            if let nickname = place.nickname {
                 Text(nickname)
                     .font(.headline)
-                Text(property.address)
+                Text(place.address)
                     .font(.caption)
                     .foregroundColor(.secondary)
             } else {
-                Text(property.address)
+                Text(place.address)
                     .font(.headline)
             }
         }
@@ -99,7 +99,7 @@ struct PropertyRow: View {
     }
 }
 
-struct AddPropertyView: View {
+struct AddPlaceView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var tripStore: TripStore
     
@@ -110,7 +110,7 @@ struct AddPropertyView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section("Property Information") {
+                Section("Place Information") {
                     TextField("Address", text: $address)
                         .textContentType(.fullStreetAddress)
                     
@@ -118,12 +118,12 @@ struct AddPropertyView: View {
                 }
                 
                 Section {
-                    Text("Add properties to quickly tag trips and organize your mileage records. The address will be geocoded to enable automatic trip matching.")
+                    Text("Add places to quickly tag trips and organize your mileage records. The address will be geocoded to enable automatic trip matching.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
             }
-            .navigationTitle("Add Property")
+            .navigationTitle("Add Place")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -135,7 +135,7 @@ struct AddPropertyView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Add") {
-                        addProperty()
+                        addPlace()
                     }
                     .fontWeight(.semibold)
                     .disabled(address.isEmpty || isGeocoding)
@@ -144,7 +144,7 @@ struct AddPropertyView: View {
         }
     }
     
-    private func addProperty() {
+    private func addPlace() {
         isGeocoding = true
         
         // Geocode the address
@@ -154,18 +154,18 @@ struct AddPropertyView: View {
             
             if let placemark = placemarks?.first, let coordinate = placemark.location?.coordinate {
                 location = LocationData(coordinate: coordinate)
-                print("📍 Geocoded property '\(address)' to: \(coordinate.latitude), \(coordinate.longitude)")
+                print("📍 Geocoded place '\(address)' to: \(coordinate.latitude), \(coordinate.longitude)")
             } else {
                 location = nil
-                print("⚠️ Could not geocode property address: \(address)")
+                print("⚠️ Could not geocode place address: \(address)")
             }
             
-            let property = Property(
+            let place = Place(
                 address: address,
                 nickname: nickname.isEmpty ? nil : nickname,
                 location: location
             )
-            tripStore.addProperty(property)
+            tripStore.addPlace(place)
             
             isGeocoding = false
             dismiss()
@@ -173,25 +173,25 @@ struct AddPropertyView: View {
     }
 }
 
-struct EditPropertyView: View {
+struct EditPlaceView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var tripStore: TripStore
     
-    @State private var property: Property
+    @State private var place: Place
     @State private var address: String
     @State private var nickname: String
     @State private var isGeocoding = false
     
-    init(property: Property) {
-        _property = State(initialValue: property)
-        _address = State(initialValue: property.address)
-        _nickname = State(initialValue: property.nickname ?? "")
+    init(place: Place) {
+        _place = State(initialValue: place)
+        _address = State(initialValue: place.address)
+        _nickname = State(initialValue: place.nickname ?? "")
     }
     
     var body: some View {
         NavigationView {
             Form {
-                Section("Property Information") {
+                Section("Place Information") {
                     TextField("Address", text: $address)
                         .textContentType(.fullStreetAddress)
                     
@@ -204,7 +204,7 @@ struct EditPropertyView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .navigationTitle("Edit Property")
+            .navigationTitle("Edit Place")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -216,7 +216,7 @@ struct EditPropertyView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        saveProperty()
+                        savePlace()
                     }
                     .fontWeight(.semibold)
                     .disabled(address.isEmpty || isGeocoding)
@@ -225,83 +225,83 @@ struct EditPropertyView: View {
         }
     }
     
-    private func saveProperty() {
+    private func savePlace() {
         isGeocoding = true
         
         // Re-geocode if address changed
-        if address != property.address {
+        if address != place.address {
             let geocoder = CLGeocoder()
             geocoder.geocodeAddressString(address) { placemarks, error in
-                var updatedProperty = property
-                updatedProperty.address = address
-                updatedProperty.nickname = nickname.isEmpty ? nil : nickname
+                var updatedPlace = place
+                updatedPlace.address = address
+                updatedPlace.nickname = nickname.isEmpty ? nil : nickname
                 
                 if let placemark = placemarks?.first, let coordinate = placemark.location?.coordinate {
-                    updatedProperty.location = LocationData(coordinate: coordinate)
-                    print("📍 Re-geocoded property '\(address)' to: \(coordinate.latitude), \(coordinate.longitude)")
+                    updatedPlace.location = LocationData(coordinate: coordinate)
+                    print("📍 Re-geocoded place '\(address)' to: \(coordinate.latitude), \(coordinate.longitude)")
                 } else {
                     // Keep old location if geocoding fails
-                    print("⚠️ Could not geocode property address: \(address)")
+                    print("⚠️ Could not geocode place address: \(address)")
                 }
                 
-                tripStore.updateProperty(updatedProperty)
+                tripStore.updatePlace(updatedPlace)
                 isGeocoding = false
                 dismiss()
             }
         } else {
             // Just update nickname if address unchanged
-            var updatedProperty = property
-            updatedProperty.nickname = nickname.isEmpty ? nil : nickname
-            tripStore.updateProperty(updatedProperty)
+            var updatedPlace = place
+            updatedPlace.nickname = nickname.isEmpty ? nil : nickname
+            tripStore.updatePlace(updatedPlace)
             dismiss()
         }
     }
 }
 
-struct PropertyPickerView: View {
+struct PlacePickerView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var tripStore: TripStore
-    @Binding var selectedProperty: Property?
-    @State private var showingAddProperty = false
+    @Binding var selectedPlace: Place?
+    @State private var showingAddPlace = false
     
     var body: some View {
         NavigationView {
             List {
                 Button {
-                    selectedProperty = nil
+                    selectedPlace = nil
                     dismiss()
                 } label: {
                     HStack {
                         Text("None")
                         Spacer()
-                        if selectedProperty == nil {
+                        if selectedPlace == nil {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.blue)
                         }
                     }
                 }
                 
-                ForEach(tripStore.properties) { property in
+                ForEach(tripStore.places) { place in
                     Button {
-                        selectedProperty = property
+                        selectedPlace = place
                         dismiss()
                     } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                if let nickname = property.nickname {
+                                if let nickname = place.nickname {
                                     Text(nickname)
                                         .font(.headline)
-                                    Text(property.address)
+                                    Text(place.address)
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                 } else {
-                                    Text(property.address)
+                                    Text(place.address)
                                 }
                             }
                             
                             Spacer()
                             
-                            if selectedProperty?.id == property.id {
+                            if selectedPlace?.id == place.id {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.blue)
                             }
@@ -310,7 +310,7 @@ struct PropertyPickerView: View {
                     .foregroundColor(.primary)
                 }
             }
-            .navigationTitle("Select Property")
+            .navigationTitle("Select Place")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -321,20 +321,20 @@ struct PropertyPickerView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showingAddProperty = true
+                        showingAddPlace = true
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showingAddProperty) {
-                AddPropertyView()
+            .sheet(isPresented: $showingAddPlace) {
+                AddPlaceView()
             }
         }
     }
 }
 
 #Preview {
-    PropertiesView()
+    PlacesView()
         .environmentObject(TripStore())
 }
