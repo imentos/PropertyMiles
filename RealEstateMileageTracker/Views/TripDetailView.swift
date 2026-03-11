@@ -112,6 +112,7 @@ struct TripDetailView: View {
                             Spacer()
                             TextField("Add nickname (optional)", text: $startNickname)
                                 .textFieldStyle(.roundedBorder)
+                                .multilineTextAlignment(.trailing)
                         }
                     }
                     
@@ -133,6 +134,7 @@ struct TripDetailView: View {
                                 Spacer()
                                 TextField("Add nickname (optional)", text: $endNickname)
                                     .textFieldStyle(.roundedBorder)
+                                    .multilineTextAlignment(.trailing)
                             }
                         }
                     }
