@@ -14,6 +14,8 @@ struct TripDetailView: View {
     
     @State private var trip: Trip
     @State private var showingVehiclePicker = false
+    @State private var startNickname: String = ""
+    @State private var endNickname: String = ""
     
     init(trip: Trip) {
         _trip = State(initialValue: trip)
@@ -109,33 +111,7 @@ struct TripDetailView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .padding(.leading, 28)
-                            TextField("Optional", text: Binding(
-                                get: {
-                                    // Show nickname from location map (any source: reference, search, or stored)
-                                    let displayName = trip.startLocationDisplayName(tripStore: tripStore)
-                                    // If it's an address or coordinates, return empty
-                                    if let addr = trip.startLocation.address, displayName == addr {
-                                        return ""
-                                    }
-                                    if displayName.contains(",") && displayName.contains(".") {
-                                        return "" // Coordinates
-                                    }
-                                    return displayName
-                                },
-                                set: { newValue in
-                                    // Update location map with new nickname
-                                    if !newValue.isEmpty {
-                                        let nicknameId = tripStore.setLocationNickname(
-                                            coordinate: trip.startLocation.coordinate,
-                                            address: trip.startLocation.address,
-                                            nickname: newValue
-                                        )
-                                        trip.startLocation.locationNicknameId = nicknameId
-                                    } else {
-                                        trip.startLocation.locationNicknameId = nil
-                                    }
-                                }
-                            ))
+                            TextField("Optional", text: $startNickname)
                             .font(.caption)
                             .textFieldStyle(.roundedBorder)
                         }
@@ -158,35 +134,7 @@ struct TripDetailView: View {
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                                     .padding(.leading, 28)
-                                TextField("Optional", text: Binding(
-                                    get: {
-                                        // Show nickname from location map (any source: reference, search, or stored)
-                                        if let displayName = trip.endLocationDisplayName(tripStore: tripStore) {
-                                            // If it's an address or coordinates, return empty
-                                            if let addr = trip.endLocation?.address, displayName == addr {
-                                                return ""
-                                            }
-                                            if displayName.contains(",") && displayName.contains(".") {
-                                                return "" // Coordinates
-                                            }
-                                            return displayName
-                                        }
-                                        return ""
-                                    },
-                                    set: { newValue in
-                                        // Update location map with new nickname
-                                        if !newValue.isEmpty, let endLocation = trip.endLocation {
-                                            let nicknameId = tripStore.setLocationNickname(
-                                                coordinate: endLocation.coordinate,
-                                                address: endLocation.address,
-                                                nickname: newValue
-                                            )
-                                            trip.endLocation?.locationNicknameId = nicknameId
-                                        } else {
-                                            trip.endLocation?.locationNicknameId = nil
-                                        }
-                                    }
-                                ))
+                                TextField("Optional", text: $endNickname)
                                 .font(.caption)
                                 .textFieldStyle(.roundedBorder)
                             }
@@ -216,6 +164,20 @@ struct TripDetailView: View {
             }
             .navigationTitle("Trip Details")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                // Initialize nickname fields from location map
+                let startDisplayName = trip.startLocationDisplayName(tripStore: tripStore)
+                if let addr = trip.startLocation.address, startDisplayName != addr,
+                   !startDisplayName.contains(",") || !startDisplayName.contains(".") {
+                    startNickname = startDisplayName
+                }
+                
+                if let endDisplayName = trip.endLocationDisplayName(tripStore: tripStore),
+                   let addr = trip.endLocation?.address, endDisplayName != addr,
+                   !endDisplayName.contains(",") || !endDisplayName.contains(".") {
+                    endNickname = endDisplayName
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
@@ -225,6 +187,29 @@ struct TripDetailView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
+                        // Update location map with nicknames before saving trip
+                        if !startNickname.isEmpty {
+                            let nicknameId = tripStore.setLocationNickname(
+                                coordinate: trip.startLocation.coordinate,
+                                address: trip.startLocation.address,
+                                nickname: startNickname
+                            )
+                            trip.startLocation.locationNicknameId = nicknameId
+                        } else {
+                            trip.startLocation.locationNicknameId = nil
+                        }
+                        
+                        if !endNickname.isEmpty, let endLocation = trip.endLocation {
+                            let nicknameId = tripStore.setLocationNickname(
+                                coordinate: endLocation.coordinate,
+                                address: endLocation.address,
+                                nickname: endNickname
+                            )
+                            trip.endLocation?.locationNicknameId = nicknameId
+                        } else {
+                            trip.endLocation?.locationNicknameId = nil
+                        }
+                        
                         tripStore.updateTrip(trip)
                         dismiss()
                     }
