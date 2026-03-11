@@ -97,12 +97,18 @@ struct TripDetailView: View {
                     
                     // From location with nickname
                     VStack(alignment: .leading, spacing: 4) {
-                        Label("From", systemImage: "location.circle")
+                        HStack {
+                            Label("From", systemImage: "location.circle")
+                            Spacer()
+                        }
                         
                         if let startAddr = trip.startLocation.address {
-                            Text(startAddr)
-                                .font(.subheadline)
-                                .foregroundColor(.primary)
+                            HStack {
+                                Spacer()
+                                Text(startAddr)
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                            }
                         }
                         
                         TextField("Add nickname (optional)", text: $startNickname)
@@ -113,12 +119,18 @@ struct TripDetailView: View {
                     // To location with nickname
                     if trip.endLocation != nil {
                         VStack(alignment: .leading, spacing: 4) {
-                            Label("To", systemImage: "location.circle.fill")
+                            HStack {
+                                Label("To", systemImage: "location.circle.fill")
+                                Spacer()
+                            }
                             
                             if let endAddr = trip.endLocation?.address {
-                                Text(endAddr)
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                HStack {
+                                    Spacer()
+                                    Text(endAddr)
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary)
+                                }
                             }
                             
                             TextField("Add nickname (optional)", text: $endNickname)

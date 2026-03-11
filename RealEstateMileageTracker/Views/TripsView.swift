@@ -201,9 +201,9 @@ struct TripRow: View {
                         Text(formatTime(trip.startTime))
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
-                        Spacer()
-                        
+                        Text("-")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                         Text(shortAddress(trip.startLocationDisplayName(tripStore: tripStore)))
                             .font(.subheadline)
                             .foregroundColor(.primary)
@@ -217,9 +217,9 @@ struct TripRow: View {
                             Text(formatTime(endTime))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            
-                            Spacer()
-                            
+                            Text("-")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                             Text(shortAddress(endDisplayName))
                                 .font(.subheadline)
                                 .foregroundColor(.primary)
