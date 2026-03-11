@@ -102,6 +102,7 @@ struct TripDetailView: View {
                             Spacer()
                             if let startAddr = trip.startLocation.address {
                                 Text(startAddr)
+                                    .multilineTextAlignment(.trailing)
                                     .foregroundColor(.secondary)
                             }
                         }
@@ -109,6 +110,7 @@ struct TripDetailView: View {
                         HStack {
                             Text("Nickname")
                                 .foregroundColor(.secondary)
+                                .padding(.leading, 24)
                             Spacer()
                             TextField("Add nickname (optional)", text: $startNickname)
                                 .textFieldStyle(.roundedBorder)
@@ -124,6 +126,7 @@ struct TripDetailView: View {
                                 Spacer()
                                 if let endAddr = trip.endLocation?.address {
                                     Text(endAddr)
+                                        .multilineTextAlignment(.trailing)
                                         .foregroundColor(.secondary)
                                 }
                             }
@@ -131,6 +134,7 @@ struct TripDetailView: View {
                             HStack {
                                 Text("Nickname")
                                     .foregroundColor(.secondary)
+                                    .padding(.leading, 24)
                                 Spacer()
                                 TextField("Add nickname (optional)", text: $endNickname)
                                     .textFieldStyle(.roundedBorder)
