@@ -107,6 +107,8 @@ struct TripDetailView: View {
                         }
                         
                         HStack {
+                            Text("Nickname")
+                                .foregroundColor(.secondary)
                             Spacer()
                             TextField("Add nickname (optional)", text: $startNickname)
                                 .textFieldStyle(.roundedBorder)
@@ -126,6 +128,8 @@ struct TripDetailView: View {
                             }
                             
                             HStack {
+                                Text("Nickname")
+                                    .foregroundColor(.secondary)
                                 Spacer()
                                 TextField("Add nickname (optional)", text: $endNickname)
                                     .textFieldStyle(.roundedBorder)
