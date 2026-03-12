@@ -2,7 +2,7 @@
 
 # Script to generate iOS app icons from a source image
 
-SOURCE_IMAGE="icons/Gemini_Generated_Image_md9zv2md9zv2md9z.png"
+SOURCE_IMAGE="icons/Gemini_Generated_Image_tobcqztobcqztobc.png"
 OUTPUT_DIR="RealEstateMileageTracker/Assets.xcassets/AppIcon.appiconset"
 
 # Check if source image exists
