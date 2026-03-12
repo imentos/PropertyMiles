@@ -2,7 +2,7 @@
 
 # Script to generate iOS app icons from a source image
 
-SOURCE_IMAGE="icons/Gemini_Generated_Image_tobcqztobcqztobc.png"
+SOURCE_IMAGE="icons/Gemini_no_alpha.png"
 OUTPUT_DIR="RealEstateMileageTracker/Assets.xcassets/AppIcon.appiconset"
 
 # Check if source image exists
@@ -42,7 +42,9 @@ do
     sips -z "$size" "$size" "$SOURCE_IMAGE" --out "$output_path" > /dev/null 2>&1
     
     if [ $? -eq 0 ]; then
-        echo "✓ Created $filename"
+        # Remove alpha channel (required by Apple)
+        sips -s hasAlpha no "$output_path" > /dev/null 2>&1
+        echo "✓ Created $filename (alpha channel removed)"
     else
         echo "✗ Failed to create $filename"
     fi
