@@ -2,7 +2,7 @@
 
 # Script to generate iOS app icons from a source image
 
-SOURCE_IMAGE="icons/ChatGPT Image Mar 12, 2026 at 08_31_05 AM.png"
+SOURCE_IMAGE="icons/ChatGPT Image Mar 12, 2026 at 08_54_40 AM.png"
 OUTPUT_DIR="RealEstateMileageTracker/Assets.xcassets/AppIcon.appiconset"
 
 # Check if source image exists
