@@ -118,27 +118,27 @@ NOTE: Continued use of GPS running in the background can dramatically decrease b
 
 **Screenshot 1: Hero/Main Feature**
 - Trips list with current trip banner
-- Caption: "Automatic Trip Tracking - Works in Background"
+- Caption: "Track Every Mile Automatically - Save Time & Never Miss a Deduction"
 
 **Screenshot 2: Trip Detail**
 - Trip detail view with map, distance, purpose
-- Caption: "Tag Trips to Properties & Purposes"
+- Caption: "Tag Properties Instantly - Organize Trips for Easy Tax Filing"
 
 **Screenshot 3: Location Nicknames**
 - Location management screen
-- Caption: "Save Frequent Locations for Quick Tagging"
+- Caption: "Save Frequent Stops - Speed Up Trip Logging"
 
 **Screenshot 4: Reports**
 - Reports screen showing monthly summary
-- Caption: "IRS-Compliant Reports & CSV Export"
+- Caption: "Generate IRS-Ready Reports - Maximize Your Tax Deductions"
 
 **Screenshot 5: Vehicle Management**
 - Vehicles list
-- Caption: "Track Multiple Vehicles"
+- Caption: "Manage Multiple Vehicles - Keep All Your Mileage in One Place"
 
 **Screenshot 6: Export Preview**
 - Export share sheet or CSV preview
-- Caption: "One-Tap Export for Your Accountant"
+- Caption: "Export with One Tap - Share Reports Instantly with Your Accountant"
 
 ### Design Guidelines:
 - Use device frames
