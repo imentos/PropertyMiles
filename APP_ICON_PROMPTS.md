@@ -97,6 +97,26 @@ Create a professional circular badge-style iOS app icon for a mileage tracking a
 
 ---
 
+## Prompt 7: SF Symbol House + Car (NEW - Recommended)
+
+```
+Create a modern iOS app icon for a real estate mileage tracking app. Use a charcoal gray background (#374151). In the center, combine two elements: 1) An SF Symbol-style house icon (simple geometric house with triangular roof) in white, positioned in the upper portion. 2) A minimalist side-view car icon in bright blue (#3B82F6) or orange (#FB923C), positioned in the lower portion, slightly overlapping the house. The car should appear to be driving toward or past the house. Keep both icons simple, clean, and recognizable at small sizes. No text. Modern flat design with strong contrast. iOS app icon style.
+```
+
+**Design Elements:**
+- Background: Solid charcoal gray (#374151)
+- House icon: White, SF Symbol style, simple geometric
+- Car icon: Blue or orange, side view, minimalist
+- Composition: House upper, car lower, slight overlap
+- Style: Flat design, clean, high contrast
+
+**Alternative Version (Overlapping):**
+```
+Create a modern iOS app icon combining a house and car. Use a charcoal gray background (#374151). Place an SF Symbol-style white house icon (simple geometric house with triangular roof) centered. Overlay a minimalist blue car icon (#3B82F6) at the bottom, positioned as if driving in front of the house. The car should be about 40% the size of the house. Both icons should be simple line-style or filled silhouettes. Strong contrast, clean composition, easily recognizable at small sizes. No text. Modern iOS aesthetic.
+```
+
+---
+
 ## Color Palette Recommendations
 
 **Primary Options:**
