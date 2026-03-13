@@ -41,7 +41,7 @@ Create a minimalist iOS app icon featuring a stylized highway or road vanishing 
 ## Prompt 3: Speedometer with Property Icon
 
 ```
-Create a sleek iOS app icon combining a speedometer gauge with a house/property symbol. The speedometer should be simplified, showing about 3/4 of the circular gauge in white or light gray on a dark gradient background (charcoal #374151 to slate blue #475569). The needle should point to the right (suggesting motion/speed) in bright orange (#FB923C) or green (#10B981). In the center of the speedometer, place a simple geometric house icon in white. The overall design should be clean, professional, and clearly readable at small sizes. Modern flat design style with subtle depth.
+Create a sleek iOS app icon combining a speedometer gauge with a house/property symbol. The speedometer should be simplified, showing about 3/4 of the circular gauge in white or light gray on a dark background. The needle should point to the right (suggesting motion/speed) in bright orange (#FB923C). In the center of the speedometer, place a simple geometric house icon in white. The overall design should be clean, professional, and clearly readable at small sizes. Modern flat design style with subtle depth.
 ```
 
 **Design Elements:**
