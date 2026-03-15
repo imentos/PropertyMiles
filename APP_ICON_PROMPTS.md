@@ -100,41 +100,63 @@ Create a professional circular badge-style iOS app icon for a mileage tracking a
 ## Prompt 7: SF Symbol House + Car (NEW - Recommended)
 
 ```
-Create a modern iOS app icon for a real estate mileage tracking app. Use a charcoal gray background (#374151). In the center, combine two elements: 1) An SF Symbol-style house icon (simple geometric house with triangular roof) in white, positioned in the upper portion. 2) A minimalist side-view car icon in bright blue (#3B82F6) or orange (#FB923C), positioned in the lower portion, slightly overlapping the house. The car should appear to be driving toward or past the house. Keep both icons simple, clean, and recognizable at small sizes. No text. Modern flat design with strong contrast. iOS app icon style.
+Create a modern iOS app icon for a real estate mileage tracking app. Use a charcoal gray background (#374151). In the center, combine two elements: 1) An SF Symbol-style house icon (simple geometric house with triangular roof) in white, positioned in the upper portion. 2) A minimalist side-view car icon in iOS blue (#007AFF) or green (#34C759), positioned in the lower portion, slightly overlapping the house. The car should appear to be driving toward or past the house. Keep both icons simple, clean, and recognizable at small sizes. No text. Modern flat design with strong contrast. iOS app icon style.
 ```
 
 **Design Elements:**
-- Background: Solid charcoal gray (#374151)
+- Background: Solid charcoal gray (#374151) - matches app's dark mode aesthetic
 - House icon: White, SF Symbol style, simple geometric
-- Car icon: Blue or orange, side view, minimalist
+- Car icon: iOS blue (#007AFF) for primary action or green (#34C759) for active tracking
 - Composition: House upper, car lower, slight overlap
 - Style: Flat design, clean, high contrast
 
+**Color Rationale:**
+- Blue (#007AFF): Primary color used throughout the app for buttons and actions
+- Green (#34C759): Represents active trip tracking and "go" state
+- White: Clean contrast for the house icon
+- Charcoal (#374151): Professional, modern background that stands out on iOS home screen
+
 **Alternative Version (Overlapping):**
 ```
-Create a modern iOS app icon combining a house and car. Use a charcoal gray background (#374151). Place an SF Symbol-style white house icon (simple geometric house with triangular roof) centered. Overlay a minimalist blue car icon (#3B82F6) at the bottom, positioned as if driving in front of the house. The car should be about 40% the size of the house. Both icons should be simple line-style or filled silhouettes. Strong contrast, clean composition, easily recognizable at small sizes. No text. Modern iOS aesthetic.
+Create a modern iOS app icon combining a house and car. Use a charcoal gray background (#374151). Place an SF Symbol-style white house icon (simple geometric house with triangular roof) centered. Overlay a minimalist car icon in iOS blue (#007AFF) at the bottom, positioned as if driving in front of the house. The car should be about 40% the size of the house. Both icons should be simple line-style or filled silhouettes. Strong contrast, clean composition, easily recognizable at small sizes. No text. Modern iOS aesthetic with app's signature blue and white color scheme.
 ```
 
 ---
 
 ## Color Palette Recommendations
 
-**Primary Options:**
-- **Professional Blue:** #1E40AF, #3B82F6, #60A5FA (trustworthy, business)
+**Property Miles App Colors (Use These for Consistency):**
+- **iOS Blue:** #007AFF (primary action color, buttons, main interactions)
+- **iOS Green:** #34C759 (active tracking, "go" state, positive indicators)
+- **iOS Orange:** #FF9500 (trip count, secondary highlights)
+- **White:** #FFFFFF (primary text, house icon, high contrast elements)
+- **Charcoal Gray:** #374151 (professional background, modern aesthetic)
+- **iOS Red:** #FF3B30 (stop tracking, end points)
+
+**Why These Colors:**
+- Matches the app's existing UI design language
+- Provides strong contrast and visibility at small sizes
+- Familiar iOS system colors ensure consistency
+- Professional and trustworthy appearance for real estate context
+
+**Other Professional Options (If branching out):**
+- **Secondary Blue:** #1E40AF, #3B82F6, #60A5FA (trustworthy, business)
 - **Teal/Turquoise:** #0891B2, #06B6D4, #22D3EE (modern, tech)
 - **Navy/Slate:** #1E293B, #334155, #475569 (professional, serious)
 
-**Accent Colors:**
-- **Orange:** #F97316, #FB923C, #FDBA74 (energy, action)
-- **Yellow:** #FBBF24, #FCD34D (mile markers, attention)
-- **Green:** #10B981, #34D399 (go, positive)
-- **Red:** #EF4444, #F87171 (location pin, important)
+**Accent Colors (Secondary):**
+- **Yellow:** #FBBF24, #FCD34D (mile markers, attention - use sparingly)
 
-**Background Gradients:**
-- Blue → Teal: #1E40AF → #0891B2
-- Navy → Blue: #1E293B → #3B82F6
-- Purple → Blue: #7C3AED → #3B82F6
-- Dark → Light: #374151 → #60A5FA
+**Recommended Icon Combinations:**
+1. **Charcoal + White + Blue:** Most professional, matches primary app color
+2. **Charcoal + White + Green:** Emphasizes "active tracking" concept
+3. **Charcoal + White + Orange:** Warm, friendly, still professional
+
+**Background Options:**
+- Solid Charcoal (#374151) - **Recommended for consistency**
+- Navy → Blue gradient: #1E293B → #007AFF
+- Dark → iOS Blue gradient: #374151 → #007AFF
+
 
 ---
 
