@@ -24,7 +24,7 @@ class TripManager: NSObject, ObservableObject {
     private let motionActivityManager = CMMotionActivityManager()
     private var lastLocation: CLLocation?
     private var stoppedTimer: Timer?
-    private let normalStoppedThreshold: TimeInterval = 180 // 3 minutes
+    private let normalStoppedThreshold: TimeInterval = 60 // 1 minute
     private let speedThreshold: CLLocationSpeed = 4.4704 // 10 mph in m/s
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
