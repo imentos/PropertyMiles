@@ -28,7 +28,7 @@ class TripManager: NSObject, ObservableObject {
     private let speedThreshold: CLLocationSpeed = 4.4704 // 10 mph in m/s
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
-    private var isVehicleActivity: Bool = false // Tracks automotive OR cycling
+    private var isVehicleActivity: Bool = false // Tracks automotive only
     
     // Reference to TripStore for place matching
     weak var tripStore: TripStore?
@@ -75,15 +75,14 @@ class TripManager: NSObject, ObservableObject {
         
         locationManager.startUpdatingLocation()
         
-        // Start motion activity monitoring to detect driving/cycling
+        // Start motion activity monitoring to detect driving
         if CMMotionActivityManager.isActivityAvailable() {
             motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
                 guard let activity = activity else { return }
                 self?.currentActivity = activity
-                self?.isVehicleActivity = activity.automotive || activity.cycling
+                self?.isVehicleActivity = activity.automotive
                 
                 let activityType = activity.automotive ? "🚗 Driving" : 
-                                   activity.cycling ? "🚴 Cycling" :
                                    activity.stationary ? "🛑 Stationary" : "❓ Other"
                 print("Activity: \(activityType), Confidence: \(activity.confidence.rawValue)")
             }
@@ -226,10 +225,10 @@ extension TripManager: CLLocationManagerDelegate {
         
         let speedMph = speed * 2.23694
         let thresholdMph = speedThreshold * 2.23694
-        let activityStatus = isVehicleActivity ? (currentActivity?.cycling == true ? "🚴" : "🚗") : "❓"
+        let activityStatus = isVehicleActivity ? "🚗" : "❓"
         print("📍 Speed: \(String(format: "%.1f", speedMph)) mph (threshold: \(String(format: "%.1f", thresholdMph)) mph) \(activityStatus)\(debugMode ? " [DEBUG]" : "")")
         
-        // Trip start detection - require BOTH speed threshold AND vehicle activity (driving or cycling)
+        // Trip start detection - require BOTH speed threshold AND vehicle activity (driving)
         if currentTrip == nil && speed > speedThreshold {
             // Check if we're in vehicle mode (or motion activity is unavailable)
             if !CMMotionActivityManager.isActivityAvailable() || isVehicleActivity {

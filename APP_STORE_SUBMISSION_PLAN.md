@@ -61,7 +61,7 @@ AUTOMATIC TRIP DETECTION
 • Detects drives automatically when you exceed 10 mph
 • Works in the background - no need to remember to start tracking
 • Ends trips after 3 minutes stopped
-• Tracks both driving and cycling
+• Optimized for automotive tracking
 
 PROPERTY & LOCATION TAGGING
 • Tag trips to specific properties
