@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct ReportsView: View {
     @EnvironmentObject var tripStore: TripStore
@@ -16,6 +17,7 @@ struct ReportsView: View {
     @State private var csvFileURL: URL?
     @State private var showingExportAlert = false
     @State private var exportMessage = ""
+    @Environment(\.requestReview) private var requestReview
     
     var dateRange: (start: Date, end: Date) {
         switch selectedPeriod {
@@ -157,6 +159,11 @@ struct ReportsView: View {
                     }
                     .padding(.horizontal)
                     .disabled(filteredTrips.isEmpty)
+                    #if DEBUG
+                    .onLongPressGesture {
+                        requestReview()
+                    }
+                    #endif
                     
                     if filteredTrips.isEmpty {
                         VStack(spacing: 12) {
@@ -173,13 +180,17 @@ struct ReportsView: View {
                 .padding(.bottom)
             }
             .navigationTitle("Reports")
-            .sheet(isPresented: $showingShareSheet) {
+            .sheet(isPresented: $showingShareSheet, onDismiss: {
+                requestReview()
+            }) {
                 if let url = csvFileURL {
                     ShareSheet(activityItems: [url])
                 }
             }
             .alert("CSV Exported", isPresented: $showingExportAlert) {
-                Button("OK", role: .cancel) { }
+                Button("OK", role: .cancel) {
+                    requestReview()
+                }
                 if let url = csvFileURL {
                     Button("Share File") {
                         print("🔘 Share File button tapped")
@@ -219,7 +230,7 @@ struct ReportsView: View {
             exportMessage = "CSV file saved to Documents!\n\nFile: \(fileName)\n\nAccess it via:\n• Files app > On My iPhone > PropertyMiles\n• Or tap 'Share File' below"
             print("⚠️ Setting showingExportAlert = true")
             showingExportAlert = true
-            
+
             print("✅ CSV exported to: \(fileURL.path)")
         } catch {
             exportMessage = "Error saving CSV: \(error.localizedDescription)"

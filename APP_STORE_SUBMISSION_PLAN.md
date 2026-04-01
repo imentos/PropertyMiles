@@ -1,9 +1,9 @@
-# Property Miles - App Store Submission Plan
+# LandMile - App Store Submission Plan
 
 ## App Information
 
-**App Name:** Property Miles  
-**Subtitle:** Mileage Tracker for Real Estate  
+**App Name:** LandMile  
+**Subtitle:** Mileage Tracker for Landlords  
 **Category:** Primary: Productivity | Secondary: Finance  
 **Price:** Free (with optional in-app purchases for future premium features)
 
@@ -12,30 +12,30 @@
 ## ASO (App Store Optimization)
 
 ### App Name Strategy
-**Property Miles** - Short, memorable, includes primary keyword "Miles"
+**LandMile** - Short, branded, combines "Landlord" + "Mile" — professional and niche-specific
 
 ### Subtitle (30 characters max)
-**Option 1:** `Mileage Tracker for Real Estate` (30 chars) [RECOMMENDED]  
-**Option 2:** `Real Estate Mileage Logger` (27 chars)  
-**Option 3:** `Auto Track Agent Drives` (23 chars)
+**Recommended:** `Mileage Tracker for Landlords` (29 chars)
+
+**Why:** "Landlords" is less competitive than "Real Estate" and directly targets your core user. Apple indexes the subtitle for search — owning niche keywords beats competing on broad terms.
 
 ### Keywords (100 characters max)
 ```
-mileage,tracker,real estate,agent,tax,deduction,irs,property,driving,log,automatic,trip,expense,reimbursement,realtor
+landlord,rental,log,IRS,deduction,property,realtor,agent,tax,auto,trip,driving,schedule,miles
 ```
 
-**Character count:** 99
+**Character count:** 93
 
-**Keyword Research:**
-- High volume: mileage tracker, tax deduction, irs mileage
-- Niche: real estate agent, realtor, property visits
-- Long-tail: automatic mileage log, driving expense tracker
+**Keyword Strategy:**
+- Own the niche: `landlord`, `rental` — almost no competition, you can rank #1
+- Capture intent: `IRS`, `deduction`, `tax` — people searching at tax time
+- Broad fallback: `mileage`, `tracker`, `log` — captures general searches
+- Removed: `reimbursement` (low relevance for landlords), `expense` (too generic)
 
 ### Promotional Text (170 characters max)
+*(Refreshable anytime without App Review resubmission — update seasonally)*
 ```
-Automatic trip detection for real estate professionals
-IRS-compliant mileage logs at $0.67/mile
-Tag trips to properties for easy tax reporting
+Tax season? Export your full IRS mileage log in one tap. Free — no subscription, no ads. Built by a landlord, for landlords.
 ```
 
 ---
@@ -44,70 +44,46 @@ Tag trips to properties for easy tax reporting
 
 ### Short Description (First 3 lines - critical for ASO)
 ```
-Property Miles automatically tracks your driving mileage and creates IRS-compliant reports for real estate professionals. Never miss a tax deduction again.
-
-Save time and maximize deductions with automatic trip detection, property tagging, and one-tap CSV exports for your accountant.
+Stop leaving thousands in tax deductions on the table. At $0.67/mile, 15,000 business miles = $10,050 you can deduct. LandMile tracks every drive automatically - no buttons, no spreadsheets.
 ```
 
 ### Full Description
 ```
-AUTOMATIC MILEAGE TRACKING FOR REAL ESTATE AGENTS
+BUILT FOR LANDLORDS, PROPERTY MANAGERS, AND REAL ESTATE AGENTS
 
-Property Miles is designed specifically for real estate agents, property managers, and real estate professionals who need accurate mileage logs for tax deductions.
+Most mileage apps charge $60/year for basic GPS tracking. LandMile is 100% free - because landlords already pay enough.
 
-KEY FEATURES:
+AUTO TRIP DETECTION
+Your phone stays in your pocket. LandMile detects when you start driving and stops when you arrive. No buttons to tap, no trips to forget.
 
-AUTOMATIC TRIP DETECTION
-• Detects drives automatically when you exceed 10 mph
-• Works in the background - no need to remember to start tracking
-• Ends trips after 3 minutes stopped
-• Optimized for automotive tracking
+TAG TRIPS TO PROPERTIES
+Mark each drive: property visit, tenant showing, repair trip, inspection. At tax time your log is already organized by property - exactly how your CPA wants it.
 
-PROPERTY & LOCATION TAGGING
-• Tag trips to specific properties
-• Save frequent locations (office, staging warehouse, etc.)
-• Auto-assign trips to saved locations
-• Organize trips by purpose: showings, open houses, inspections
+IRS-COMPLIANT REPORTS
+Built-in 2026 IRS rate: $0.67/mile. Export a complete CSV in one tap. Hand it to your accountant and you are done.
 
-IRS-COMPLIANT REPORTING
-• Built-in IRS standard mileage rate ($0.67/mile for 2026)
-• Generate period reports (monthly, quarterly, yearly)
-• One-tap CSV export for tax filing
-• Detailed trip history with dates, times, and distances
+100% FREE
+No subscription. No ads. No in-app purchases. Just a tool that works.
 
-VEHICLE MANAGEMENT
-• Track multiple vehicles
-• Add vehicle details (make, model, year, VIN)
-• Assign trips to specific vehicles
+WHAT THE IRS REQUIRES
+A valid mileage log must include: date, destination, business purpose, and miles. LandMile captures all of this automatically.
 
-SMART ANALYTICS
-• View total miles and tax deductions
-• Filter by date range
-• Breakdown by trip purpose
-• Track personal vs. business miles
+GREAT FOR
+- Landlords visiting rental properties
+- Property managers coordinating repairs
+- Real estate agents driving to showings
+- Anyone tracking business miles for Schedule E or Schedule C
 
-PERFECT FOR:
-• Real estate agents tracking property showings
-• Property managers visiting rental units
-• Real estate photographers traveling to listings
-• Home inspectors visiting multiple properties
-• Anyone in real estate who drives for business
+PRIVACY AND SECURITY
+- All data stored locally on your device
+- No account required
+- Location data never shared or sold
+- Export your data anytime
 
-PRIVACY & SECURITY:
-• All data stored locally on your device
-• No account required
-• Location data never shared or sold
-• Export your data anytime
+BACKGROUND LOCATION USAGE
+LandMile uses location services in the background to automatically detect and track your trips. This allows the app to work seamlessly without needing to open it before each drive. You can disable automatic tracking anytime in Settings.
 
-TAX DEDUCTION EXAMPLE:
-Drive 1,000 miles per month for property visits = $670/month in tax deductions = $8,040/year saved!
-
-Download Property Miles today and start maximizing your mileage deductions.
-
-BACKGROUND LOCATION USAGE:
-Property Miles uses location services in the background to automatically detect and track your trips. This allows the app to work seamlessly without needing to open it before each drive. You can disable automatic tracking anytime in Settings.
-
-NOTE: Continued use of GPS running in the background can dramatically decrease battery life. Property Miles is optimized for automotive navigation to minimize battery impact.
+NOTE: Continued use of GPS running in the background can decrease battery life. LandMile is optimized for automotive navigation to minimize battery impact.
 ```
 
 ---
@@ -170,8 +146,8 @@ NOTE: Continued use of GPS running in the background can dramatically decrease b
 ## App Store Connect Checklist
 
 ### App Information
-- [ ] App name: Property Miles
-- [ ] Subtitle: Mileage Tracker for Real Estate
+- [ ] App name: LandMile
+- [ ] Subtitle: Mileage Tracker for Landlords
 - [ ] Primary category: Productivity
 - [ ] Secondary category: Finance
 - [ ] Keywords (100 char limit)
@@ -190,7 +166,7 @@ NOTE: Continued use of GPS running in the background can dramatically decrease b
 
 **Privacy Policy URL:** Required
 - [ ] Create privacy policy page
-- [ ] Host at: `https://[your-domain]/privacy-policy-property-miles.html`
+- [ ] Host at: `https://[your-domain]/privacy-policy-landmile.html`
 
 **Privacy Practices:**
 - Location: Used for mileage tracking
@@ -212,7 +188,7 @@ NOTE: Continued use of GPS running in the background can dramatically decrease b
 
 **Notes for Review:**
 ```
-Property Miles is a mileage tracking app for real estate professionals.
+LandMile is a mileage tracking app for real estate professionals.
 
 KEY TESTING POINTS:
 1. Grant "Always Allow" location permission when prompted
@@ -401,7 +377,7 @@ Consider for v1.1 or v2.0:
 - [ ] Proper error handling for permission denials
 
 ### Content Requirements
-- [ ] App icon (1024x1024)
+- [ ] App icon (1024x1024) — consider "LM" monogram or road/mile marker icon
 - [ ] 6 iPhone screenshots (6.7" display)
 - [ ] Optional: App preview video (15-30 seconds)
 - [ ] Privacy policy hosted and accessible
@@ -418,7 +394,7 @@ Consider for v1.1 or v2.0:
 - [ ] What's new in this version
 
 ### Legal
-- [ ] Trademark search for "Property Miles"
+- [ ] Trademark search for "LandMile"
 - [ ] Privacy policy complies with Apple's requirements
 - [ ] No misleading screenshots or descriptions
 - [ ] Accurate feature descriptions
@@ -493,7 +469,7 @@ Consider for v1.1 or v2.0:
 
 **Scene 4 (15-20s):**
 - App icon + name
-- Text: "Property Miles - Mileage Tracker for Real Estate"
+- Text: "LandMile - Mileage Tracker for Landlords"
 
 ---
 
@@ -522,10 +498,10 @@ Consider for v1.1 or v2.0:
 
 ## URLs Needed
 
-1. **Privacy Policy:** `https://imentos.github.io/PropertyMiles/privacy-policy.html`
-2. **Support/Help:** `https://imentos.github.io/PropertyMiles/support.html`
-3. **Marketing Site (optional):** `https://imentos.github.io/PropertyMiles/`
-4. **Terms of Service (optional):** `https://imentos.github.io/PropertyMiles/terms.html`
+1. **Privacy Policy:** `https://imentos.github.io/LandMile/privacy-policy.html`
+2. **Support/Help:** `https://imentos.github.io/LandMile/support.html`
+3. **Marketing Site (optional):** `https://imentos.github.io/LandMile/`
+4. **Terms of Service (optional):** `https://imentos.github.io/LandMile/terms.html`
 
 ---
 
@@ -544,9 +520,9 @@ Consider for v1.1 or v2.0:
 
 ### Social Media Post
 ```
-Introducing Property Miles! 
+Introducing LandMile! 
 
-The mileage tracker built specifically for real estate agents.
+The mileage tracker built specifically for landlords and real estate agents.
 
 • Automatic trip detection
 • Property tagging
@@ -557,7 +533,7 @@ Available now on the App Store!
 
 [Link]
 
-#RealEstate #MileageTracker #TaxDeductions #RealEstateAgent #PropTech
+#RealEstate #MileageTracker #TaxDeductions #Landlord #PropTech
 ```
 
 ### Email to Real Estate Contacts
@@ -568,7 +544,7 @@ Hi [Name],
 
 As a real estate professional, you're probably driving to showings, open houses, and property visits every day. Are you tracking all those miles for tax deductions?
 
-I built Property Miles to solve this exact problem. It automatically tracks your drives, lets you tag them to properties, and exports IRS-compliant reports for your accountant.
+I built LandMile to solve this exact problem. It automatically tracks your drives, lets you tag them to properties, and exports IRS-compliant reports for your accountant.
 
 No more manual logging or forgotten trips. Just install, grant location permission, and let it work in the background.
 
@@ -582,5 +558,5 @@ P.S. The app is completely free and your data stays private on your device.
 
 ---
 
-**Last Updated:** March 11, 2026  
+**Last Updated:** April 1, 2026  
 **Status:** Ready for App Store submission after creating screenshots and privacy policy
