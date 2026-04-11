@@ -93,7 +93,7 @@ final class SubscriptionManager: ObservableObject {
     private func listenForTransactions() -> Task<Void, Never> {
         Task.detached { @MainActor in
             for await result in Transaction.updates {
-                if let transaction = try? await self.checkVerified(result) {
+                if let transaction = try? self.checkVerified(result) {
                     await self.updateSubscriptionStatus()
                     await transaction.finish()
                 }
