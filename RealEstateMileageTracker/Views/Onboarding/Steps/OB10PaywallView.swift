@@ -11,37 +11,35 @@ struct OB10PaywallView: View {
     var onComplete: () -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                // Marketing content + native subscription UI
-                SubscriptionStoreView(productIDs: SubscriptionManager.ProductID.allCases.map { $0.rawValue }) {
-                    marketingHeader
-                }
-                .subscriptionStoreButtonLabel(.multiline)
-                .subscriptionStoreControlStyle(.prominentPicker)
-                .onInAppPurchaseCompletion { _, result in
-                    if case .success(let purchaseResult) = result,
-                       case .success = purchaseResult {
-                        onComplete()
-                    }
-                }
-
-                // Footer below the native UI
-                VStack(spacing: 12) {
-                    Button("Maybe later") { onComplete() }
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
-                    HStack(spacing: 16) {
-                        Link("Terms of Use", destination: URL(string: "https://imentos.github.io/LandMile/terms-of-use")!)
-                        Link("Privacy Policy", destination: URL(string: "https://imentos.github.io/LandMile/privacy-policy")!)
-                    }
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                }
-                .padding(.top, 16)
-                .padding(.bottom, 32)
+        VStack(spacing: 0) {
+            // SubscriptionStoreView manages its own scrolling
+            SubscriptionStoreView(productIDs: SubscriptionManager.ProductID.allCases.map { $0.rawValue }) {
+                marketingHeader
             }
+            .subscriptionStoreButtonLabel(.multiline)
+            .subscriptionStoreControlStyle(.prominentPicker)
+            .onInAppPurchaseCompletion { _, result in
+                if case .success(let purchaseResult) = result,
+                   case .success = purchaseResult {
+                    onComplete()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            // Footer pinned below
+            VStack(spacing: 12) {
+                Button("Maybe later") { onComplete() }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                HStack(spacing: 16) {
+                    Link("Terms of Use", destination: URL(string: "https://imentos.github.io/LandMile/terms-of-use")!)
+                    Link("Privacy Policy", destination: URL(string: "https://imentos.github.io/LandMile/privacy-policy")!)
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
+            .padding(.vertical, 16)
         }
     }
 
