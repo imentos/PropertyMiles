@@ -144,6 +144,15 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
+
+                #if DEBUG
+                Section("Developer") {
+                    Button("Reset Onboarding (Debug)") {
+                        tripStore.resetOnboarding()
+                    }
+                    .foregroundColor(.red)
+                }
+                #endif
             }
             .navigationTitle("Settings")
             .alert("Location Permission Required", isPresented: $showingPermissionAlert) {
