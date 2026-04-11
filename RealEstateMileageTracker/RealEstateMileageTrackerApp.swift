@@ -10,10 +10,14 @@ import SwiftUI
 @main
 struct RealEstateMileageTrackerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+    @StateObject private var tripStore = TripStore()
+    @StateObject private var tripManager = TripManager()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(tripStore)
+                .environmentObject(tripManager)
         }
     }
 }

@@ -9,33 +9,31 @@ import SwiftUI
 import CoreLocation
 
 struct MainTabView: View {
-    @StateObject private var tripStore = TripStore()
-    @StateObject private var tripManager = TripManager()
-    
+    @EnvironmentObject private var tripStore: TripStore
+    @EnvironmentObject private var tripManager: TripManager
+
     var body: some View {
         TabView {
             TripsView()
                 .tabItem {
                     Label("Trips", systemImage: "car")
                 }
-            
+
             LocationNicknamesView()
                 .tabItem {
                     Label("Locations", systemImage: "map")
                 }
-            
+
             ReportsView()
                 .tabItem {
                     Label("Reports", systemImage: "chart.bar")
                 }
-            
+
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
         }
-        .environmentObject(tripStore)
-        .environmentObject(tripManager)
         .onAppear {
             // Link tripStore to tripManager for place matching
             tripManager.tripStore = tripStore
