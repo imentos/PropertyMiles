@@ -15,11 +15,17 @@ class TripStore: ObservableObject {
     @Published var customPurposes: [String] = []
     @Published var locationNicknames: [LocationNickname] = []
     @Published var locationNicknamesLastModified: Date = Date()
-    
+    @Published var hasCompletedOnboarding: Bool = false
+    @Published var onboardingGoal: String = ""
+    @Published var onboardingTripTypes: [String] = []
+
     private let tripsKey = "saved_trips"
     private let vehiclesKey = "saved_vehicles"
     private let customPurposesKey = "custom_purposes"
     private let locationNicknamesKey = "location_nicknames"
+    private let hasCompletedOnboardingKey = "hasCompletedOnboarding"
+    private let onboardingGoalKey = "onboardingGoal"
+    private let onboardingTripTypesKey = "onboardingTripTypes"
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -28,7 +34,13 @@ class TripStore: ObservableObject {
         loadVehicles()
         loadCustomPurposes()
         loadLocationNicknames()
-        
+        hasCompletedOnboarding = UserDefaults.standard.bool(forKey: hasCompletedOnboardingKey)
+        onboardingGoal = UserDefaults.standard.string(forKey: onboardingGoalKey) ?? ""
+        if let data = UserDefaults.standard.data(forKey: onboardingTripTypesKey),
+           let types = try? JSONDecoder().decode([String].self, from: data) {
+            onboardingTripTypes = types
+        }
+
         // Listen for completed trips
         NotificationCenter.default.publisher(for: .tripCompleted)
             .sink { [weak self] notification in
@@ -351,5 +363,27 @@ class TripStore: ObservableObject {
         trips.removeAll()
         saveTrips()
         print("🗑️ Cleared all trips")
+    }
+
+    // MARK: - Onboarding
+
+    func completeOnboarding(goal: String, tripTypes: [String]) {
+        onboardingGoal = goal
+        onboardingTripTypes = tripTypes
+        hasCompletedOnboarding = true
+        UserDefaults.standard.set(true, forKey: hasCompletedOnboardingKey)
+        UserDefaults.standard.set(goal, forKey: onboardingGoalKey)
+        if let data = try? JSONEncoder().encode(tripTypes) {
+            UserDefaults.standard.set(data, forKey: onboardingTripTypesKey)
+        }
+    }
+
+    func resetOnboarding() {
+        hasCompletedOnboarding = false
+        onboardingGoal = ""
+        onboardingTripTypes = []
+        UserDefaults.standard.removeObject(forKey: hasCompletedOnboardingKey)
+        UserDefaults.standard.removeObject(forKey: onboardingGoalKey)
+        UserDefaults.standard.removeObject(forKey: onboardingTripTypesKey)
     }
 }
