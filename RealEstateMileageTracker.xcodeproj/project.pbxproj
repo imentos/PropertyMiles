@@ -6,8 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B305D35D2F8B1D9400C60F06 /* LandMile.storekit in Resources */ = {isa = PBXBuildFile; fileRef = B305D35C2F8B1D9400C60F06 /* LandMile.storekit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		B305D3532F8B174700C60F06 /* LandMile.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = LandMile.storekit; sourceTree = "<group>"; };
+		B305D35C2F8B1D9400C60F06 /* LandMile.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = LandMile.storekit; sourceTree = "<group>"; };
 		B342410D2F5E6CC000112473 /* RealEstateMileageTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealEstateMileageTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -46,7 +50,7 @@
 		B34241042F5E6CC000112473 = {
 			isa = PBXGroup;
 			children = (
-				B305D3532F8B174700C60F06 /* LandMile.storekit */,
+				B305D35C2F8B1D9400C60F06 /* LandMile.storekit */,
 				B342410F2F5E6CC000112473 /* RealEstateMileageTracker */,
 				B342410E2F5E6CC000112473 /* Products */,
 			);
@@ -124,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B305D35D2F8B1D9400C60F06 /* LandMile.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,7 +285,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = rkuo.RealEstateMileageTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -312,7 +317,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = rkuo.RealEstateMileageTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
