@@ -7,17 +7,39 @@
 
 import SwiftUI
 import CoreLocation
+import StoreKit
 
 struct SettingsView: View {
     @EnvironmentObject var tripManager: TripManager
     @EnvironmentObject var tripStore: TripStore
     @State private var showingPermissionAlert = false
+    @State private var showingPaywall = false
     @State private var tapCount = 0
     @State private var showDebugModeAlert = false
+    @ObservedObject private var subscriptionManager = SubscriptionManager.shared
     
     var body: some View {
         NavigationView {
             Form {
+                if !subscriptionManager.isPro {
+                    Section {
+                        Button {
+                            showingPaywall = true
+                        } label: {
+                            HStack {
+                                Label("Upgrade to Pro", systemImage: "star.fill")
+                                    .foregroundColor(.blue)
+                                Spacer()
+                                Text("$4.99/mo")
+                                    .foregroundColor(.secondary)
+                                    .font(.subheadline)
+                            }
+                        }
+                    } header: {
+                        Text("Subscription")
+                    }
+                }
+
                 Section("Location Tracking") {
                     HStack {
                         Label("Permission Status", systemImage: "location.circle")
@@ -46,8 +68,7 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section("Mileage Rate") {
-                    HStack {
+                Section("Mileage Rate") {                    HStack {
                         Label("IRS Standard Rate", systemImage: "dollarsign.circle")
                         Spacer()
                         Text("$0.67/mile")
@@ -117,7 +138,7 @@ struct SettingsView: View {
                     HStack {
                         Label("Version", systemImage: "info.circle")
                         Spacer()
-                        Text("1.0.0\(tripManager.debugMode ? " [DEBUG]" : "")")
+                        Text("\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")\(tripManager.debugMode ? " [DEBUG]" : "")")
                             .foregroundColor(tripManager.debugMode ? .orange : .secondary)
                     }
                     .contentShape(Rectangle())
@@ -172,6 +193,11 @@ struct SettingsView: View {
                     Text("You can now generate sample trips for testing.")
                 } else {
                     Text("Debug mode disabled.")
+                }
+            }
+            .sheet(isPresented: $showingPaywall) {
+                OB10PaywallView(vm: OnboardingViewModel()) {
+                    showingPaywall = false
                 }
             }
         }

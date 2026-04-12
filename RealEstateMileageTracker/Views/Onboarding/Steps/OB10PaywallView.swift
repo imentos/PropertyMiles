@@ -31,9 +31,15 @@ struct OB10PaywallView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
 
+                Button("Restore Purchases") {
+                    Task { await SubscriptionManager.shared.restorePurchases() }
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
+
                 HStack(spacing: 16) {
-                    Link("Terms of Use", destination: URL(string: "https://imentos.github.io/LandMile/terms-of-use")!)
-                    Link("Privacy Policy", destination: URL(string: "https://imentos.github.io/LandMile/privacy-policy")!)
+                    Link("Terms of Use", destination: URL(string: "https://imentos.github.io/PropertyMiles/terms-of-use")!)
+                    Link("Privacy Policy", destination: URL(string: "https://imentos.github.io/PropertyMiles/privacy-policy")!)
                 }
                 .font(.caption)
                 .foregroundColor(.secondary)

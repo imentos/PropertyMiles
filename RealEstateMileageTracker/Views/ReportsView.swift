@@ -17,6 +17,8 @@ struct ReportsView: View {
     @State private var csvFileURL: URL?
     @State private var showingExportAlert = false
     @State private var exportMessage = ""
+    @State private var showingPaywall = false
+    @ObservedObject private var subscriptionManager = SubscriptionManager.shared
     @Environment(\.requestReview) private var requestReview
     
     var dateRange: (start: Date, end: Date) {
@@ -148,14 +150,23 @@ struct ReportsView: View {
                     
                     // Export button
                     Button {
-                        exportCSV()
+                        if subscriptionManager.isPro {
+                            exportCSV()
+                        } else {
+                            showingPaywall = true
+                        }
                     } label: {
-                        Label("Export to CSV", systemImage: "square.and.arrow.up")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                        HStack {
+                            if !subscriptionManager.isPro {
+                                Image(systemName: "lock.fill")
+                            }
+                            Label("Export to CSV", systemImage: "square.and.arrow.up")
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
                     .padding(.horizontal)
                     .disabled(filteredTrips.isEmpty)
@@ -185,6 +196,11 @@ struct ReportsView: View {
             }) {
                 if let url = csvFileURL {
                     ShareSheet(activityItems: [url])
+                }
+            }
+            .sheet(isPresented: $showingPaywall) {
+                OB10PaywallView(vm: OnboardingViewModel()) {
+                    showingPaywall = false
                 }
             }
             .alert("CSV Exported", isPresented: $showingExportAlert) {

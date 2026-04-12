@@ -15,12 +15,34 @@ struct TripsView: View {
     @State private var selectedCurrentTrip: Trip?
     @State private var selectedMonth: Date = Date()
     @State private var showingMonthPicker = false
-    
+    @State private var showingPaywall = false
+    @ObservedObject private var subscriptionManager = SubscriptionManager.shared
+
+    private let freeTripsLimit = 10
+
     private var filteredTrips: [Trip] {
         let calendar = Calendar.current
         return tripStore.trips.filter { trip in
             calendar.isDate(trip.startTime, equalTo: selectedMonth, toGranularity: .month)
         }
+    }
+
+    /// IDs of the 10 most recent trips across all time (for free tier visibility)
+    private var recentTripIDs: Set<UUID> {
+        let ids = tripStore.trips
+            .sorted { $0.startTime > $1.startTime }
+            .prefix(freeTripsLimit)
+            .map { $0.id }
+        return Set(ids)
+    }
+
+    private var visibleTrips: [Trip] {
+        guard !subscriptionManager.isPro else { return filteredTrips }
+        return filteredTrips.filter { recentTripIDs.contains($0.id) }
+    }
+
+    private var hasHiddenTrips: Bool {
+        !subscriptionManager.isPro && tripStore.trips.count > freeTripsLimit
     }
     
     private var monthStats: (count: Int, miles: Double, amount: Double) {
@@ -44,7 +66,7 @@ struct TripsView: View {
                     
                     // Trip list
                     List {
-                        ForEach(filteredTrips) { trip in
+                        ForEach(visibleTrips) { trip in
                             TripRow(trip: trip, tripStore: tripStore)
                                 .id("\(trip.id)-\(tripStore.locationNicknamesLastModified.timeIntervalSince1970)")
                                 .background(
@@ -55,6 +77,31 @@ struct TripsView: View {
                                 )
                         }
                         .onDelete(perform: deleteTrips)
+
+                        if hasHiddenTrips {
+                            Button {
+                                showingPaywall = true
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "lock.fill")
+                                        .foregroundColor(.blue)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Unlock all \(tripStore.trips.count) trips")
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(.primary)
+                                        Text("Upgrade to Pro to see full history")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, 8)
+                            }
+                        }
                     }
                     .listStyle(.plain)
                     .safeAreaInset(edge: .bottom) {
@@ -109,6 +156,11 @@ struct TripsView: View {
             }
             .sheet(isPresented: $showingMonthPicker) {
                 MonthPickerView(selectedMonth: $selectedMonth)
+            }
+            .sheet(isPresented: $showingPaywall) {
+                OB10PaywallView(vm: OnboardingViewModel()) {
+                    showingPaywall = false
+                }
             }
         }
     }
