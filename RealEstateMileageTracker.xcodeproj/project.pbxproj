@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		B305D3532F8B174700C60F06 /* LandMile.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = LandMile.storekit; sourceTree = "<group>"; };
 		B342410D2F5E6CC000112473 /* RealEstateMileageTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealEstateMileageTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +46,7 @@
 		B34241042F5E6CC000112473 = {
 			isa = PBXGroup;
 			children = (
+				B305D3532F8B174700C60F06 /* LandMile.storekit */,
 				B342410F2F5E6CC000112473 /* RealEstateMileageTracker */,
 				B342410E2F5E6CC000112473 /* Products */,
 			);
@@ -278,7 +280,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = rkuo.RealEstateMileageTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -310,7 +312,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = rkuo.RealEstateMileageTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
