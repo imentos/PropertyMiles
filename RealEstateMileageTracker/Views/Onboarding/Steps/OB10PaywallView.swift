@@ -12,7 +12,6 @@ struct OB10PaywallView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // SubscriptionStoreView manages its own scrolling
             SubscriptionStoreView(productIDs: SubscriptionManager.ProductID.allCases.map { $0.rawValue }) {
                 marketingHeader
             }
@@ -26,8 +25,8 @@ struct OB10PaywallView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            // Footer pinned below
-            VStack(spacing: 12) {
+            // Footer
+            VStack(spacing: 10) {
                 Button("Maybe later") { onComplete() }
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -39,57 +38,38 @@ struct OB10PaywallView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
             }
-            .padding(.vertical, 16)
+            .padding(.vertical, 12)
         }
     }
 
     private var marketingHeader: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             Image(systemName: "car.fill")
-                .font(.system(size: 56))
+                .font(.system(size: 48))
                 .foregroundStyle(.blue.gradient)
                 .padding(.top, 8)
 
             Text("Stop leaving money\non the road.")
-                .font(.title.bold())
+                .font(.title2.bold())
                 .multilineTextAlignment(.center)
 
-            Text("Every mile tracked = more money back\nat tax time.")
+            Text("Every mile tracked = more money back at tax time.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
 
-            // Testimonial
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 2) {
-                    ForEach(0..<5, id: \.self) { _ in
-                        Image(systemName: "star.fill").foregroundColor(.yellow).font(.caption)
-                    }
-                }
-                Text("\"Paid for itself in the first week. I had no idea how many miles I was logging.\"")
-                    .font(.subheadline)
-                    .italic()
-                Text("-- Sandra K., Property Manager")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
-            .cornerRadius(16)
-
             // Features
-            VStack(spacing: 14) {
-                PaywallFeatureRow(icon: "car.fill",          text: "Unlimited automatic trip tracking")
-                PaywallFeatureRow(icon: "doc.text.fill",     text: "IRS-compliant CSV export")
-                PaywallFeatureRow(icon: "tag.fill",          text: "Vehicle & purpose management")
-                PaywallFeatureRow(icon: "chart.bar.fill",    text: "Full trip history & reports")
+            VStack(spacing: 10) {
+                PaywallFeatureRow(icon: "car.fill",       text: "Unlimited automatic trip tracking")
+                PaywallFeatureRow(icon: "doc.text.fill",  text: "IRS-compliant CSV export")
+                PaywallFeatureRow(icon: "tag.fill",       text: "Vehicle & purpose management")
+                PaywallFeatureRow(icon: "chart.bar.fill", text: "Full trip history & reports")
             }
             .padding()
             .background(Color(.systemGray6))
-            .cornerRadius(16)
+            .cornerRadius(14)
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 20)
         .padding(.bottom, 8)
     }
 }
@@ -99,8 +79,8 @@ private struct PaywallFeatureRow: View {
     let text: String
 
     var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon).foregroundColor(.blue).font(.title3).frame(width: 28)
+        HStack(spacing: 12) {
+            Image(systemName: icon).foregroundColor(.blue).font(.subheadline).frame(width: 24)
             Text(text).font(.subheadline)
             Spacer()
         }
