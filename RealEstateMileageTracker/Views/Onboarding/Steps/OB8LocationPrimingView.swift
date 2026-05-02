@@ -45,19 +45,13 @@ struct OB8LocationPrimingView: View {
 
             VStack(spacing: 12) {
                 Button(action: requestLocation) {
-                    Text("Enable Location →")
+                    Text("Continue")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(16)
-                }
-
-                Button(action: { vm.advance() }) {
-                    Text("Not now")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
                 }
             }
             .padding(.horizontal, 24)

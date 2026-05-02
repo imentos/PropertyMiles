@@ -15,27 +15,27 @@
 **LandMile** - Short, branded, combines "Landlord" + "Mile" — professional and niche-specific
 
 ### Subtitle (30 characters max)
-**Recommended:** `Mileage Tracker for Landlords` (29 chars)
+**Recommended:** `IRS Mileage for Real Estate` (27 chars)
 
-**Why:** "Landlords" is less competitive than "Real Estate" and directly targets your core user. Apple indexes the subtitle for search — owning niche keywords beats competing on broad terms.
+**Why:** "Real estate" gets far more searches than "Landlords". "IRS Mileage" captures high-intent tax-time searches. No overlap with title keywords.
 
 ### Keywords (100 characters max)
 ```
-landlord,rental,log,IRS,deduction,property,realtor,agent,tax,auto,trip,driving,schedule,miles
+landlord,1099,deduction,tax,realtor,log,trip,agent,auto,rental,tracker,business,miles,property
 ```
 
-**Character count:** 93
+**Character count:** 94
 
 **Keyword Strategy:**
-- Own the niche: `landlord`, `rental` — almost no competition, you can rank #1
-- Capture intent: `IRS`, `deduction`, `tax` — people searching at tax time
-- Broad fallback: `mileage`, `tracker`, `log` — captures general searches
-- Removed: `reimbursement` (low relevance for landlords), `expense` (too generic)
+- High intent: `1099`, `deduction`, `tax` — agents searching at tax time
+- Niche ownership: `landlord`, `realtor`, `agent`, `rental` — almost no competition
+- Feature terms: `log`, `trip`, `tracker`, `auto`, `miles`
+- Removed: `driving`, `schedule` — dominated by unrelated apps, will never rank
 
 ### Promotional Text (170 characters max)
 *(Refreshable anytime without App Review resubmission — update seasonally)*
 ```
-Tax season? Export your full IRS mileage log in one tap. Free — no subscription, no ads. Built by a landlord, for landlords.
+Tax deadline April 15. Export your full 2025 mileage log in one tap. Every untracked mile is money left behind.
 ```
 
 ---
@@ -49,30 +49,30 @@ Stop leaving thousands in tax deductions on the table. At $0.67/mile, 15,000 bus
 
 ### Full Description
 ```
-BUILT FOR LANDLORDS, PROPERTY MANAGERS, AND REAL ESTATE AGENTS
+BUILT FOR REAL ESTATE AGENTS, REALTORS, AND PROPERTY MANAGERS
 
-Most mileage apps charge $60/year for basic GPS tracking. LandMile is 100% free - because landlords already pay enough.
+The average agent drives 12,000+ miles a year for work. At the IRS rate of $0.67/mile, that's $8,040 in deductions. Property Miles captures every mile automatically so your log is always ready when your accountant asks.
 
 AUTO TRIP DETECTION
-Your phone stays in your pocket. LandMile detects when you start driving and stops when you arrive. No buttons to tap, no trips to forget.
+Your phone stays in your pocket. Property Miles detects when you start driving and stops when you arrive. No buttons to tap, no trips to forget.
 
 TAG TRIPS TO PROPERTIES
-Mark each drive: property visit, tenant showing, repair trip, inspection. At tax time your log is already organized by property - exactly how your CPA wants it.
+Mark each drive: property visit, tenant showing, repair trip, inspection. At tax time your log is already organized by property — exactly how your CPA wants it.
 
 IRS-COMPLIANT REPORTS
-Built-in 2026 IRS rate: $0.67/mile. Export a complete CSV in one tap. Hand it to your accountant and you are done.
+Built-in 2026 IRS rate: $0.67/mile. Export a complete CSV in one tap. Every entry includes date, destination, business purpose, and miles — the four items the IRS requires for a valid log.
 
-100% FREE
-No subscription. No ads. No in-app purchases. Just a tool that works.
+FREE TO START — PRO FOR POWER USERS
+Track trips free. Upgrade to Property Miles Pro ($4.99/month or $39.99/year) for unlimited trip history, cloud backup, and advanced reports.
 
 WHAT THE IRS REQUIRES
-A valid mileage log must include: date, destination, business purpose, and miles. LandMile captures all of this automatically.
+A valid mileage log must include: date, destination, business purpose, and miles. Property Miles captures all of this automatically.
 
 GREAT FOR
+- Real estate agents driving to showings, open houses, and listings
+- Property managers coordinating repairs and inspections
 - Landlords visiting rental properties
-- Property managers coordinating repairs
-- Real estate agents driving to showings
-- Anyone tracking business miles for Schedule E or Schedule C
+- Anyone filing Schedule C or Schedule E with mileage deductions
 
 PRIVACY AND SECURITY
 - All data stored locally on your device
@@ -80,10 +80,13 @@ PRIVACY AND SECURITY
 - Location data never shared or sold
 - Export your data anytime
 
-BACKGROUND LOCATION USAGE
-LandMile uses location services in the background to automatically detect and track your trips. This allows the app to work seamlessly without needing to open it before each drive. You can disable automatic tracking anytime in Settings.
+TERMS OF USE
+https://imentos.github.io/PropertyMiles/terms-of-use.html
 
-NOTE: Continued use of GPS running in the background can decrease battery life. LandMile is optimized for automotive navigation to minimize battery impact.
+BACKGROUND LOCATION USAGE
+Property Miles uses background location to automatically detect and log your trips — no need to open the app before each drive. You can disable automatic tracking anytime in Settings.
+
+NOTE: Continued use of GPS running in the background can decrease battery life. Property Miles is optimized for automotive navigation to minimize battery impact.
 ```
 
 ---
@@ -92,29 +95,31 @@ NOTE: Continued use of GPS running in the background can decrease battery life. 
 
 ### iPhone (Required: 3-10 screenshots, 6.7" display - iPhone 15 Pro Max)
 
-**Screenshot 1: Hero/Main Feature**
-- Trips list with current trip banner
-- Caption: "Track Every Mile Automatically - Save Time & Never Miss a Deduction"
+**Screenshot 1: Money Shot — Reports Screen**
+- Reports screen showing dollar amount (e.g. "847 miles — $567.49")
+- Caption overlay: "847 miles driven. $567 in deductions captured."
+- Sub-text: "Your accountant will love this."
+- ⚠️ This is the ONLY screenshot visible in search results before a user taps — must show $ not map
 
-**Screenshot 2: Trip Detail**
-- Trip detail view with map, distance, purpose
-- Caption: "Tag Properties Instantly - Organize Trips for Easy Tax Filing"
+**Screenshot 2: Auto-Detection**
+- Active trip screen / live recording banner
+- Caption: "Stays in your pocket. Tracks every mile."
+- Sub-text: "No buttons. No forgetting. Just drive."
 
-**Screenshot 3: Location Nicknames**
-- Location management screen
-- Caption: "Save Frequent Stops - Speed Up Trip Logging"
+**Screenshot 3: Property Tagging (Key Differentiator)**
+- Trip detail with property tagged (address visible)
+- Caption: "Tag every trip to a property."
+- Sub-text: "Your log is organized before tax season starts."
 
-**Screenshot 4: Reports**
-- Reports screen showing monthly summary
-- Caption: "Generate IRS-Ready Reports - Maximize Your Tax Deductions"
+**Screenshot 4: Export / IRS Compliance**
+- Export screen or CSV preview with columns visible
+- Caption: "IRS-compliant CSV. One tap."
+- Sub-text: "$0.67/mile rate built in for 2026."
 
-**Screenshot 5: Vehicle Management**
-- Vehicles list
-- Caption: "Manage Multiple Vehicles - Keep All Your Mileage in One Place"
-
-**Screenshot 6: Export Preview**
-- Export share sheet or CSV preview
-- Caption: "Export with One Tap - Share Reports Instantly with Your Accountant"
+**Screenshot 5: Pricing Clarity**
+- Clean interface with pricing overlay
+- Caption: "Free to start. Upgrade when you're ready."
+- Sub-text: "Pro unlocks unlimited trips and cloud backup."
 
 ### Design Guidelines:
 - Use device frames
@@ -146,8 +151,8 @@ NOTE: Continued use of GPS running in the background can decrease battery life. 
 ## App Store Connect Checklist
 
 ### App Information
-- [ ] App name: LandMile
-- [ ] Subtitle: Mileage Tracker for Landlords
+- [ ] App name: Property Miles - Realtor Miles
+- [ ] Subtitle: IRS Mileage for Real Estate
 - [ ] Primary category: Productivity
 - [ ] Secondary category: Finance
 - [ ] Keywords (100 char limit)
