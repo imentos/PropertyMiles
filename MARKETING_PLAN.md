@@ -1,7 +1,7 @@
-# Property Miles - Download Growth Marketing Plan
+# LandMile - Download Growth Marketing Plan
 
-**App:** Property Miles — Mileage Tracker for Real Estate
-**Link:** https://apps.apple.com/us/app/property-miles/id6760436282
+**App:** LandMile — Mileage Tracker for Real Estate
+**Link:** https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 **Price:** Free
 **Strategy:** Community-First Reddit + Multi-Platform
 
@@ -118,7 +118,7 @@ Made it free on the app store since I figured other agents probably deal with th
 
 **When someone asks "what app?" reply with:**
 ```
-its called Property Miles - https://apps.apple.com/us/app/property-miles/id6760436282
+its called LandMile - https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 still pretty new so if anything bugs you let me know, always looking for feedback from actual agents
 ```
@@ -147,7 +147,7 @@ Anyway not trying to pitch anything, more just wanted to share because I feel li
 
 **When someone asks reply with:**
 ```
-yeah I put it on the app store actually, its called Property Miles. Free, no subscription or anything - https://apps.apple.com/us/app/property-miles/id6760436282
+yeah I put it on the app store actually, its called LandMile. Free, no subscription or anything - https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 built it for my wife originally but figured other people could use it too
 ```
@@ -180,7 +180,7 @@ Is a simple spreadsheet enough if you get audited or do they want something more
 
 **When someone asks what app:**
 ```
-I put it on the app store - Property Miles. Its free, I mainly built it for her but other people have been using it too. https://apps.apple.com/us/app/property-miles/id6760436282
+I put it on the app store - LandMile. Its free, I mainly built it for her but other people have been using it too. https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 definitely not trying to replace actual tax advice though lol thats what her CPA is for
 ```
@@ -209,7 +209,7 @@ Anyone else ever just built something themselves because the existing solutions 
 
 **When someone asks:**
 ```
-its called Property Miles on the app store! https://apps.apple.com/us/app/property-miles/id6760436282
+its called LandMile on the app store! https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 iOS only for now. Happy to hear feedback if anyone tries it
 ```
@@ -222,18 +222,18 @@ iOS only for now. Happy to hear feedback if anyone tries it
 
 **Title:**
 ```
-Property Miles - free mileage tracker I built for my wife's real estate business, no sub no ads
+LandMile - free mileage tracker I built for my wife's real estate business, no sub no ads
 ```
 
 **Body:**
 ```
 Hey, just wanted to share something I built. My wife manages properties and drives constantly for work. She needed to track mileage for tax deductions but didn't want to pay monthly for MileIQ.
 
-So I built Property Miles. It auto-detects drives, lets you tag trips to specific properties, and exports everything to CSV for tax time. Uses the current IRS rate (67 cents/mile for 2026).
+So I built LandMile. It auto-detects drives, lets you tag trips to specific properties, and exports everything to CSV for tax time. Uses the current IRS rate (67 cents/mile for 2026).
 
 Its free, no ads, no in app purchases. I built it to solve a real problem and figured other people could use it.
 
-https://apps.apple.com/us/app/property-miles/id6760436282
+https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 Built with Swift/SwiftUI. CoreLocation for background tracking and CoreMotion for activity detection. The trickiest part was getting background location to work reliably without killing battery.
 
@@ -266,7 +266,7 @@ Anyone else have a side project that started as "ill just build this for myself"
 
 **When someone asks for link:**
 ```
-called Property Miles! https://apps.apple.com/us/app/property-miles/id6760436282
+called LandMile! https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 still iterating on it so feedback is super welcome
 ```
@@ -297,8 +297,8 @@ still iterating on it so feedback is super welcome
 
 用了幾個月覺得還不錯，就放到App Store上了，完全免費。想說可能其他房東也需要。
 
-app叫 Property Miles：
-https://apps.apple.com/us/app/property-miles/id6760436282
+app叫 LandMile：
+https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 主要功能：
 - 自動偵測開車，不用手動開始
@@ -321,7 +321,7 @@ https://apps.apple.com/us/app/property-miles/id6760436282
 我們之前都沒記，結果會計師說IRS一mile可以deduct $0.67，我老婆一年開兩萬miles就是少報了一萬多的deduction 😭
 
 後來我自己寫了個app自動記錄開車的miles，免費的，大家如果需要可以試試：
-https://apps.apple.com/us/app/property-miles/id6760436282
+https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 手機放口袋就好，自動偵測開車自動記錄，報稅的時候直接匯出給會計師。省了很多事
 
@@ -350,7 +350,7 @@ IRS的standard mileage rate：$0.67/mile
 
 用Excel記真的堅持不了（別問我怎麼知道的）
 
-後來我自己開發了一個app叫Property Miles，手機自動偵測開車就記錄，標記一下去哪個property就好。報稅直接匯出CSV。
+後來我自己開發了一個app叫LandMile，手機自動偵測開車就記錄，標記一下去哪個property就好。報稅直接匯出CSV。
 
 免費的！不收錢！
 
@@ -378,9 +378,9 @@ IRS的standard mileage rate：$0.67/mile
 
 **Description:**
 ```
-Property Miles automatically tracks your driving and creates IRS-compliant mileage reports — built specifically for real estate agents, property managers, and landlords.
+LandMile automatically tracks your driving and creates IRS-compliant mileage reports — built specifically for real estate agents, property managers, and landlords.
 
-Why? Every mileage tracker charges $5-10/month for basic GPS tracking. Property Miles is 100% free.
+Why? Every mileage tracker charges $5-10/month for basic GPS tracking. LandMile is 100% free.
 
 Features:
 🚗 Auto trip detection — no buttons to press
@@ -394,7 +394,7 @@ At 15,000 business miles/year, that's $10,050 in tax deductions you might be mis
 
 **First Comment (Maker):**
 ```
-Hey PH! I'm the maker. My wife manages properties and drives hundreds of miles a week. She was paying for MileIQ and manually categorizing every trip. I built Property Miles to solve this — automatic detection, property tagging, and free forever. Would love your feedback!
+Hey PH! I'm the maker. My wife manages properties and drives hundreds of miles a week. She was paying for MileIQ and manually categorizing every trip. I built LandMile to solve this — automatic detection, property tagging, and free forever. Would love your feedback!
 ```
 
 ---
@@ -448,11 +448,11 @@ Double down on whatever subreddit converts best.
 
 ---
 
-# Growth Hacker Playbook — LandMiles (Added 2026-04-27)
+# Growth Hacker Playbook — LandMile (Added 2026-04-27)
 
 ## Core Message (Use Everywhere)
 
-> "The average real estate agent drives 12,000+ business miles per year. At the current IRS rate, that's $7,800+ in potential tax deductions. LandMiles makes sure you capture every mile."
+> "The average real estate agent drives 12,000+ business miles per year. At the current IRS rate, that's $7,800+ in potential tax deductions. LandMile makes sure you capture every mile."
 
 ---
 
@@ -495,7 +495,7 @@ An activated user = logged 3+ trips across 7 days without churning.
 5. Identity — *"Tell me you're a real estate agent without telling me: my car mileage is my tax return."*
 
 ### 3. App Store Optimization
-- **Title:** "LandMiles - Realtor Mileage Log"
+- **Title:** "LandMile - Realtor Mileage Log"
 - **Subtitle:** "IRS Mileage for Real Estate"
 - **Keywords:** mileage tracker real estate, realtor mileage log, IRS mileage log, 1099 mileage tracker
 - **Screenshot 1:** Show tax report / dollar amount saved (not the map UI)
@@ -544,7 +544,7 @@ An activated user = logged 3+ trips across 7 days without churning.
 - [ ] DM 10 individual agents on Instagram (500–5k followers, active listing posters)
 
 **DM template:**
-> "Hey [Name] - I built a mileage tracker specifically for agents because generic apps weren't cutting it. Would you be willing to try it free and tell me if it actually helps? LandMiles on the App Store."
+> "Hey [Name] - I built a mileage tracker specifically for agents because generic apps weren't cutting it. Would you be willing to try it free and tell me if it actually helps? LandMile on the App Store."
 
 ### Day 3–4
 - [ ] Post Reel 2: App demo — one-tap logging → IRS report export
@@ -589,7 +589,7 @@ An activated user = logged 3+ trips across 7 days without churning.
 
 **Headline:**
 ```
-I built the mileage tracker real estate agents actually needed — Property Miles | iOS Developer
+I built the mileage tracker real estate agents actually needed — LandMile | iOS Developer
 ```
 
 **About section opener:**
@@ -635,7 +635,7 @@ So she gave up and guessed.
 That gap — 13,800 miles at 67 cents per mile — is $9,246 in potential deductions she
 left on the table.
 
-I built Property Miles for exactly this situation.
+I built LandMile for exactly this situation.
 
 It auto-tracks every drive. You tag trips to properties with one tap. At tax time, you
 export a clean IRS-ready CSV in 30 seconds — no spreadsheet cleanup, no reconstructing
@@ -645,7 +645,7 @@ It's $4.99/month. That is less than one missed deduction from a single drive to 
 listing.
 
 If you're a real estate agent who's been meaning to get serious about mileage tracking
-— Property Miles is on the App Store now.
+— LandMile is on the App Store now.
 
 Link in the first comment.
 
@@ -669,7 +669,7 @@ MileIQ logs miles. Everlance logs miles. Stride logs miles.
 None of them understand that a real estate agent's mileage is organized around
 properties — not categories like "business" or "medical."
 
-So I built Property Miles differently.
+So I built LandMile differently.
 
 Every trip gets tagged to a property address. The export your accountant receives shows
 trip purpose, property, date, and mileage — not just a list of timestamps and distances.
@@ -700,7 +700,7 @@ It produces an export your accountant still has to clean up.
 For a real estate agent driving 12,000 miles a year, the difference between a clean
 record and an estimated one can be $3,000-$8,000 in legitimate deductions.
 
-Property Miles auto-tracks your drives. You tag trips to property addresses with one
+LandMile auto-tracks your drives. You tag trips to property addresses with one
 tap. Export is IRS-ready in 30 seconds — organized by property, date, and miles.
 
 $4.99/month. Download link in comments.
@@ -733,7 +733,7 @@ Stride (Free):
 — Export is a spreadsheet you still have to organize yourself
 — No real estate workflow at all
 
-Property Miles ($4.99/month):
+LandMile ($4.99/month):
 — Auto-tracking with background location
 — Property address tagging (the thing agents actually need)
 — IRS-ready CSV export organized by property and date
@@ -742,7 +742,7 @@ Property Miles ($4.99/month):
 The difference isn't price. It's whether the app understands that your mileage is
 organized around properties — not generic business categories.
 
-Link to Property Miles in the comments.
+Link to LandMile in the comments.
 
 If you're currently using one of these — what's the one thing that annoys you most
 about it?
@@ -762,7 +762,7 @@ current IRS rates.
 Most of them track it inconsistently. Some don't track it at all. They reconstruct it
 from memory in April and miss half of what they're owed.
 
-Property Miles was built specifically for this. Auto-tracking, property tagging,
+LandMile was built specifically for this. Auto-tracking, property tagging,
 IRS-ready exports.
 
 If you run a real estate team, you might want to share this with your agents. At $4.99
@@ -786,9 +786,9 @@ Slide 2: IRS requires contemporaneous log — "I think I drove 15,000 miles" doe
 Slide 3: Generic apps log miles, not property addresses. Accountants need WHY you drove.
 Slide 4: IRS-compliant record = Date + Destination + Business Purpose + Miles + Property
 Slide 5: Most real estate agents are missing at least 2 of these 4 fields
-Slide 6: Property Miles captures all 4 automatically
+Slide 6: LandMile captures all 4 automatically
 Slide 7: $4.99/month — less than the deduction value of one forgotten showing
-Slide 8: Download Property Miles on the App Store. Link in comments.
+Slide 8: Download LandMile on the App Store. Link in comments.
 ```
 
 ---
@@ -816,7 +816,7 @@ your workflow.
 
 ## Account Setup
 
-- **Use a personal-style username** (e.g. u/redev_ray) — not "LandMilesApp". Brand accounts get treated as brands.
+- **Use a personal-style username** (e.g. u/redev_ray) — not "LandMileApp". Brand accounts get treated as brands.
 - **60 days comment-only** before posting in r/realtors or r/RealEstate — mods check account age. Posts from new accounts get removed.
 
 ---
@@ -880,7 +880,7 @@ your workflow.
 
 ---
 
-# App Store Optimizer Audit — Property Miles (Added 2026-04-27)
+# App Store Optimizer Audit — LandMile (Added 2026-04-27)
 
 ## Critical Fix — Do This First
 
@@ -892,7 +892,7 @@ The description currently says **"100% FREE"** but the app has a $4.99/month sub
 
 | Field | Current | Recommended |
 |---|---|---|
-| Title | LandMile - Mileage Tracker | Property Miles - Realtor Miles |
+| Title | LandMile - Mileage Tracker | LandMile - Realtor Miles |
 | Subtitle | IRS Deductions for Landlords | IRS Mileage for Real Estate |
 | Keywords | landlord,rental,log,IRS,deduction,property,realtor,agent,tax,auto,trip,driving,schedule,miles | landlord,1099,deduction,tax,realtor,log,trip,agent,auto,rental,tracker,business,miles,property |
 | Promo Text | — | "Tax deadline April 15. Export your full 2025 mileage log in one tap. Every untracked mile is money left behind." |
@@ -928,7 +928,7 @@ landlord,1099,deduction,tax,realtor,log,trip,agent,auto,rental,tracker,business,
 BUILT FOR REAL ESTATE AGENTS, REALTORS, AND PROPERTY MANAGERS
 
 The average agent drives 12,000+ miles a year for work. At the IRS rate of
-$0.67/mile, that's $8,040 in deductions. Property Miles captures every mile
+$0.67/mile, that's $8,040 in deductions. LandMile captures every mile
 automatically so your log is always ready when your accountant asks.
 ```
 
@@ -946,8 +946,8 @@ Add to "Great For" section: `Anyone filing Schedule C or Schedule E with mileage
 
 ## Review Generation — 3 Triggers to Implement in Code
 
-1. **After first auto-detected trip** — banner: *"Your first automatic trip was logged. Enjoying Property Miles? [Rate it]"*
-2. **After first CSV export** — *"If Property Miles is saving you time, a quick review helps other agents find it."*
+1. **After first auto-detected trip** — banner: *"Your first automatic trip was logged. Enjoying LandMile? [Rate it]"*
+2. **After first CSV export** — *"If LandMile is saving you time, a quick review helps other agents find it."*
 3. **After 7 days + 3 trips** — personalized: *"You've tracked [X] miles ($[amount] in deductions). Worth a review?"*
 
 ---
@@ -968,3 +968,80 @@ Add to "Great For" section: `Anyone filing Schedule C or Schedule E with mileage
 - [ ] Implement 3 review-request triggers in code
 - [ ] Redesign Screenshots 2–5
 - [ ] Add app preview video
+
+---
+
+## Direct Email Outreach — Agent Flyers (Los Altos)
+
+*Added 2026-05-02. Channel: hyper-local, high-intent, zero ad spend.*
+
+### Why This Works
+
+Agents who post flyers in Los Altos are actively working buyers/sellers in a high-value market. They drive constantly. Their contact info is already public — they put it on every flyer themselves. A neighbor with a useful tool is not spam; it's a tip from someone in the community.
+
+This beats Reddit/Facebook because:
+- You know they're local agents, not random internet strangers
+- You can reference a real shared context ("I saw your flyer on [street]")
+- Response rates for neighbor-to-neighbor emails run 10-30x higher than cold social posts
+
+### How to Collect Contacts
+
+Walk neighborhoods in Los Altos (particularly near listed homes, open house signs, community boards). Collect 10-20 agent flyers. Extract: name, phone, email. Build a simple spreadsheet. Send one personalized email per agent — not a blast.
+
+### The Email
+
+**Subject:** Mileage tracking tool for Los Altos agents
+
+**Body:**
+> Hi [Name],
+>
+> I'm a neighbor in Los Altos — I saw your flyer on [street/neighborhood].
+>
+> I built an app called LandMile that automatically logs every mile you drive to showings and properties, then exports a clean IRS report at tax time. The standard deduction is $0.70/mile — most agents I've talked to aren't capturing half of what they're owed.
+>
+> Free to try. Would love to hear if it's useful for you.
+>
+> Ray
+> [\[LandMile\]](https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282)
+
+https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+
+**Rules:**
+- Under 60 words in the body (above is a template — trim to fit)
+- Use your personal email, not a business domain. "I'm a neighbor" only works if it feels human.
+- Personalize the street/neighborhood for each email. One mass send kills the effect.
+- No questionnaire, no ask for a call, no survey link. One CTA only: try the app.
+
+### One Follow-Up Question
+
+If they reply with interest, ask exactly this:
+
+> "How do you currently track your mileage?"
+
+That's it. Their answer tells you everything: are they using MileIQ, a spreadsheet, or nothing? Shapes the next email naturally.
+
+### If They Bring Up MileIQ
+
+Don't mention MileIQ first. If they say "I already use MileIQ," respond:
+
+> "MileIQ is great for business/personal split. LandMile tags each trip to a specific property — so at tax time you can show your accountant exactly how many miles you drove to 123 Main St vs 456 Oak Ave. Different tool for a different use case."
+
+Never say MileIQ is bad. Just name what's different: per-property reports vs. business/personal split.
+
+### Tracking
+
+Keep a simple log:
+
+| Date | Agent Name | Email | Sent | Replied | Converted |
+|------|-----------|-------|------|---------|-----------|
+| | | | | | |
+
+Target: 20 emails sent in first week. Expect 3-6 replies. Expect 1-2 trial users. One paying subscriber from this batch is a win — it proves the channel works.
+
+### Success Signal
+
+- **Week 1:** 20 emails sent
+- **Week 2:** 3+ replies, at least 1 person tries the app
+- **Month 1:** 1 paying subscriber from this channel
+
+If zero replies after 20 emails, change the subject line first. If still zero after 40 emails, the channel isn't working — move to BiggerPockets forum posts instead.
