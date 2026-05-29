@@ -3,327 +3,882 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Miles - Automatic Mileage Tracker for Real Estate</title>
-    <meta name="description" content="Automatic mileage tracking for real estate professionals. Never miss a tax deduction. Track trips, tag properties, export IRS-compliant reports.">
+    <title>LandMile - Mileage Tracker for Landlords</title>
+    <meta name="description" content="LandMile helps landlords and real estate operators automatically track rental property mileage, tag trips, and export clean tax-time reports.">
+    <meta property="og:title" content="LandMile - Mileage Tracker for Landlords">
+    <meta property="og:description" content="Track trips to rentals, repairs, tenant meetings, inspections, and tax-time reports without rebuilding your mileage log from memory.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/landmile-app-icon.png">
     <style>
+        :root {
+            --ink: #17201b;
+            --muted: #5d6861;
+            --line: #dfe6df;
+            --paper: #fbfaf7;
+            --sage: #dfeade;
+            --forest: #1f5c45;
+            --forest-dark: #143d30;
+            --mint: #9ed8b5;
+            --gold: #f3b84f;
+            --blue: #2f6f9f;
+            --white: #ffffff;
+            --shadow: 0 18px 45px rgba(31, 92, 69, 0.16);
+        }
+
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
-        
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #1d1d1f;
-            background-color: #fff;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            line-height: 1.55;
         }
-        
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 80px 20px;
+
+        a {
+            color: inherit;
         }
-        
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 20px;
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(251, 250, 247, 0.92);
+            border-bottom: 1px solid rgba(223, 230, 223, 0.8);
+            backdrop-filter: blur(16px);
         }
-        
-        .hero p {
-            font-size: 24px;
-            margin-bottom: 30px;
-            opacity: 0.95;
-        }
-        
-        .app-icon {
-            width: 120px;
-            height: 120px;
-            border-radius: 26px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        
-        .cta-button {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        
-        .container {
-            max-width: 1200px;
+
+        .nav {
+            max-width: 1120px;
             margin: 0 auto;
-            padding: 60px 20px;
-        }
-        
-        .section-title {
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 50px;
-            color: #1d1d1f;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-        
-        .feature {
-            text-align: center;
-            padding: 30px;
-        }
-        
-        .feature-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-        
-        .feature h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #1d1d1f;
-        }
-        
-        .feature p {
-            font-size: 16px;
-            color: #424245;
-            line-height: 1.6;
-        }
-        
-        .highlight-section {
-            background: #f5f5f7;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        
-        .stats {
+            padding: 14px 20px;
             display: flex;
-            justify-content: space-around;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            letter-spacing: 0;
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
+            box-shadow: 0 8px 20px rgba(23, 32, 27, 0.16);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: var(--forest);
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 13px 22px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: var(--forest);
+            color: var(--white);
+            font-weight: 750;
+            text-decoration: none;
+            box-shadow: 0 10px 22px rgba(31, 92, 69, 0.2);
+        }
+
+        .button:hover {
+            background: var(--forest-dark);
+        }
+
+        .button.secondary {
+            background: var(--white);
+            color: var(--forest);
+            border-color: var(--line);
+            box-shadow: none;
+        }
+
+        .button.secondary:hover {
+            border-color: var(--forest);
+        }
+
+        .hero {
+            min-height: calc(100vh - 67px);
+            display: grid;
+            align-items: center;
+            background:
+                linear-gradient(105deg, rgba(251, 250, 247, 0.96) 0%, rgba(251, 250, 247, 0.88) 46%, rgba(251, 250, 247, 0.18) 74%),
+                url("https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1800&q=80") center / cover;
+        }
+
+        .hero-inner {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 64px 0 44px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.7fr);
+            gap: 42px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            padding: 7px 11px;
+            border: 1px solid rgba(31, 92, 69, 0.2);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--forest);
+            font-size: 14px;
+            font-weight: 750;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        h1, h2, h3, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            max-width: 760px;
+            margin: 22px 0 20px;
+            font-size: clamp(42px, 7vw, 78px);
+            line-height: 0.98;
+            letter-spacing: 0;
+        }
+
+        .hero-copy {
+            max-width: 650px;
+            color: #35423b;
+            font-size: 21px;
+        }
+
+        .hero-actions {
+            display: flex;
             flex-wrap: wrap;
-            margin-top: 40px;
+            gap: 12px;
+            margin-top: 30px;
         }
-        
-        .stat {
-            flex: 1;
-            min-width: 200px;
-            margin: 20px;
+
+        .proof-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 14px;
         }
-        
-        .stat-number {
-            font-size: 48px;
-            font-weight: 700;
-            color: #667eea;
+
+        .proof-row span {
+            padding: 7px 10px;
+            border: 1px solid rgba(23, 32, 27, 0.1);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.72);
         }
-        
-        .stat-label {
+
+        .phone-panel {
+            justify-self: end;
+            width: min(370px, 100%);
+            padding: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.74);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .app-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .app-top img {
+            width: 58px;
+            height: 58px;
+            border-radius: 13px;
+        }
+
+        .app-top strong {
+            display: block;
             font-size: 18px;
-            color: #86868b;
         }
-        
-        .footer {
-            background: #1d1d1f;
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
+
+        .app-top span {
+            color: var(--muted);
+            font-size: 14px;
         }
-        
-        .footer-links {
+
+        .trip-list {
+            display: grid;
+            gap: 12px;
             margin: 20px 0;
         }
-        
+
+        .trip-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--white);
+        }
+
+        .trip-item b {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .trip-item small {
+            color: var(--muted);
+        }
+
+        .trip-value {
+            color: var(--forest);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .summary-box {
+            padding: 16px;
+            border-radius: 8px;
+            background: var(--forest-dark);
+            color: var(--white);
+        }
+
+        .summary-box span {
+            display: block;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 14px;
+        }
+
+        .summary-box strong {
+            font-size: 34px;
+        }
+
+        section {
+            padding: 82px 20px;
+        }
+
+        .section-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .section-head {
+            max-width: 760px;
+            margin-bottom: 36px;
+        }
+
+        .section-head.center {
+            margin: 0 auto 38px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 14px;
+            font-size: clamp(31px, 4vw, 48px);
+            line-height: 1.05;
+            letter-spacing: 0;
+        }
+
+        .section-head p {
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .pain-grid, .feature-grid, .audience-grid, .step-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .tile {
+            min-height: 100%;
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--white);
+        }
+
+        .tile .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 17px;
+            border-radius: 8px;
+            background: var(--sage);
+            color: var(--forest);
+            font-size: 22px;
+        }
+
+        .tile h3 {
+            margin-bottom: 9px;
+            font-size: 21px;
+            line-height: 1.2;
+        }
+
+        .tile p {
+            margin-bottom: 0;
+            color: var(--muted);
+        }
+
+        .band {
+            background: var(--sage);
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .calc-panel {
+            padding: 30px;
+            border: 1px solid rgba(31, 92, 69, 0.18);
+            border-radius: 8px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--line);
+            color: var(--muted);
+        }
+
+        .calc-row strong {
+            color: var(--ink);
+            text-align: right;
+        }
+
+        .calc-total {
+            margin-top: 22px;
+            color: var(--forest);
+            font-size: clamp(38px, 5vw, 58px);
+            font-weight: 850;
+            line-height: 1;
+        }
+
+        .fine-print {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .steps {
+            counter-reset: step;
+        }
+
+        .step-grid .tile {
+            position: relative;
+            padding-top: 58px;
+        }
+
+        .step-grid .tile::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--forest);
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .quote-band {
+            padding: 62px 20px;
+            background: var(--forest-dark);
+            color: var(--white);
+        }
+
+        .quote-band .section-inner {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .quote-band h2 {
+            max-width: 820px;
+            margin-bottom: 0;
+        }
+
+        .quote-band p {
+            max-width: 780px;
+            margin: 14px 0 0;
+            color: rgba(255, 255, 255, 0.74);
+            font-size: 18px;
+        }
+
+        .faq {
+            display: grid;
+            gap: 12px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        details {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--white);
+        }
+
+        summary {
+            cursor: pointer;
+            padding: 19px 22px;
+            font-weight: 800;
+        }
+
+        details p {
+            margin: 0;
+            padding: 0 22px 20px;
+            color: var(--muted);
+        }
+
+        .final-cta {
+            text-align: center;
+            background:
+                linear-gradient(rgba(251, 250, 247, 0.9), rgba(251, 250, 247, 0.92)),
+                url("https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=80") center / cover;
+        }
+
+        .final-cta p {
+            max-width: 650px;
+            margin: 0 auto 28px;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .site-footer {
+            padding: 36px 20px;
+            background: #111713;
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .footer-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
         .footer-links a {
-            color: white;
             text-decoration: none;
-            margin: 0 15px;
-            opacity: 0.8;
         }
-        
+
         .footer-links a:hover {
-            opacity: 1;
-            text-decoration: underline;
+            color: var(--white);
         }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 32px;
+
+        @media (max-width: 900px) {
+            .nav-links a:not(.button) {
+                display: none;
             }
-            
-            .hero p {
+
+            .hero {
+                min-height: auto;
+                background:
+                    linear-gradient(rgba(251, 250, 247, 0.93), rgba(251, 250, 247, 0.93)),
+                    url("https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1400&q=80") center / cover;
+            }
+
+            .hero-inner, .calculator, .quote-band .section-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .phone-panel {
+                justify-self: stretch;
+            }
+
+            .pain-grid, .feature-grid, .audience-grid, .step-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .nav {
+                padding: 12px 16px;
+            }
+
+            .brand span {
+                display: none;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .nav .button {
+                width: auto;
+                min-height: 42px;
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+
+            .hero-inner {
+                width: min(100% - 32px, 1120px);
+                padding-top: 42px;
+            }
+
+            .hero-copy {
                 font-size: 18px;
             }
-            
-            .section-title {
-                font-size: 28px;
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            section {
+                padding: 60px 16px;
+            }
+
+            .pain-grid, .feature-grid, .audience-grid, .step-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tile, .calc-panel, .phone-panel {
+                padding: 20px;
+            }
+
+            .footer-inner {
+                align-items: flex-start;
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="app-icon" style="background: white; margin: 0 auto 30px; display: flex; align-items: center; justify-content: center; font-size: 60px;">
-            🚗
-        </div>
-        <h1>Property Miles</h1>
-        <p>Automatic Mileage Tracking for Real Estate Professionals</p>
-        <a href="#" class="cta-button">Download on the App Store</a>
-    </div>
-    
-    <div class="container">
-        <h2 class="section-title">Why Property Miles?</h2>
-        
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🚗</div>
-                <h3>Automatic Tracking</h3>
-                <p>No buttons to press. Detects trips automatically when you drive over 10 mph. Works in the background.</p>
+    <header class="site-header">
+        <nav class="nav" aria-label="Main navigation">
+            <a class="brand" href="#top" aria-label="LandMile home">
+                <img src="assets/landmile-app-icon.png" alt="LandMile app icon">
+                <span>LandMile</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#calculator">Mileage value</a>
+                <a href="#faq">FAQ</a>
+                <a class="button" href="https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282">Download</a>
             </div>
-            
-            <div class="feature">
-                <div class="feature-icon">📍</div>
-                <h3>Property Tagging</h3>
-                <p>Tag trips to specific properties or save frequent locations. Perfect for showings, open houses, and inspections.</p>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">💰</div>
-                <h3>IRS-Compliant Reports</h3>
-                <p>Built-in IRS standard rate ($0.67/mile). One-tap CSV export for your accountant or tax filing.</p>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">🔒</div>
-                <h3>Privacy First</h3>
-                <p>All data stays on your device. No accounts, no cloud sync, no data sharing. Your privacy is guaranteed.</p>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">🚙</div>
-                <h3>Multiple Vehicles</h3>
-                <p>Track multiple vehicles. Assign trips to specific cars or trucks. Great for teams.</p>
-            </div>
-            
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <h3>Smart Reports</h3>
-                <p>View monthly, quarterly, or yearly summaries. Filter by purpose. See exactly where your miles go.</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="highlight-section">
-        <div class="container">
-            <h2 class="section-title">Maximize Your Tax Deductions</h2>
-            <p style="font-size: 18px; color: #424245; max-width: 700px; margin: 0 auto 40px;">
-                Real estate agents drive an average of 1,000-2,000 miles per month for business. 
-                That's $8,040-$16,080 in annual tax deductions at $0.67/mile. 
-                Don't leave money on the table.
-            </p>
-            
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-number">$0.67</div>
-                    <div class="stat-label">per mile (IRS 2026)</div>
+        </nav>
+    </header>
+
+    <main id="top">
+        <section class="hero">
+            <div class="hero-inner">
+                <div>
+                    <div class="eyebrow">Built for small landlords and real estate operators</div>
+                    <h1>Mileage tracking for rental property work.</h1>
+                    <p class="hero-copy">LandMile automatically tracks drives to rentals, repairs, tenant meetings, inspections, supply runs, and tax-time reports, so you are not rebuilding a mileage log from memory.</p>
+                    <div class="hero-actions">
+                        <a class="button" href="https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282">Download on the App Store</a>
+                        <a class="button secondary" href="#calculator">See what missed miles can be worth</a>
+                    </div>
+                    <div class="proof-row" aria-label="LandMile highlights">
+                        <span>Free to try</span>
+                        <span>Pro: $4.99/mo or $39.99/yr</span>
+                        <span>CSV export for your CPA</span>
+                    </div>
                 </div>
-                <div class="stat">
-                    <div class="stat-number">$670</div>
-                    <div class="stat-label">monthly deduction (1,000 mi)</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">$8,040</div>
-                    <div class="stat-label">annual savings (1,000 mi/mo)</div>
-                </div>
+
+                <aside class="phone-panel" aria-label="LandMile trip summary preview">
+                    <div class="app-top">
+                        <img src="assets/landmile-app-icon.png" alt="">
+                        <div>
+                            <strong>LandMile</strong>
+                            <span>Today&apos;s rental property trips</span>
+                        </div>
+                    </div>
+                    <div class="trip-list">
+                        <div class="trip-item">
+                            <div>
+                                <b>Tenant inspection</b>
+                                <small>Oak St duplex</small>
+                            </div>
+                            <div class="trip-value">18.4 mi</div>
+                        </div>
+                        <div class="trip-item">
+                            <div>
+                                <b>Repair supply run</b>
+                                <small>Home Depot</small>
+                            </div>
+                            <div class="trip-value">9.7 mi</div>
+                        </div>
+                        <div class="trip-item">
+                            <div>
+                                <b>CPA drop-off</b>
+                                <small>Tax documents</small>
+                            </div>
+                            <div class="trip-value">6.2 mi</div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <span>Potential 2026 deduction value</span>
+                        <strong>$24.87</strong>
+                        <span>34.3 miles x $0.725 IRS business rate</span>
+                    </div>
+                </aside>
             </div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <h2 class="section-title">How It Works</h2>
-        
-        <div class="features">
-            <div class="feature">
-                <h3 style="color: #667eea;">1. Install & Grant Permission</h3>
-                <p>Download the app and allow "Always" location access. This enables automatic trip detection.</p>
-            </div>
-            
-            <div class="feature">
-                <h3 style="color: #667eea;">2. Drive Normally</h3>
-                <p>That's it! The app automatically detects trips when you drive. No need to open the app.</p>
-            </div>
-            
-            <div class="feature">
-                <h3 style="color: #667eea;">3. Review & Tag</h3>
-                <p>After trips are recorded, tap to add purpose, property, and notes. Takes seconds.</p>
-            </div>
-            
-            <div class="feature">
-                <h3 style="color: #667eea;">4. Export for Taxes</h3>
-                <p>At tax time (or anytime), export a complete CSV report with one tap. Done.</p>
-            </div>
-        </div>
-        
-        <div style="text-align: center; margin: 60px 0;">
-            <a href="#" class="cta-button">Get Started Free</a>
-        </div>
-    </div>
-    
-    <div class="highlight-section">
-        <div class="container">
-            <h2 class="section-title">Perfect For</h2>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 900px; margin: 0 auto;">
-                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <div style="font-size: 40px; margin-bottom: 15px;">🏠</div>
-                    <h3 style="margin-bottom: 10px;">Real Estate Agents</h3>
-                    <p style="color: #424245;">Track showings, open houses, and property visits</p>
+        </section>
+
+        <section>
+            <div class="section-inner">
+                <div class="section-head center">
+                    <h2>Landlords drive for work more than they remember.</h2>
+                    <p>Every rental visit is small in the moment. The problem shows up months later, when your CPA asks for a clean log and your notes are scattered across memory, texts, calendars, and receipts.</p>
                 </div>
-                
-                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <div style="font-size: 40px; margin-bottom: 15px;">🔧</div>
-                    <h3 style="margin-bottom: 10px;">Property Managers</h3>
-                    <p style="color: #424245;">Log trips to rental properties and maintenance calls</p>
-                </div>
-                
-                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <div style="font-size: 40px; margin-bottom: 15px;">📸</div>
-                    <h3 style="margin-bottom: 10px;">Real Estate Photographers</h3>
-                    <p style="color: #424245;">Track travel to listing shoots</p>
-                </div>
-                
-                <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <div style="font-size: 40px; margin-bottom: 15px;">🔍</div>
-                    <h3 style="margin-bottom: 10px;">Home Inspectors</h3>
-                    <p style="color: #424245;">Automatically log mileage between inspections</p>
+                <div class="pain-grid">
+                    <article class="tile">
+                        <div class="icon">⌁</div>
+                        <h3>Rental visits get mixed with personal errands</h3>
+                        <p>LandMile gives you a place to tag rental property trips while the context is still fresh.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">⌕</div>
+                        <h3>Supply runs are easy to forget</h3>
+                        <p>Those hardware store, bank, CPA, and contractor drives add up over a full year.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">⇩</div>
+                        <h3>Tax prep needs a real export</h3>
+                        <p>Export mileage history to CSV instead of handing your accountant a messy spreadsheet.</p>
+                    </article>
                 </div>
             </div>
+        </section>
+
+        <section id="features" class="band">
+            <div class="section-inner">
+                <div class="section-head">
+                    <h2>Focused on the landlord workflow.</h2>
+                    <p>LandMile does the boring logging work in the background, then gives you fast cleanup and export tools when it is time to review.</p>
+                </div>
+                <div class="feature-grid">
+                    <article class="tile">
+                        <div class="icon">▶</div>
+                        <h3>Automatic trip detection</h3>
+                        <p>Drive normally. LandMile records trips in the background after location permission is granted.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">⌂</div>
+                        <h3>Property-friendly categories</h3>
+                        <p>Tag trips for rental visits, repairs, inspections, tenant meetings, admin, and supplies.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">▣</div>
+                        <h3>Multiple vehicles</h3>
+                        <p>Keep trips organized when you use more than one car for rental property work.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">↧</div>
+                        <h3>CSV reports</h3>
+                        <p>Export date, purpose, distance, and notes for your records or tax preparer.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">◷</div>
+                        <h3>Monthly summaries</h3>
+                        <p>Review mileage by month instead of facing a pile of unclassified trips at year end.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">◉</div>
+                        <h3>No real estate bloat</h3>
+                        <p>Not a CRM, lease tool, or accounting suite. Just mileage tracking for property work.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculator">
+            <div class="section-inner calculator">
+                <div class="section-head">
+                    <h2>Missed miles can become missed deductions.</h2>
+                    <p>The 2026 IRS business mileage rate is 72.5 cents per mile. Even modest rental property driving can become meaningful when it is tracked consistently.</p>
+                    <p class="fine-print">This is a simple planning example, not tax advice. Ask your CPA what applies to your situation.</p>
+                </div>
+                <div class="calc-panel">
+                    <div class="calc-row">
+                        <span>Rental property miles per month</span>
+                        <strong>250 mi</strong>
+                    </div>
+                    <div class="calc-row">
+                        <span>Months tracked</span>
+                        <strong>12</strong>
+                    </div>
+                    <div class="calc-row">
+                        <span>2026 IRS business mileage rate</span>
+                        <strong>$0.725/mi</strong>
+                    </div>
+                    <div class="calc-total">$2,175</div>
+                    <p class="fine-print">Potential annual mileage deduction value from 3,000 tracked business miles.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="band steps">
+            <div class="section-inner">
+                <div class="section-head center">
+                    <h2>From first drive to tax export.</h2>
+                    <p>A simple weekly habit is enough: let the app capture trips, then review and tag the ones that belong to rental property work.</p>
+                </div>
+                <div class="step-grid">
+                    <article class="tile">
+                        <h3>Install LandMile</h3>
+                        <p>Grant location permission so trips can be detected while you drive.</p>
+                    </article>
+                    <article class="tile">
+                        <h3>Drive to your rental work</h3>
+                        <p>Visit properties, meet tenants, pick up supplies, or handle admin errands.</p>
+                    </article>
+                    <article class="tile">
+                        <h3>Tag the business trips</h3>
+                        <p>Add purpose, property context, notes, and vehicle details while the trip is fresh.</p>
+                    </article>
+                    <article class="tile">
+                        <h3>Export your report</h3>
+                        <p>Send a clean CSV to your accountant or keep it with your tax records.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-inner">
+                <div class="section-head center">
+                    <h2>Made for people who operate property in the real world.</h2>
+                    <p>If your rental business requires you to get in the car, LandMile gives those drives a proper paper trail.</p>
+                </div>
+                <div class="audience-grid">
+                    <article class="tile">
+                        <div class="icon">⌂</div>
+                        <h3>DIY landlords</h3>
+                        <p>For owners who personally visit rentals, coordinate repairs, and meet tenants.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">◇</div>
+                        <h3>Property managers</h3>
+                        <p>For operators driving between units, inspections, showings, and maintenance calls.</p>
+                    </article>
+                    <article class="tile">
+                        <div class="icon">↗</div>
+                        <h3>Real estate agents</h3>
+                        <p>For showings, open houses, listing visits, client meetings, and office errands.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="quote-band">
+            <div class="section-inner">
+                <div>
+                    <h2>Stop trying to remember where you drove last March.</h2>
+                    <p>Start tracking now, clean it up weekly, and give tax season a calmer ending.</p>
+                </div>
+                <a class="button" href="https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282">Get LandMile</a>
+            </div>
+        </section>
+
+        <section id="faq">
+            <div class="section-inner">
+                <div class="section-head center">
+                    <h2>Questions landlords ask.</h2>
+                </div>
+                <div class="faq">
+                    <details open>
+                        <summary>Can landlords deduct mileage?</summary>
+                        <p>Many landlords track business mileage for rental property activity, such as trips to properties, repair supplies, meetings, and tax or banking errands. The exact treatment depends on your situation, so confirm with your tax professional.</p>
+                    </details>
+                    <details>
+                        <summary>What does LandMile export?</summary>
+                        <p>LandMile is designed to help you export trip history in CSV format with the details you need to review and share with your CPA.</p>
+                    </details>
+                    <details>
+                        <summary>Is this only for landlords?</summary>
+                        <p>No. Real estate agents, property managers, home inspectors, and other real estate operators can use it too. The landing page is focused on landlords because that pain is specific and easy to understand.</p>
+                    </details>
+                    <details>
+                        <summary>How much does it cost?</summary>
+                        <p>LandMile is free to try. Pro is $4.99/month or $39.99/year for users who need full history and export features.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="final-cta">
+            <div class="section-inner">
+                <h2>Track the next rental property drive automatically.</h2>
+                <p>Install LandMile before your next property visit, inspection, repair run, or tenant meeting.</p>
+                <a class="button" href="https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282">Download on the App Store</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>© 2026 LandMile. Mileage tracking for real estate work.</div>
+            <div class="footer-links">
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-use.html">Terms</a>
+                <a href="support.html">Support</a>
+                <a href="mailto:support.propertymiles@gmail.com">Contact</a>
+            </div>
         </div>
-    </div>
-    
-    <div class="footer">
-        <p>&copy; 2026 Property Miles. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="privacy-policy.html">Privacy Policy</a>
-            <a href="support.html">Support</a>
-            <a href="mailto:support.propertymiles@gmail.com">Contact</a>
-        </div>
-        <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
-            Made with ❤️ for real estate professionals
-        </p>
-    </div>
+    </footer>
 </body>
 </html>

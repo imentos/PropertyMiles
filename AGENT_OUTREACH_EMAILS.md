@@ -1,6 +1,11 @@
 # LandMile Agent Outreach Emails
 Generated: 2026-05-02 | Sender: Ray Kuo | App: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
+**Campaign link for future sends:**
+`https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8`
+
+Use this App Store Connect campaign link in every future outreach email. Analytics for this campaign may appear only after 5 unique Apple Accounts install from the link.
+
 **Rules before sending:**
 - Send from your personal Gmail (not a business address)
 - Send one per day or 2-3/day max — Gmail flags bulk sends
@@ -19,7 +24,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a listi
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -35,7 +40,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Santa
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -51,7 +56,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a San F
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -67,7 +72,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Campb
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -83,7 +88,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a San J
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -99,7 +104,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Fremo
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -115,7 +120,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Fremo
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -131,7 +136,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Fremo
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -147,7 +152,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Santa
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -163,7 +168,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Santa
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -179,7 +184,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Campb
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -197,7 +202,7 @@ I'm a homeowner in Los Altos — I've received several of your listings for San 
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -213,7 +218,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a San J
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -229,7 +234,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Bay A
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -245,7 +250,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Campb
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -261,7 +266,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Fremo
 
 I built an app called LandMile that auto-logs every mile you drive to showings and properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -277,7 +282,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Bay A
 
 I built an app called LandMile that auto-logs every mile you drive to properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -293,7 +298,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Bay A
 
 I built an app called LandMile that auto-logs every mile you drive to properties, then exports an IRS-ready report at tax time. At $0.70/mile, most agents I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 
@@ -309,7 +314,7 @@ I'm a homeowner in Los Altos — I came across your contact info through a Bay A
 
 I built an app called LandMile that auto-logs every mile you drive to properties, then exports an IRS-ready report at tax time. At $0.70/mile, most property managers I've talked to are leaving thousands on the table.
 
-Free to try: https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+Free to try: https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8
 
 Ray Kuo
 

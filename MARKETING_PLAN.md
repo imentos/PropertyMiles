@@ -2,8 +2,21 @@
 
 **App:** LandMile — Mileage Tracker for Real Estate
 **Link:** https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
-**Price:** Free
+**Price:** Free to try; Pro is $4.99/month or $39.99/year
 **Strategy:** Community-First Reddit + Multi-Platform
+
+---
+
+## Campaign Links
+
+Use a separate App Store Connect campaign link for each marketing channel. Apple may not show campaign analytics until at least 5 unique Apple Accounts install from that campaign link.
+
+| Campaign | Channel | Link | Status |
+|----------|---------|------|--------|
+| `agent_outreach_may2026` | Direct email to real estate agents, brokers, and property managers | https://apps.apple.com/app/apple-store/id6760436282?pt=117813104&ct=agent_outreach_may2026&mt=8 | Active |
+| `reddit_may2026` | Reddit posts/comments | TBD | Create before posting |
+| `instagram_bio_may2026` | Instagram bio link | TBD | Create before posting |
+| `facebook_groups_may2026` | Facebook group replies/comments | TBD | Create before posting |
 
 ---
 
@@ -140,14 +153,14 @@ She drives way more than that. We were literally leaving thousands of dollars on
 
 The annoying part is the IRS wants a "contemporaneous" log. Meaning you cant just guess at the end of the year. You need dates, where you went, why, and the miles. Every trip.
 
-We tried a few apps but they all wanted a monthly subscription which felt ridiculous for what is basically gps tracking. I ended up making her one that does it automatically and its been a game changer honestly. No more forgetting to log trips.
+We tried a few apps but they felt built for generic business/personal tracking, not real estate. I ended up making her one that does it automatically and lets her tag drives to properties, and its been a game changer honestly. No more forgetting to log trips.
 
 Anyway not trying to pitch anything, more just wanted to share because I feel like a lot of agents dont realize how much money theyre leaving on the table. Are you guys tracking this? Whats your system?
 ```
 
 **When someone asks reply with:**
 ```
-yeah I put it on the app store actually, its called LandMile. Free, no subscription or anything - https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+yeah I put it on the app store actually, its called LandMile. Free to try, and Pro unlocks full history + exports - https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 built it for my wife originally but figured other people could use it too
 ```
@@ -173,14 +186,14 @@ From what I understand the IRS wants:
 
 At 67 cents a mile that adds up fast. She probably drives 20k+ business miles a year so were talking like $13k in deductions that we need to actually document properly.
 
-She was using a spreadsheet but kept forgetting to update it. Tried MileIQ but didnt want to pay monthly. I actually ended up building her an app that auto tracks it which has been working well but curious what other people do?
+She was using a spreadsheet but kept forgetting to update it. Tried MileIQ but wanted something more real estate-specific, especially property tagging. I actually ended up building her an app that auto tracks it which has been working well but curious what other people do?
 
 Is a simple spreadsheet enough if you get audited or do they want something more formal? Any CPAs here dealt with this?
 ```
 
 **When someone asks what app:**
 ```
-I put it on the app store - LandMile. Its free, I mainly built it for her but other people have been using it too. https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
+I put it on the app store - LandMile. Its free to try, I mainly built it for her but other people have been using it too. https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
 definitely not trying to replace actual tax advice though lol thats what her CPA is for
 ```
@@ -191,7 +204,7 @@ definitely not trying to replace actual tax advice though lol thats what her CPA
 
 **Title:**
 ```
-got fed up paying monthly subscriptions for basic features so I just built the app myself
+generic mileage apps didnt fit our real estate workflow so I built one
 ```
 
 **Body:**
@@ -202,7 +215,7 @@ One day she was complaining about it and I was like... your phone literally has 
 
 Famous last words obviously, took longer than a few weeks lol. But I got it working, she's been using it for months now. Auto detects driving, she tags trips to properties, exports to csv for her accountant. Done.
 
-Put it on the app store for free because honestly I just wanted to solve her problem and the idea of charging a subscription for gps tracking feels wrong.
+Put it on the app store as free to try because honestly I just wanted to solve her problem first. Pro is there for people who need full history and export.
 
 Anyone else ever just built something themselves because the existing solutions were overpriced for what they do? Feels like so many basic tools have been subscription-ified these days.
 ```
@@ -222,16 +235,16 @@ iOS only for now. Happy to hear feedback if anyone tries it
 
 **Title:**
 ```
-LandMile - free mileage tracker I built for my wife's real estate business, no sub no ads
+LandMile - mileage tracker I built for my wife's real estate business
 ```
 
 **Body:**
 ```
-Hey, just wanted to share something I built. My wife manages properties and drives constantly for work. She needed to track mileage for tax deductions but didn't want to pay monthly for MileIQ.
+Hey, just wanted to share something I built. My wife manages properties and drives constantly for work. She needed to track mileage for tax deductions, but generic business/personal mileage apps didn't fit how she actually works.
 
 So I built LandMile. It auto-detects drives, lets you tag trips to specific properties, and exports everything to CSV for tax time. Uses the current IRS rate (67 cents/mile for 2026).
 
-Its free, no ads, no in app purchases. I built it to solve a real problem and figured other people could use it.
+Its free to try, with Pro for full history and exports. I built it to solve a real problem and figured other people could use it.
 
 https://apps.apple.com/us/app/landmile-mileage-tracker/id6760436282
 
@@ -259,7 +272,7 @@ Built her an iphone app that runs in the background and auto-detects when shes d
 
 Hardest part was background location on iOS. Apple really doesnt want you running GPS in the background. Had to get creative with significant location changes + core motion activity detection to know when to start precise tracking without destroying battery.
 
-Put it on the app store for free. No ads, no subscriptions. Kind of just feels good to have something out there that people actually use.
+Put it on the app store as free to try, with Pro for people who need full history and exports. Kind of just feels good to have something out there that people actually use.
 
 Anyone else have a side project that started as "ill just build this for myself" and turned into an actual thing?
 ```
@@ -428,7 +441,7 @@ Hey PH! I'm the maker. My wife manages properties and drives hundreds of miles a
 6. **Reply to EVERY comment** within the first 2 hours — Reddit's algorithm heavily rewards early engagement
 7. **Don't be defensive about criticism** — "yeah thats fair, might add that" works better than defending
 8. **Lead with the story** — "my wife manages properties" is relatable. The app is the B-plot, not the headline.
-9. **"Free, no subscription"** is your killer differentiator vs MileIQ ($10/mo) — but don't say it like marketing. Say it like "I didnt want to charge for gps tracking"
+9. **"Built for real estate, cheaper than MileIQ"** is your differentiator — but don't say it like marketing. Say it like "MileIQ is solid, but I needed property tagging and a cleaner export for real estate."
 10. **NEVER post the same text in multiple subreddits** — Reddit detects and flags this
 11. **Space posts 2-3 days apart minimum** — rapid posting across subs looks like a promo campaign
 
