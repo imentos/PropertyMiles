@@ -34,12 +34,17 @@ struct Trip: Identifiable, Codable {
     
     var purposeIcon: String {
         guard let purposeName = purposeName else { return "car" }
-        // Check if it matches a default purpose
-        if let defaultPurpose = TripPurpose.allCases.first(where: { $0.rawValue == purposeName }) {
+        // Check if it matches a default purpose key or legacy display name.
+        if let defaultPurpose = TripPurpose.fromStoredValue(purposeName) {
             return defaultPurpose.icon
         }
         // Custom purpose default icon
         return "tag"
+    }
+
+    var purposeDisplayName: String {
+        guard let purposeName = purposeName else { return "" }
+        return TripPurpose.fromStoredValue(purposeName)?.displayName ?? purposeName
     }
     
     // Get display name for start location (location map is source of truth)
@@ -104,15 +109,28 @@ struct LocationData: Codable {
 }
 
 enum TripPurpose: String, Codable, CaseIterable {
-    case repair = "Repair/Maintenance"
-    case supplyRun = "Supply Shopping"
-    case propertyCheck = "Property Check"
-    case legalCourt = "Legal/Court"
-    case openHouse = "Open House"
-    case rentCollection = "Rent Collection"
-    case emergencyCall = "Emergency Call"
-    case personal = "Personal"
-    
+    case repair
+    case supplyRun
+    case propertyCheck
+    case legalCourt
+    case openHouse
+    case rentCollection
+    case emergencyCall
+    case bankingDeposit
+
+    var displayName: String {
+        switch self {
+        case .repair: return "Repair/Maintenance"
+        case .supplyRun: return "Supply Shopping"
+        case .propertyCheck: return "Property Check"
+        case .legalCourt: return "Legal/Court"
+        case .openHouse: return "Open House"
+        case .rentCollection: return "Rent Collection"
+        case .emergencyCall: return "Emergency Call"
+        case .bankingDeposit: return "Banking & Deposits"
+        }
+    }
+
     var icon: String {
         switch self {
         case .repair: return "wrench.and.screwdriver"
@@ -122,7 +140,31 @@ enum TripPurpose: String, Codable, CaseIterable {
         case .openHouse: return "door.left.hand.open"
         case .rentCollection: return "dollarsign.circle"
         case .emergencyCall: return "exclamationmark.triangle.fill"
-        case .personal: return "car"
+        case .bankingDeposit: return "banknote"
         }
     }
+
+    static func fromStoredValue(_ value: String) -> TripPurpose? {
+        if let purpose = TripPurpose(rawValue: value) {
+            return purpose
+        }
+        return legacyDisplayNameMap[value]
+    }
+
+    static func migratedStoredValue(_ value: String?) -> String? {
+        guard let value else { return nil }
+        return fromStoredValue(value)?.rawValue ?? value
+    }
+
+    private static let legacyDisplayNameMap: [String: TripPurpose] = [
+        "Repair/Maintenance": .repair,
+        "Supply Shopping": .supplyRun,
+        "Property Check": .propertyCheck,
+        "Legal/Court": .legalCourt,
+        "Open House": .openHouse,
+        "Rent Collection": .rentCollection,
+        "Emergency Call": .emergencyCall,
+        "Banking/Deposits": .bankingDeposit,
+        "Personal": .bankingDeposit
+    ]
 }

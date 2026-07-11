@@ -58,7 +58,20 @@ class TripStore: ObservableObject {
             trips = []
             return
         }
-        trips = decoded.sorted { $0.startTime > $1.startTime }
+        var migrated = decoded
+        var didMigratePurposes = false
+        for index in migrated.indices {
+            let originalPurpose = migrated[index].purposeName
+            let migratedPurpose = TripPurpose.migratedStoredValue(originalPurpose)
+            if migratedPurpose != originalPurpose {
+                migrated[index].purposeName = migratedPurpose
+                didMigratePurposes = true
+            }
+        }
+        trips = migrated.sorted { $0.startTime > $1.startTime }
+        if didMigratePurposes {
+            saveTrips()
+        }
     }
     
     func addTrip(_ trip: Trip) {
@@ -108,7 +121,7 @@ class TripStore: ObservableObject {
         if let targetAddr = address,
            let index = locationNicknames.firstIndex(where: { location in
                guard let locAddr = location.coordinate.address else { return false }
-               return targetAddr == locAddr
+               return addressesMatch(targetAddr, locAddr)
            }) {
             // Update existing entry with exact address match
             locationNicknames[index].nickname = nickname
@@ -145,6 +158,55 @@ class TripStore: ObservableObject {
         }
     }
     
+    // Assign a newly saved location nickname to existing trips near the same place.
+    func applyLocationNicknameToMatchingTrips(nicknameId: UUID, coordinate: CLLocationCoordinate2D, address: String?, within meters: Double = 500) {
+        let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        var didUpdate = false
+
+        for index in trips.indices {
+            if shouldMatchLocation(trips[index].startLocation, targetLocation: targetLocation, address: address, within: meters),
+               trips[index].startLocation.locationNicknameId != nicknameId {
+                trips[index].startLocation.locationNicknameId = nicknameId
+                didUpdate = true
+            }
+
+            if let endLocation = trips[index].endLocation,
+               shouldMatchLocation(endLocation, targetLocation: targetLocation, address: address, within: meters),
+               trips[index].endLocation?.locationNicknameId != nicknameId {
+                trips[index].endLocation?.locationNicknameId = nicknameId
+                didUpdate = true
+            }
+        }
+
+        if didUpdate {
+            locationNicknamesLastModified = Date()
+            saveTrips()
+        }
+    }
+
+    private func addressesMatch(_ lhs: String, _ rhs: String) -> Bool {
+        normalizedAddress(lhs) == normalizedAddress(rhs)
+    }
+
+    private func normalizedAddress(_ address: String) -> String {
+        address
+            .lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    private func shouldMatchLocation(_ locationData: LocationData, targetLocation: CLLocation, address: String?, within meters: Double) -> Bool {
+        if let address,
+           let locationAddress = locationData.address,
+           addressesMatch(address, locationAddress) {
+            return true
+        }
+
+        let location = CLLocation(latitude: locationData.latitude, longitude: locationData.longitude)
+        return location.distance(from: targetLocation) <= meters
+    }
+
     // Find and return LocationNickname entry (with ID) for a location
     func findLocationNicknameEntry(coordinate: CLLocationCoordinate2D, address: String?, within meters: Double = 200) -> LocationNickname? {
         let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -158,7 +220,7 @@ class TripStore: ObservableObject {
             
             // Check if addresses match exactly (if both have addresses)
             if let targetAddr = address, let locAddr = locationNickname.coordinate.address,
-               targetAddr == locAddr {
+               addressesMatch(targetAddr, locAddr) {
                 print("🎯 Found exact address match: '\(locationNickname.nickname)' (ID: \(locationNickname.id))")
                 return locationNickname
             }
@@ -190,7 +252,7 @@ class TripStore: ObservableObject {
             
             // Check if addresses match exactly (if both have addresses)
             if let targetAddr = address, let locAddr = locationNickname.coordinate.address,
-               targetAddr == locAddr {
+               addressesMatch(targetAddr, locAddr) {
                 return locationNickname.nickname
             }
             
@@ -299,7 +361,7 @@ class TripStore: ObservableObject {
             let startAddr = trip.startLocation.address ?? "\(trip.startLocation.latitude),\(trip.startLocation.longitude)"
             let endAddr = trip.endLocation?.address ?? (trip.endLocation.map { "\($0.latitude),\($0.longitude)" } ?? "")
             let miles = String(format: "%.2f", trip.distance)
-            let purpose = trip.purposeName ?? ""
+            let purpose = trip.purposeDisplayName
             let fromNickname = trip.startLocationDisplayName(tripStore: self)
             let toNickname = trip.endLocationDisplayName(tripStore: self) ?? ""
             let vehicle = trip.vehicle?.displayName ?? ""
@@ -363,6 +425,78 @@ class TripStore: ObservableObject {
         trips.removeAll()
         saveTrips()
         print("🗑️ Cleared all trips")
+    }
+
+    /// Seeds ~$1,100 in deductions across 2026 — realistic data for App Store screenshots.
+    func generateScreenshotTrips() {
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: Date())
+
+        struct TripSeed {
+            let month: Int, day: Int
+            let fromAddr: String, fromLat: Double, fromLng: Double
+            let toAddr: String, toLat: Double, toLng: Double
+            let miles: Double
+            let purpose: TripPurpose
+        }
+
+        let seeds: [TripSeed] = [
+            TripSeed(month: 1, day: 6,  fromAddr: "654 Pine St, San Jose, CA",       fromLat: 37.3382, fromLng: -121.8863, toAddr: "123 Market St, San Francisco, CA", toLat: 37.7749, toLng: -122.4194, miles: 48.2, purpose: .openHouse),
+            TripSeed(month: 1, day: 14, fromAddr: "789 Main St, Berkeley, CA",         fromLat: 37.8715, fromLng: -122.2730, toAddr: "456 Broadway, Oakland, CA",         toLat: 37.8044, toLng: -122.2712, miles: 22.5, purpose: .repair),
+            TripSeed(month: 1, day: 21, fromAddr: "321 Oak Ave, Palo Alto, CA",        fromLat: 37.4419, fromLng: -122.1430, toAddr: "654 Pine St, San Jose, CA",          toLat: 37.3382, toLng: -121.8863, miles: 19.8, purpose: .propertyCheck),
+            TripSeed(month: 2, day: 3,  fromAddr: "123 Market St, San Francisco, CA", fromLat: 37.7749, fromLng: -122.4194, toAddr: "789 Main St, Berkeley, CA",          toLat: 37.8715, toLng: -122.2730, miles: 31.4, purpose: .rentCollection),
+            TripSeed(month: 2, day: 11, fromAddr: "456 Broadway, Oakland, CA",         fromLat: 37.8044, fromLng: -122.2712, toAddr: "321 Oak Ave, Palo Alto, CA",        toLat: 37.4419, toLng: -122.1430, miles: 27.6, purpose: .supplyRun),
+            TripSeed(month: 2, day: 18, fromAddr: "654 Pine St, San Jose, CA",         fromLat: 37.3382, fromLng: -121.8863, toAddr: "123 Market St, San Francisco, CA", toLat: 37.7749, toLng: -122.4194, miles: 51.3, purpose: .openHouse),
+            TripSeed(month: 3, day: 5,  fromAddr: "789 Main St, Berkeley, CA",         fromLat: 37.8715, fromLng: -122.2730, toAddr: "654 Pine St, San Jose, CA",          toLat: 37.3382, toLng: -121.8863, miles: 44.9, purpose: .emergencyCall),
+            TripSeed(month: 3, day: 12, fromAddr: "321 Oak Ave, Palo Alto, CA",        fromLat: 37.4419, fromLng: -122.1430, toAddr: "456 Broadway, Oakland, CA",         toLat: 37.8044, toLng: -122.2712, miles: 36.2, purpose: .repair),
+            TripSeed(month: 3, day: 22, fromAddr: "123 Market St, San Francisco, CA", fromLat: 37.7749, fromLng: -122.4194, toAddr: "321 Oak Ave, Palo Alto, CA",        toLat: 37.4419, toLng: -122.1430, miles: 29.7, purpose: .propertyCheck),
+            TripSeed(month: 4, day: 2,  fromAddr: "456 Broadway, Oakland, CA",         fromLat: 37.8044, fromLng: -122.2712, toAddr: "789 Main St, Berkeley, CA",          toLat: 37.8715, toLng: -122.2730, miles: 18.3, purpose: .legalCourt),
+            TripSeed(month: 4, day: 9,  fromAddr: "654 Pine St, San Jose, CA",         fromLat: 37.3382, fromLng: -121.8863, toAddr: "321 Oak Ave, Palo Alto, CA",        toLat: 37.4419, toLng: -122.1430, miles: 22.1, purpose: .supplyRun),
+            TripSeed(month: 4, day: 17, fromAddr: "789 Main St, Berkeley, CA",         fromLat: 37.8715, fromLng: -122.2730, toAddr: "123 Market St, San Francisco, CA", toLat: 37.7749, toLng: -122.4194, miles: 38.6, purpose: .openHouse),
+            TripSeed(month: 5, day: 7,  fromAddr: "321 Oak Ave, Palo Alto, CA",        fromLat: 37.4419, fromLng: -122.1430, toAddr: "654 Pine St, San Jose, CA",          toLat: 37.3382, toLng: -121.8863, miles: 24.4, purpose: .rentCollection),
+            TripSeed(month: 5, day: 14, fromAddr: "123 Market St, San Francisco, CA", fromLat: 37.7749, fromLng: -122.4194, toAddr: "456 Broadway, Oakland, CA",         toLat: 37.8044, toLng: -122.2712, miles: 17.9, purpose: .repair),
+            TripSeed(month: 5, day: 23, fromAddr: "456 Broadway, Oakland, CA",         fromLat: 37.8044, fromLng: -122.2712, toAddr: "789 Main St, Berkeley, CA",          toLat: 37.8715, toLng: -122.2730, miles: 41.2, purpose: .propertyCheck),
+            TripSeed(month: 6, day: 4,  fromAddr: "654 Pine St, San Jose, CA",         fromLat: 37.3382, fromLng: -121.8863, toAddr: "123 Market St, San Francisco, CA", toLat: 37.7749, toLng: -122.4194, miles: 53.8, purpose: .openHouse),
+            TripSeed(month: 6, day: 11, fromAddr: "789 Main St, Berkeley, CA",         fromLat: 37.8715, fromLng: -122.2730, toAddr: "321 Oak Ave, Palo Alto, CA",        toLat: 37.4419, toLng: -122.1430, miles: 33.5, purpose: .supplyRun),
+            TripSeed(month: 6, day: 19, fromAddr: "321 Oak Ave, Palo Alto, CA",        fromLat: 37.4419, fromLng: -122.1430, toAddr: "456 Broadway, Oakland, CA",         toLat: 37.8044, toLng: -122.2712, miles: 28.9, purpose: .emergencyCall),
+        ]
+
+        let vehicle = vehicles.first
+        var newTrips: [Trip] = []
+
+        for seed in seeds {
+            var components = DateComponents()
+            components.year = year
+            components.month = seed.month
+            components.day = seed.day
+            components.hour = Int.random(in: 8...17)
+            components.minute = Int.random(in: 0...59)
+            guard let startTime = calendar.date(from: components) else { continue }
+            let duration = seed.miles / 30.0 * 3600 // ~30 mph average
+            let trip = Trip(
+                startTime: startTime,
+                endTime: startTime.addingTimeInterval(duration),
+                startLocation: LocationData(
+                    coordinate: CLLocationCoordinate2D(latitude: seed.fromLat, longitude: seed.fromLng),
+                    address: seed.fromAddr
+                ),
+                endLocation: LocationData(
+                    coordinate: CLLocationCoordinate2D(latitude: seed.toLat, longitude: seed.toLng),
+                    address: seed.toAddr
+                ),
+                distance: seed.miles,
+                purposeName: seed.purpose.rawValue,
+                vehicle: vehicle
+            )
+            newTrips.append(trip)
+        }
+
+        trips.append(contentsOf: newTrips)
+        trips.sort { $0.startTime > $1.startTime }
+        saveTrips()
+
+        let total = newTrips.reduce(0) { $0 + $1.mileageAmount }
+        print("📸 Generated \(newTrips.count) screenshot trips — $\(String(format: "%.2f", total)) total deduction")
     }
 
     // MARK: - Onboarding

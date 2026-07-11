@@ -66,6 +66,18 @@ struct TripsView: View {
                     
                     // Trip list
                     List {
+                        if !visibleTrips.isEmpty {
+                            HStack(spacing: 10) {
+                                Image(systemName: "hand.draw")
+                                    .foregroundColor(.secondary)
+                                Text("Non-business trip? Swipe left to delete it from your log.")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 4)
+                            .listRowSeparator(.hidden)
+                        }
+
                         ForEach(visibleTrips) { trip in
                             TripRow(trip: trip, tripStore: tripStore)
                                 .id("\(trip.id)-\(tripStore.locationNicknamesLastModified.timeIntervalSince1970)")
@@ -167,10 +179,7 @@ struct TripsView: View {
     
     private func deleteTrips(at offsets: IndexSet) {
         for index in offsets {
-            let tripsToDelete = filteredTrips
-            for index in offsets {
-                tripStore.deleteTrip(tripsToDelete[index])
-            }
+            tripStore.deleteTrip(visibleTrips[index])
         }
     }
     

@@ -27,8 +27,9 @@ final class SubscriptionManager: ObservableObject {
     @Published private(set) var products: [Product] = []
     @Published private(set) var purchasedProductIDs: Set<String> = []
     @Published private(set) var isLoading = false
+    @Published var debugProOverride: Bool = false
 
-    var isPro: Bool { !purchasedProductIDs.isEmpty }
+    var isPro: Bool { debugProOverride || !purchasedProductIDs.isEmpty }
 
     private var updateListenerTask: Task<Void, Never>?
 

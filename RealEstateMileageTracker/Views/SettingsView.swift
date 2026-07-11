@@ -123,6 +123,19 @@ struct SettingsView: View {
                         } label: {
                             Label("Generate Sample Trips", systemImage: "text.badge.plus")
                         }
+
+                        Button {
+                            tripStore.generateScreenshotTrips()
+                        } label: {
+                            Label("Generate Screenshot Data (~$1,100)", systemImage: "camera.badge.plus")
+                        }
+
+                        Toggle(isOn: Binding(
+                            get: { SubscriptionManager.shared.debugProOverride },
+                            set: { SubscriptionManager.shared.debugProOverride = $0 }
+                        )) {
+                            Label("Unlock Pro (Debug)", systemImage: "crown")
+                        }
                         
                         Button(role: .destructive) {
                             tripStore.clearAllTrips()

@@ -29,6 +29,7 @@ class TripManager: NSObject, ObservableObject {
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
     private var isVehicleActivity: Bool = false // Tracks automotive only
+    private var isPreciseLocationActive = false
     
     // Reference to TripStore for place matching
     weak var tripStore: TripStore?
@@ -42,9 +43,8 @@ class TripManager: NSObject, ObservableObject {
     
     private func setupLocationManager() {
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.activityType = .automotiveNavigation
-        locationManager.pausesLocationUpdatesAutomatically = false
+        configureIdleLocationMode()
         
         locationPermissionStatus = locationManager.authorizationStatus
         
@@ -70,10 +70,10 @@ class TripManager: NSObject, ObservableObject {
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.showsBackgroundLocationIndicator = true
         
+        isTracking = true
+
         // Start significant location change monitoring for automatic app relaunch
         locationManager.startMonitoringSignificantLocationChanges()
-        
-        locationManager.startUpdatingLocation()
         
         // Start motion activity monitoring to detect driving
         if CMMotionActivityManager.isActivityAvailable() {
@@ -81,6 +81,12 @@ class TripManager: NSObject, ObservableObject {
                 guard let activity = activity else { return }
                 self?.currentActivity = activity
                 self?.isVehicleActivity = activity.automotive
+
+                if activity.automotive && activity.confidence != .low {
+                    self?.activatePreciseLocationUpdates(reason: "vehicle activity")
+                } else if activity.stationary && self?.currentTrip == nil {
+                    self?.deactivatePreciseLocationUpdates()
+                }
                 
                 let activityType = activity.automotive ? "🚗 Driving" : 
                                    activity.stationary ? "🛑 Stationary" : "❓ Other"
@@ -89,14 +95,14 @@ class TripManager: NSObject, ObservableObject {
         } else {
             print("⚠️ Motion activity not available on this device")
         }
-        
-        isTracking = true
     }
     
     func stopTracking() {
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
         motionActivityManager.stopActivityUpdates()
+        isPreciseLocationActive = false
+        configureIdleLocationMode()
         isTracking = false
         endCurrentTrip()
     }
@@ -194,8 +200,44 @@ class TripManager: NSObject, ObservableObject {
         totalDistance = 0
         stoppedTimer?.invalidate()
         stoppedTimer = nil
+
+        if isTracking {
+            deactivatePreciseLocationUpdates()
+        }
     }
     
+    private func configureIdleLocationMode() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.distanceFilter = 250
+        locationManager.pausesLocationUpdatesAutomatically = true
+    }
+
+    private func configurePreciseLocationMode() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = 20
+        locationManager.pausesLocationUpdatesAutomatically = false
+    }
+
+    private func activatePreciseLocationUpdates(reason: String) {
+        guard isTracking, !isPreciseLocationActive else { return }
+
+        configurePreciseLocationMode()
+        locationManager.startUpdatingLocation()
+        isPreciseLocationActive = true
+
+        print("🔋 Precise GPS ON (\(reason))")
+    }
+
+    private func deactivatePreciseLocationUpdates() {
+        guard isPreciseLocationActive else { return }
+
+        locationManager.stopUpdatingLocation()
+        configureIdleLocationMode()
+        isPreciseLocationActive = false
+
+        print("🔋 Precise GPS OFF (idle)")
+    }
+
     private func geocodeLocation(_ location: CLLocation, completion: @escaping (String?) -> Void) {
         geocoder.reverseGeocodeLocation(location) { placemarks, error in
             guard let placemark = placemarks?.first, error == nil else {
@@ -220,6 +262,11 @@ class TripManager: NSObject, ObservableObject {
 extension TripManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+
+        guard location.horizontalAccuracy >= 0, location.horizontalAccuracy <= 100 else {
+            print("⚠️ Ignoring inaccurate location: \(location.horizontalAccuracy)m")
+            return
+        }
         
         let speed = location.speed // m/s
         
@@ -232,6 +279,7 @@ extension TripManager: CLLocationManagerDelegate {
         if currentTrip == nil && speed > speedThreshold {
             // Check if we're in vehicle mode (or motion activity is unavailable)
             if !CMMotionActivityManager.isActivityAvailable() || isVehicleActivity {
+                activatePreciseLocationUpdates(reason: "speed threshold")
                 startTrip(at: location)
                 return
             } else {

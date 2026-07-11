@@ -13,7 +13,7 @@ struct CustomPurposesView: View {
     @State private var newPurposeName = ""
     
     var allPurposes: [String] {
-        TripPurpose.allCases.map { $0.rawValue } + tripStore.customPurposes
+        TripPurpose.allCases.map { $0.displayName } + tripStore.customPurposes
     }
     
     var body: some View {
@@ -22,7 +22,7 @@ struct CustomPurposesView: View {
                 ForEach(TripPurpose.allCases, id: \.self) { purpose in
                     HStack {
                         Image(systemName: purpose.icon)
-                        Text(purpose.rawValue)
+                        Text(purpose.displayName)
                     }
                 }
             }

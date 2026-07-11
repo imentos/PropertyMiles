@@ -117,7 +117,7 @@ struct ReportsView: View {
                                     let miles = purposeTrips.reduce(0.0) { $0 + $1.distance }
                                     let amount = purposeTrips.reduce(0.0) { $0 + $1.mileageAmount }
                                     PurposeRow(
-                                        purposeName: purpose.rawValue,
+                                        purposeName: purpose.displayName,
                                         icon: purpose.icon,
                                         trips: tripCount,
                                         miles: miles,

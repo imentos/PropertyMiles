@@ -32,7 +32,7 @@ struct TripDetailView: View {
                         Text("None").tag("")
                         
                         ForEach(TripPurpose.allCases, id: \.self) { purpose in
-                            Text(purpose.rawValue).tag(purpose.rawValue)
+                            Text(purpose.displayName).tag(purpose.rawValue)
                         }
                         
                         if !tripStore.customPurposes.isEmpty {
@@ -144,14 +144,6 @@ struct TripDetailView: View {
                     }
                 }
                 
-                Section("Notes") {
-                    TextEditor(text: Binding(
-                        get: { trip.notes ?? "" },
-                        set: { trip.notes = $0.isEmpty ? nil : $0 }
-                    ))
-                    .frame(minHeight: 100)
-                }
-                
                 // Map preview
                 if let endLocation = trip.endLocation {
                     Section("Route") {
@@ -162,6 +154,14 @@ struct TripDetailView: View {
                         .frame(height: 200)
                         .cornerRadius(8)
                     }
+                }
+
+                Section("Notes") {
+                    TextEditor(text: Binding(
+                        get: { trip.notes ?? "" },
+                        set: { trip.notes = $0.isEmpty ? nil : $0 }
+                    ))
+                    .frame(minHeight: 100)
                 }
             }
             .navigationTitle("Trip Details")
@@ -292,7 +292,7 @@ struct MapPreview: View {
             address: "456 Broadway, Oakland, CA"
         ),
         distance: 12.5,
-        purposeName: "Showing",
+        purposeName: TripPurpose.openHouse.rawValue,
         vehicle: nil,
         notes: nil
     ))
