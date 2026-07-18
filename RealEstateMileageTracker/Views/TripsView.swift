@@ -140,13 +140,20 @@ struct TripsView: View {
                             .font(.caption2)
                     }
                     .foregroundColor(.white)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(Color.blue)
-                    .cornerRadius(25)
-                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 10)
+                    .background {
+                        Capsule()
+                            .fill(Color.blue.opacity(0.82))
+                            .background(.ultraThinMaterial, in: Capsule())
+                    }
+                    .overlay {
+                        Capsule()
+                            .stroke(Color.white.opacity(0.28), lineWidth: 1)
+                    }
+                    .shadow(color: .black.opacity(0.14), radius: 12, x: 0, y: 6)
                 }
-                .padding(.bottom, 16)
+                .padding(.bottom, 10)
             }
             .navigationTitle("Trips")
             .toolbar {
