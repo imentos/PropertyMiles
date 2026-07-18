@@ -188,8 +188,8 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Link(destination: URL(string: "https://www.irs.gov/tax-professionals/standard-mileage-rates")!) {
-                        Label("IRS Mileage Information", systemImage: "link")
+                    Link(destination: URL(string: "https://www.irs.gov/irb/2026-29_irb")!) {
+                        Label("IRS 2026 Rate Update", systemImage: "link")
                     }
                 }
                 
