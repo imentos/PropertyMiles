@@ -72,11 +72,11 @@ struct SettingsView: View {
                     HStack {
                         Label("Current IRS Business Rate", systemImage: "dollarsign.circle")
                         Spacer()
-                        Text("-e.76/mile")
+                        Text("$0.76/mile")
                             .foregroundColor(.secondary)
                     }
 
-                    Text("Trips before July 1, 2026 use -e.725/mile. Trips on or after July 1, 2026 use -e.76/mile.")
+                    Text("Trips before July 1, 2026 use $0.725/mile. Trips on or after July 1, 2026 use $0.76/mile.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

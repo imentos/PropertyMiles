@@ -114,7 +114,7 @@ NOTE: Continued use of GPS running in the background can decrease battery life. 
 **Screenshot 4: Export / IRS Compliance**
 - Export screen or CSV preview with columns visible
 - Caption: "IRS-compliant CSV. One tap."
-- Sub-text: "$0.67/mile rate built in for 2026."
+- Sub-text: "2026 IRS rates built in."
 
 **Screenshot 5: Pricing Clarity**
 - Clean interface with pricing overlay
@@ -516,7 +516,7 @@ Consider for v1.1 or v2.0:
 - Key differentiator: Automatic tracking + property-specific features
 - Target both new agents (need to track everything) and experienced agents (want to optimize)
 - Consider testimonials from beta testers for website
-- Update IRS mileage rate annually (currently $0.67/mile for 2026)
+- Update IRS mileage rate annually (currently 72.5¢/mile before July 1 and 76¢/mile on or after July 1 for 2026)
 - Monitor competitors: MileIQ, Everlance, TripLog
 
 ---
