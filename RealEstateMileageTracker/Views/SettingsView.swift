@@ -68,12 +68,17 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section("Mileage Rate") {                    HStack {
-                        Label("IRS Standard Rate", systemImage: "dollarsign.circle")
+                Section("Mileage Rate") {
+                    HStack {
+                        Label("Current IRS Business Rate", systemImage: "dollarsign.circle")
                         Spacer()
-                        Text("$0.67/mile")
+                        Text("-e.76/mile")
                             .foregroundColor(.secondary)
                     }
+
+                    Text("Trips before July 1, 2026 use -e.725/mile. Trips on or after July 1, 2026 use -e.76/mile.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
                 
                 Section("Vehicles") {
@@ -141,6 +146,21 @@ struct SettingsView: View {
                             tripStore.clearAllTrips()
                         } label: {
                             Label("Clear All Trips", systemImage: "trash")
+                        }
+
+                        if !tripManager.recentTrackingEvents.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Label("Recent Tracking Events", systemImage: "waveform.path.ecg")
+                                    .font(.subheadline.weight(.semibold))
+
+                                ForEach(tripManager.recentTrackingEvents, id: \.self) { event in
+                                    Text(event)
+                                        .font(.caption2.monospaced())
+                                        .foregroundColor(.secondary)
+                                        .textSelection(.enabled)
+                                }
+                            }
+                            .padding(.vertical, 4)
                         }
                     } header: {
                         Text("Debug Tools")

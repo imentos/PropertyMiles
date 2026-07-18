@@ -11,7 +11,7 @@ struct OB9ProcessingView: View {
 
     private let steps = [
         "Configuring trip detection",
-        "Setting IRS rate ($0.67/mile)",
+        "Setting current IRS rate",
         "Ready to track"
     ]
 

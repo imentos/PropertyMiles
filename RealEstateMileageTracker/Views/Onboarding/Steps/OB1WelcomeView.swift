@@ -15,7 +15,7 @@ struct OB1WelcomeView: View {
             tripSummaryMock
                 .padding(.bottom, 40)
 
-            Text("Every mile you drive\nis worth $0.67.")
+            Text("Every business mile\ncan be worth up to $0.76.")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)

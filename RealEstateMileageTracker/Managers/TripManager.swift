@@ -16,16 +16,17 @@ class TripManager: NSObject, ObservableObject {
     @Published var locationPermissionStatus: CLAuthorizationStatus = .notDetermined
     @Published var debugMode: Bool = false {
         didSet {
-            print("🐛 Debug mode: \(debugMode ? "ON" : "OFF")")
+            logTrackingEvent("Debug mode: \(debugMode ? "ON" : "OFF")")
         }
     }
+    @Published var recentTrackingEvents: [String] = []
     
     private let locationManager = CLLocationManager()
     private let motionActivityManager = CMMotionActivityManager()
     private var lastLocation: CLLocation?
     private var stoppedTimer: Timer?
     private let normalStoppedThreshold: TimeInterval = 300 // 5 minutes (prevents ending at traffic lights)
-    private let speedThreshold: CLLocationSpeed = 4.4704 // 10 mph in m/s
+    private let speedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
     private var isVehicleActivity: Bool = false // Tracks automotive only
@@ -51,7 +52,7 @@ class TripManager: NSObject, ObservableObject {
         // Auto-start tracking if we already have "Always" permission
         // This ensures tracking continues after app relaunch or background wake
         if locationPermissionStatus == .authorizedAlways {
-            print("🚀 Auto-starting tracking with Always permission")
+            logTrackingEvent("Auto-starting tracking with Always permission")
             startTracking()
         }
     }
@@ -80,7 +81,7 @@ class TripManager: NSObject, ObservableObject {
             motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
                 guard let activity = activity else { return }
                 self?.currentActivity = activity
-                self?.isVehicleActivity = activity.automotive
+                self?.isVehicleActivity = activity.automotive && activity.confidence != .low
 
                 if activity.automotive && activity.confidence != .low {
                     self?.activatePreciseLocationUpdates(reason: "vehicle activity")
@@ -90,10 +91,10 @@ class TripManager: NSObject, ObservableObject {
                 
                 let activityType = activity.automotive ? "🚗 Driving" : 
                                    activity.stationary ? "🛑 Stationary" : "❓ Other"
-                print("Activity: \(activityType), Confidence: \(activity.confidence.rawValue)")
+                self?.logTrackingEvent("Activity: \(activityType), confidence \(activity.confidence.rawValue)")
             }
         } else {
-            print("⚠️ Motion activity not available on this device")
+            logTrackingEvent("Motion activity not available on this device")
         }
     }
     
@@ -109,7 +110,7 @@ class TripManager: NSObject, ObservableObject {
     
     // Called when app launches in background due to location event
     func handleBackgroundLaunch() {
-        print("🌙 App launched in background for location event")
+        logTrackingEvent("App launched in background for location event")
         // Significant location changes will trigger didUpdateLocations
         // which will start trip if speed threshold is met
     }
@@ -134,7 +135,7 @@ class TripManager: NSObject, ObservableObject {
             self?.currentTrip?.startLocation.address = address
         }
         
-        print("🚗 Trip started at \(location.coordinate)")
+        logTrackingEvent("Trip started at \(location.coordinate)")
     }
     
     private func endCurrentTrip() {
@@ -144,7 +145,7 @@ class TripManager: NSObject, ObservableObject {
         trip.endLocation = LocationData(coordinate: lastLoc.coordinate)
         trip.distance = totalDistance * 0.000621371 // Convert meters to miles
         
-        print("🛑 Trip ended. Distance: \(trip.distance) miles")
+        logTrackingEvent("Trip ended. Distance: \(String(format: "%.2f", trip.distance)) miles")
         
         // Check for nearby location at start and auto-assign nickname
         if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: nil) {
@@ -208,7 +209,7 @@ class TripManager: NSObject, ObservableObject {
     
     private func configureIdleLocationMode() {
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.distanceFilter = 250
+        locationManager.distanceFilter = 100
         locationManager.pausesLocationUpdatesAutomatically = true
     }
 
@@ -225,7 +226,7 @@ class TripManager: NSObject, ObservableObject {
         locationManager.startUpdatingLocation()
         isPreciseLocationActive = true
 
-        print("🔋 Precise GPS ON (\(reason))")
+        logTrackingEvent("Precise GPS ON (\(reason))")
     }
 
     private func deactivatePreciseLocationUpdates() {
@@ -235,7 +236,23 @@ class TripManager: NSObject, ObservableObject {
         configureIdleLocationMode()
         isPreciseLocationActive = false
 
-        print("🔋 Precise GPS OFF (idle)")
+        logTrackingEvent("Precise GPS OFF (idle)")
+    }
+
+    private func logTrackingEvent(_ message: String) {
+        print(message)
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm:ss a"
+        let entry = "\(formatter.string(from: Date()))  \(message)"
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.recentTrackingEvents.insert(entry, at: 0)
+            if self.recentTrackingEvents.count > 20 {
+                self.recentTrackingEvents.removeLast(self.recentTrackingEvents.count - 20)
+            }
+        }
     }
 
     private func geocodeLocation(_ location: CLLocation, completion: @escaping (String?) -> Void) {
@@ -264,7 +281,7 @@ extension TripManager: CLLocationManagerDelegate {
         guard let location = locations.last else { return }
 
         guard location.horizontalAccuracy >= 0, location.horizontalAccuracy <= 100 else {
-            print("⚠️ Ignoring inaccurate location: \(location.horizontalAccuracy)m")
+            logTrackingEvent("Ignoring inaccurate location: \(String(format: "%.0f", location.horizontalAccuracy))m")
             return
         }
         
@@ -273,18 +290,18 @@ extension TripManager: CLLocationManagerDelegate {
         let speedMph = speed * 2.23694
         let thresholdMph = speedThreshold * 2.23694
         let activityStatus = isVehicleActivity ? "🚗" : "❓"
-        print("📍 Speed: \(String(format: "%.1f", speedMph)) mph (threshold: \(String(format: "%.1f", thresholdMph)) mph) \(activityStatus)\(debugMode ? " [DEBUG]" : "")")
+        logTrackingEvent("Speed: \(String(format: "%.1f", speedMph)) mph, threshold \(String(format: "%.1f", thresholdMph)) mph \(activityStatus)")
         
-        // Trip start detection - require BOTH speed threshold AND vehicle activity (driving)
-        if currentTrip == nil && speed > speedThreshold {
-            // Check if we're in vehicle mode (or motion activity is unavailable)
-            if !CMMotionActivityManager.isActivityAvailable() || isVehicleActivity {
-                activatePreciseLocationUpdates(reason: "speed threshold")
-                startTrip(at: location)
-                return
-            } else {
-                print("⚠️ Speed threshold met but not in vehicle mode - ignoring")
-            }
+        let speedIsReliable = speed >= 0
+        let isMovingFastEnough = speedIsReliable && speed > speedThreshold
+        let isLikelyVehicleTrip = isVehicleActivity && speedIsReliable && speed > 0.5
+
+        // Trip start detection - allow short, slow drives when motion says vehicle.
+        if currentTrip == nil && (isMovingFastEnough || isLikelyVehicleTrip) {
+            let reason = isMovingFastEnough ? "speed threshold" : "vehicle motion"
+            activatePreciseLocationUpdates(reason: reason)
+            startTrip(at: location)
+            return
         }
         
         // Update trip distance
@@ -304,7 +321,7 @@ extension TripManager: CLLocationManagerDelegate {
             
             if shouldEndTrip {
                 if stoppedTimer == nil {
-                    print("⏸️ Trip ending soon (stopped) - waiting \(Int(normalStoppedThreshold))s...")
+                    logTrackingEvent("Trip ending soon - waiting \(Int(normalStoppedThreshold))s")
                     stoppedTimer = Timer.scheduledTimer(withTimeInterval: normalStoppedThreshold, repeats: false) { [weak self] _ in
                         self?.endCurrentTrip()
                     }
@@ -328,7 +345,7 @@ extension TripManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("❌ Location error: \(error.localizedDescription)")
+        logTrackingEvent("Location error: \(error.localizedDescription)")
     }
 }
 

@@ -35,7 +35,7 @@ landlord,1099,deduction,tax,realtor,log,trip,agent,auto,rental,tracker,business,
 ### Promotional Text (170 characters max)
 *(Refreshable anytime without App Review resubmission — update seasonally)*
 ```
-Tax deadline April 15. Export your full 2025 mileage log in one tap. Every untracked mile is money left behind.
+Export your 2026 mileage log in one tap. LandMile tracks property and business drives with current IRS mileage rates.
 ```
 
 ---
@@ -44,29 +44,29 @@ Tax deadline April 15. Export your full 2025 mileage log in one tap. Every untra
 
 ### Short Description (First 3 lines - critical for ASO)
 ```
-Stop leaving thousands in tax deductions on the table. At $0.67/mile, 15,000 business miles = $10,050 you can deduct. LandMile tracks every drive automatically - no buttons, no spreadsheets.
+Stop leaving thousands in tax deductions on the table. At the current 2026 IRS business rate, 15,000 business miles can represent up to $11,400 in deductions. LandMile tracks every drive automatically - no buttons, no spreadsheets.
 ```
 
 ### Full Description
 ```
 BUILT FOR REAL ESTATE AGENTS, REALTORS, AND PROPERTY MANAGERS
 
-The average agent drives 12,000+ miles a year for work. At the IRS rate of $0.67/mile, that's $8,040 in deductions. Property Miles captures every mile automatically so your log is always ready when your accountant asks.
+The average agent drives 12,000+ miles a year for work. At the current 2026 IRS business rate, that can be up to $9,120 in deductions. LandMile captures every mile automatically so your log is always ready when your accountant asks.
 
 AUTO TRIP DETECTION
-Your phone stays in your pocket. Property Miles detects when you start driving and stops when you arrive. No buttons to tap, no trips to forget.
+Your phone stays in your pocket. LandMile detects when you start driving and stops when you arrive. No buttons to tap, no trips to forget.
 
 TAG TRIPS TO PROPERTIES
 Mark each drive: property visit, tenant showing, repair trip, inspection. At tax time your log is already organized by property — exactly how your CPA wants it.
 
 IRS-COMPLIANT REPORTS
-Built-in 2026 IRS rate: $0.67/mile. Export a complete CSV in one tap. Every entry includes date, destination, business purpose, and miles — the four items the IRS requires for a valid log.
+Built-in 2026 IRS business rates: 72.5¢/mile before July 1 and 76¢/mile on or after July 1. Export a complete CSV in one tap. Every entry includes date, destination, business purpose, and miles — the four items the IRS requires for a valid log.
 
 FREE TO START — PRO FOR POWER USERS
-Track trips free. Upgrade to Property Miles Pro ($4.99/month or $39.99/year) for unlimited trip history, cloud backup, and advanced reports.
+Track trips free. Upgrade to LandMile Pro ($4.99/month or $39.99/year) for unlimited trip history, cloud backup, and advanced reports.
 
 WHAT THE IRS REQUIRES
-A valid mileage log must include: date, destination, business purpose, and miles. Property Miles captures all of this automatically.
+A valid mileage log must include: date, destination, business purpose, and miles. LandMile captures all of this automatically.
 
 GREAT FOR
 - Real estate agents driving to showings, open houses, and listings

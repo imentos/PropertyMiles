@@ -9,7 +9,7 @@ struct OB6SolutionView: View {
     @ObservedObject var vm: OnboardingViewModel
 
     private let rows: [(pain: String, solution: String, icon: String)] = [
-        ("Forgetting to log trips", "Auto-detects every drive over 10 mph", "car.fill"),
+        ("Forgetting to log trips", "Auto-detects short business drives", "car.fill"),
         ("Unknown deduction value", "Live total updated after every trip", "dollarsign.circle.fill"),
         ("Tax-time scramble", "One-tap CSV ready for your accountant", "doc.text.fill"),
         ("Mixed personal/business", "Tag business trips in seconds", "tag.fill")

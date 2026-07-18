@@ -28,8 +28,27 @@ struct Trip: Identifiable, Codable {
         endTime != nil && endLocation != nil
     }
     
+    var mileageRate: Double {
+        Trip.irsBusinessMileageRate(for: startTime)
+    }
+
     var mileageAmount: Double {
-        distance * 0.67 // 2025 IRS standard mileage rate
+        distance * mileageRate
+    }
+
+    static func irsBusinessMileageRate(for date: Date) -> Double {
+        let calendar = Calendar(identifier: .gregorian)
+        let year = calendar.component(.year, from: date)
+
+        if year >= 2026 {
+            let julyFirst2026 = calendar.date(from: DateComponents(year: 2026, month: 7, day: 1))!
+            return date >= julyFirst2026 ? 0.76 : 0.725
+        }
+
+        if year == 2025 { return 0.70 }
+        if year == 2024 { return 0.67 }
+
+        return 0.67
     }
     
     var purposeIcon: String {
