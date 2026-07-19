@@ -216,9 +216,14 @@ No sensitive or personal data beyond location coordinates is collected.
 ```
 
 ### Build Details
-- [ ] Version: 1.0
-- [ ] Build number: 1
+- [x] Version: 1.8
+- [x] Build number: 4
 - [ ] Export compliance: No (not using encryption)
+
+### What's New - Version 1.8
+```
+Improved automatic trip completion after you arrive, with better saved tracking logs for debugging missed drives.
+```
 
 ---
 
@@ -373,7 +378,7 @@ Consider for v1.1 or v2.0:
 ## Pre-Submission Checklist
 
 ### Technical Requirements
-- [ ] Build compiles without errors
+- [x] Build compiles without errors
 - [ ] No crashes during testing
 - [ ] Tested on iOS 16+ devices (iPhone only)
 - [ ] Location permission prompt has clear explanation
