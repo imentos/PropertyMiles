@@ -19,7 +19,10 @@ class TripManager: NSObject, ObservableObject {
             logTrackingEvent("Debug mode: \(debugMode ? "ON" : "OFF")")
         }
     }
-    @Published var recentTrackingEvents: [String] = []
+    private static let trackingLogKey = "tracking_debug_log"
+    private static let maxTrackingLogEntries = 500
+
+    @Published var recentTrackingEvents: [String] = UserDefaults.standard.stringArray(forKey: TripManager.trackingLogKey) ?? []
     
     private let locationManager = CLLocationManager()
     private let motionActivityManager = CMMotionActivityManager()
@@ -31,6 +34,9 @@ class TripManager: NSObject, ObservableObject {
     private var currentActivity: CMMotionActivity?
     private var isVehicleActivity: Bool = false // Tracks automotive only
     private var isPreciseLocationActive = false
+    private let speedLogInterval: TimeInterval = 30
+    private var lastSpeedLogTime: Date?
+    private var lastActivityLogSignature: String?
     
     // Reference to TripStore for place matching
     weak var tripStore: TripStore?
@@ -91,7 +97,11 @@ class TripManager: NSObject, ObservableObject {
                 
                 let activityType = activity.automotive ? "🚗 Driving" : 
                                    activity.stationary ? "🛑 Stationary" : "❓ Other"
-                self?.logTrackingEvent("Activity: \(activityType), confidence \(activity.confidence.rawValue)")
+                let activitySignature = "\(activityType)|\(activity.confidence.rawValue)"
+                if self?.lastActivityLogSignature != activitySignature {
+                    self?.lastActivityLogSignature = activitySignature
+                    self?.logTrackingEvent("Activity: \(activityType), confidence \(activity.confidence.rawValue)")
+                }
             }
         } else {
             logTrackingEvent("Motion activity not available on this device")
@@ -243,16 +253,33 @@ class TripManager: NSObject, ObservableObject {
         print(message)
 
         let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm:ss a"
+        formatter.dateFormat = "MMM d, h:mm:ss a"
         let entry = "\(formatter.string(from: Date()))  \(message)"
 
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.recentTrackingEvents.insert(entry, at: 0)
-            if self.recentTrackingEvents.count > 20 {
-                self.recentTrackingEvents.removeLast(self.recentTrackingEvents.count - 20)
+            if self.recentTrackingEvents.count > Self.maxTrackingLogEntries {
+                self.recentTrackingEvents.removeLast(self.recentTrackingEvents.count - Self.maxTrackingLogEntries)
             }
+            UserDefaults.standard.set(self.recentTrackingEvents, forKey: Self.trackingLogKey)
         }
+    }
+
+    func clearTrackingLog() {
+        recentTrackingEvents.removeAll()
+        lastSpeedLogTime = nil
+        UserDefaults.standard.removeObject(forKey: Self.trackingLogKey)
+    }
+
+    private func logSpeedSampleIfNeeded(speedMph: Double, thresholdMph: Double, activityStatus: String) {
+        let now = Date()
+        if let lastSpeedLogTime, now.timeIntervalSince(lastSpeedLogTime) < speedLogInterval {
+            return
+        }
+
+        lastSpeedLogTime = now
+        logTrackingEvent("Speed sample: \(String(format: "%.1f", speedMph)) mph, threshold \(String(format: "%.1f", thresholdMph)) mph \(activityStatus)")
     }
 
     private func geocodeLocation(_ location: CLLocation, completion: @escaping (String?) -> Void) {
@@ -290,7 +317,7 @@ extension TripManager: CLLocationManagerDelegate {
         let speedMph = speed * 2.23694
         let thresholdMph = speedThreshold * 2.23694
         let activityStatus = isVehicleActivity ? "🚗" : "❓"
-        logTrackingEvent("Speed: \(String(format: "%.1f", speedMph)) mph, threshold \(String(format: "%.1f", thresholdMph)) mph \(activityStatus)")
+        logSpeedSampleIfNeeded(speedMph: speedMph, thresholdMph: thresholdMph, activityStatus: activityStatus)
         
         let speedIsReliable = speed >= 0
         let isMovingFastEnough = speedIsReliable && speed > speedThreshold

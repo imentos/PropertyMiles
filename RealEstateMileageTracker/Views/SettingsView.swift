@@ -148,11 +148,25 @@ struct SettingsView: View {
                             Label("Clear All Trips", systemImage: "trash")
                         }
 
-                        if !tripManager.recentTrackingEvents.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Label("Recent Tracking Events", systemImage: "waveform.path.ecg")
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Label("Tracking Log", systemImage: "waveform.path.ecg")
                                     .font(.subheadline.weight(.semibold))
+                                Spacer()
+                                Text("\(tripManager.recentTrackingEvents.count) saved")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
 
+                            Text("Saved on this device. Keeps the latest 500 tracking events for trip debugging.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+
+                            if tripManager.recentTrackingEvents.isEmpty {
+                                Text("No tracking events yet.")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            } else {
                                 ForEach(tripManager.recentTrackingEvents, id: \.self) { event in
                                     Text(event)
                                         .font(.caption2.monospaced())
@@ -160,8 +174,14 @@ struct SettingsView: View {
                                         .textSelection(.enabled)
                                 }
                             }
-                            .padding(.vertical, 4)
+
+                            Button(role: .destructive) {
+                                tripManager.clearTrackingLog()
+                            } label: {
+                                Label("Clear Tracking Log", systemImage: "trash")
+                            }
                         }
+                        .padding(.vertical, 4)
                     } header: {
                         Text("Debug Tools")
                     }
