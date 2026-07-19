@@ -28,6 +28,7 @@ class TripManager: NSObject, ObservableObject {
     private let motionActivityManager = CMMotionActivityManager()
     private var lastLocation: CLLocation?
     private var stoppedTimer: Timer?
+    private var stoppedAt: Date?
     private let normalStoppedThreshold: TimeInterval = 300 // 5 minutes (prevents ending at traffic lights)
     private let speedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s
     private var totalDistance: CLLocationDistance = 0
@@ -90,9 +91,14 @@ class TripManager: NSObject, ObservableObject {
                 self?.isVehicleActivity = activity.automotive && activity.confidence != .low
 
                 if activity.automotive && activity.confidence != .low {
+                    self?.resumeTripIfNeeded(reason: "vehicle activity")
                     self?.activatePreciseLocationUpdates(reason: "vehicle activity")
-                } else if activity.stationary && self?.currentTrip == nil {
-                    self?.deactivatePreciseLocationUpdates()
+                } else if activity.stationary && activity.confidence != .low {
+                    if self?.currentTrip != nil {
+                        self?.handleStoppedSignal(since: activity.startDate, reason: "stationary activity")
+                    } else {
+                        self?.deactivatePreciseLocationUpdates()
+                    }
                 }
                 
                 let activityType = activity.automotive ? "🚗 Driving" : 
@@ -211,6 +217,7 @@ class TripManager: NSObject, ObservableObject {
         totalDistance = 0
         stoppedTimer?.invalidate()
         stoppedTimer = nil
+        stoppedAt = nil
 
         if isTracking {
             deactivatePreciseLocationUpdates()
@@ -247,6 +254,53 @@ class TripManager: NSObject, ObservableObject {
         isPreciseLocationActive = false
 
         logTrackingEvent("Precise GPS OFF (idle)")
+    }
+
+    private func handleStoppedSignal(since detectedAt: Date = Date(), reason: String) {
+        guard currentTrip != nil else { return }
+
+        if stoppedAt == nil {
+            if let tripStart = currentTrip?.startTime {
+                stoppedAt = max(detectedAt, tripStart)
+            } else {
+                stoppedAt = detectedAt
+            }
+            logTrackingEvent("Trip stop detected (\(reason))")
+        }
+
+        finishTripIfStoppedLongEnough(reason: reason)
+    }
+
+    private func finishTripIfStoppedLongEnough(reason: String) {
+        guard currentTrip != nil, let stoppedAt else { return }
+
+        let stoppedDuration = Date().timeIntervalSince(stoppedAt)
+        if stoppedDuration >= normalStoppedThreshold {
+            logTrackingEvent("Trip ending after \(Int(stoppedDuration))s stopped (\(reason))")
+            endCurrentTrip()
+            return
+        }
+
+        scheduleStoppedTimer(remaining: normalStoppedThreshold - stoppedDuration, reason: reason)
+    }
+
+    private func scheduleStoppedTimer(remaining: TimeInterval, reason: String) {
+        guard stoppedTimer == nil else { return }
+
+        let delay = max(1, remaining)
+        logTrackingEvent("Trip ending soon - waiting \(Int(delay))s (\(reason))")
+        stoppedTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            self?.finishTripIfStoppedLongEnough(reason: "stop timer")
+        }
+    }
+
+    private func resumeTripIfNeeded(reason: String) {
+        guard stoppedAt != nil || stoppedTimer != nil else { return }
+
+        stoppedAt = nil
+        stoppedTimer?.invalidate()
+        stoppedTimer = nil
+        logTrackingEvent("Trip resumed (\(reason))")
     }
 
     private func logTrackingEvent(_ message: String) {
@@ -343,23 +397,16 @@ extension TripManager: CLLocationManagerDelegate {
             
             lastLocation = location
             
-            // Trip end detection - end if stopped
-            let shouldEndTrip = speed < 0.5
+            // Trip end detection - end after the device has truly been stopped long enough.
+            let shouldEndTrip = speedIsReliable && speed < 0.5
             
             if shouldEndTrip {
-                if stoppedTimer == nil {
-                    logTrackingEvent("Trip ending soon - waiting \(Int(normalStoppedThreshold))s")
-                    stoppedTimer = Timer.scheduledTimer(withTimeInterval: normalStoppedThreshold, repeats: false) { [weak self] _ in
-                        self?.endCurrentTrip()
-                    }
-                }
-            } else {
-                // Cancel stop timer if moving again
-                if stoppedTimer != nil {
-                    stoppedTimer?.invalidate()
-                    stoppedTimer = nil
-                }
+                handleStoppedSignal(reason: "low speed")
+            } else if speedIsReliable {
+                resumeTripIfNeeded(reason: "location speed")
             }
+            
+            finishTripIfStoppedLongEnough(reason: "location update")
         }
     }
     
