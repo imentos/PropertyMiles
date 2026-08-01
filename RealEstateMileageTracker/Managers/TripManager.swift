@@ -353,12 +353,14 @@ class TripManager: NSObject, ObservableObject {
     private func logTrackingEvent(_ message: String) {
         print(message)
 
+        guard debugMode else { return }
+
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, h:mm:ss a"
         let entry = "\(formatter.string(from: Date()))  \(message)"
 
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self = self, self.debugMode else { return }
             self.recentTrackingEvents.insert(entry, at: 0)
             if self.recentTrackingEvents.count > Self.maxTrackingLogEntries {
                 self.recentTrackingEvents.removeLast(self.recentTrackingEvents.count - Self.maxTrackingLogEntries)
