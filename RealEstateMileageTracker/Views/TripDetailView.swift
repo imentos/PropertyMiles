@@ -197,6 +197,11 @@ struct TripDetailView: View {
                                 nickname: startNickname
                             )
                             trip.startLocation.locationNicknameId = nicknameId
+                            tripStore.applyLocationNicknameToMatchingTrips(
+                                nicknameId: nicknameId,
+                                coordinate: trip.startLocation.coordinate,
+                                address: trip.startLocation.address
+                            )
                         } else {
                             trip.startLocation.locationNicknameId = nil
                         }
@@ -208,6 +213,11 @@ struct TripDetailView: View {
                                 nickname: endNickname
                             )
                             trip.endLocation?.locationNicknameId = nicknameId
+                            tripStore.applyLocationNicknameToMatchingTrips(
+                                nicknameId: nicknameId,
+                                coordinate: endLocation.coordinate,
+                                address: endLocation.address
+                            )
                         } else {
                             trip.endLocation?.locationNicknameId = nil
                         }

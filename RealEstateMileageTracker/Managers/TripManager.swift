@@ -32,6 +32,7 @@ class TripManager: NSObject, ObservableObject {
     private var candidateStartCapturedAt: Date?
     private var stoppedTimer: Timer?
     private var stoppedAt: Date?
+    private var stoppedLocation: CLLocation?
     private let normalStoppedThreshold: TimeInterval = 300 // 5 minutes (prevents ending at traffic lights)
     private let speedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s
     private var totalDistance: CLLocationDistance = 0
@@ -166,10 +167,10 @@ class TripManager: NSObject, ObservableObject {
     }
     
     private func endCurrentTrip() {
-        guard var trip = currentTrip, let lastLoc = lastLocation else { return }
+        guard var trip = currentTrip, let endLoc = stoppedLocation ?? lastLocation else { return }
         
         trip.endTime = Date()
-        trip.endLocation = LocationData(coordinate: lastLoc.coordinate)
+        trip.endLocation = LocationData(coordinate: endLoc.coordinate)
         trip.distance = totalDistance * 0.000621371 // Convert meters to miles
         
         logTrackingEvent("Trip ended. Distance: \(String(format: "%.2f", trip.distance)) miles")
@@ -181,13 +182,13 @@ class TripManager: NSObject, ObservableObject {
         }
         
         // Check for nearby location at end and auto-assign nickname
-        if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: lastLoc.coordinate, address: nil) {
+        if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: endLoc.coordinate, address: nil) {
             trip.endLocation?.locationNicknameId = nearbyEntry.id
             print("🏠 Auto-assigned to nickname (location map): \(nearbyEntry.nickname)")
         }
         
         // Geocode end location and then save trip
-        geocodeLocation(lastLoc) { [weak self] address in
+        geocodeLocation(endLoc) { [weak self] address in
             guard let self = self else { return }
             
             // Update trip with end address
@@ -195,7 +196,7 @@ class TripManager: NSObject, ObservableObject {
             
             // Re-check nickname with actual address (might find exact address match)
             if trip.endLocation?.locationNicknameId == nil, let address = address {
-                if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: lastLoc.coordinate, address: address) {
+                if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: endLoc.coordinate, address: address) {
                     trip.endLocation?.locationNicknameId = entry.id
                     print("🏠 Auto-assigned to nickname with address: \(entry.nickname)")
                 }
@@ -229,6 +230,7 @@ class TripManager: NSObject, ObservableObject {
         stoppedTimer?.invalidate()
         stoppedTimer = nil
         stoppedAt = nil
+        stoppedLocation = nil
         clearCandidateStart()
 
         if isTracking {
@@ -299,7 +301,7 @@ class TripManager: NSObject, ObservableObject {
         candidateStartCapturedAt = nil
     }
 
-    private func handleStoppedSignal(since detectedAt: Date = Date(), reason: String) {
+    private func handleStoppedSignal(since detectedAt: Date = Date(), location: CLLocation? = nil, reason: String) {
         guard currentTrip != nil else { return }
 
         if stoppedAt == nil {
@@ -308,6 +310,7 @@ class TripManager: NSObject, ObservableObject {
             } else {
                 stoppedAt = detectedAt
             }
+            stoppedLocation = location ?? lastKnownLocation
             logTrackingEvent("Trip stop detected (\(reason))")
         }
 
@@ -341,6 +344,7 @@ class TripManager: NSObject, ObservableObject {
         guard stoppedAt != nil || stoppedTimer != nil else { return }
 
         stoppedAt = nil
+        stoppedLocation = nil
         stoppedTimer?.invalidate()
         stoppedTimer = nil
         logTrackingEvent("Trip resumed (\(reason))")
@@ -450,7 +454,7 @@ extension TripManager: CLLocationManagerDelegate {
             let shouldEndTrip = speedIsReliable && speed < 0.5
             
             if shouldEndTrip {
-                handleStoppedSignal(reason: "low speed")
+                handleStoppedSignal(location: location, reason: "low speed")
             } else if speedIsReliable {
                 resumeTripIfNeeded(reason: "location speed")
             }

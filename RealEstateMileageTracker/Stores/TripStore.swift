@@ -134,11 +134,29 @@ class TripStore: ObservableObject {
             return locationNicknames[index].id
         }
         
+        let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let normalizedTargetNickname = normalizedAddress(nickname)
+
+        if let index = locationNicknames.firstIndex(where: { location in
+            let loc = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            return normalizedAddress(location.nickname) == normalizedTargetNickname && targetLocation.distance(from: loc) <= 500
+        }) {
+            locationNicknames[index].nickname = nickname
+            locationNicknames[index].lastUsed = Date()
+            if locationNicknames[index].coordinate.address == nil {
+                locationNicknames[index].coordinate.address = address
+            }
+            locationNicknamesLastModified = Date()
+            saveLocationNicknames()
+            print("📝 Reused nickname for same named nearby location")
+            return locationNicknames[index].id
+        }
+
         // Otherwise check if we already have a nickname for this location by proximity
         if let index = locationNicknames.firstIndex(where: { location in
             let loc1 = CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
             let loc2 = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-            return loc1.distance(from: loc2) <= 50 // Same location if within 50m
+            return loc1.distance(from: loc2) <= 100 // Same location if within 100m
         }) {
             // Update existing
             locationNicknames[index].nickname = nickname
