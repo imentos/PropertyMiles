@@ -27,6 +27,9 @@ class TripManager: NSObject, ObservableObject {
     private let locationManager = CLLocationManager()
     private let motionActivityManager = CMMotionActivityManager()
     private var lastLocation: CLLocation?
+    private var lastKnownLocation: CLLocation?
+    private var candidateStartLocation: CLLocation?
+    private var candidateStartCapturedAt: Date?
     private var stoppedTimer: Timer?
     private var stoppedAt: Date?
     private let normalStoppedThreshold: TimeInterval = 300 // 5 minutes (prevents ending at traffic lights)
@@ -36,6 +39,7 @@ class TripManager: NSObject, ObservableObject {
     private var isVehicleActivity: Bool = false // Tracks automotive only
     private var isPreciseLocationActive = false
     private let speedLogInterval: TimeInterval = 30
+    private let candidateStartMaxAge: TimeInterval = 180
     private var lastSpeedLogTime: Date?
     private var lastActivityLogSignature: String?
     
@@ -93,6 +97,7 @@ class TripManager: NSObject, ObservableObject {
                 if activity.automotive && activity.confidence != .low {
                     self?.resumeTripIfNeeded(reason: "vehicle activity")
                     self?.activatePreciseLocationUpdates(reason: "vehicle activity")
+                    self?.captureCandidateStartIfPossible(reason: "vehicle activity")
                 } else if activity.stationary && activity.confidence != .low {
                     if self?.currentTrip != nil {
                         self?.handleStoppedSignal(since: activity.startDate, reason: "stationary activity")
@@ -128,10 +133,10 @@ class TripManager: NSObject, ObservableObject {
     func handleBackgroundLaunch() {
         logTrackingEvent("App launched in background for location event")
         // Significant location changes will trigger didUpdateLocations
-        // which will start trip if speed threshold is met
+        // which will start a trip from vehicle activity or speed fallback
     }
     
-    private func startTrip(at location: CLLocation) {
+    private func startTrip(at location: CLLocation, reason: String, triggerLocation: CLLocation? = nil) {
         guard currentTrip == nil else { return }
         
         let locationData = LocationData(coordinate: location.coordinate)
@@ -151,7 +156,13 @@ class TripManager: NSObject, ObservableObject {
             self?.currentTrip?.startLocation.address = address
         }
         
-        logTrackingEvent("Trip started at \(location.coordinate)")
+        if let triggerLocation {
+            let offset = location.distance(from: triggerLocation)
+            logTrackingEvent("Trip started (\(reason)) at \(location.coordinate), accuracy \(Int(location.horizontalAccuracy))m, trigger offset \(Int(offset))m")
+        } else {
+            logTrackingEvent("Trip started (\(reason)) at \(location.coordinate), accuracy \(Int(location.horizontalAccuracy))m")
+        }
+        clearCandidateStart()
     }
     
     private func endCurrentTrip() {
@@ -218,6 +229,7 @@ class TripManager: NSObject, ObservableObject {
         stoppedTimer?.invalidate()
         stoppedTimer = nil
         stoppedAt = nil
+        clearCandidateStart()
 
         if isTracking {
             deactivatePreciseLocationUpdates()
@@ -254,6 +266,37 @@ class TripManager: NSObject, ObservableObject {
         isPreciseLocationActive = false
 
         logTrackingEvent("Precise GPS OFF (idle)")
+    }
+
+    private func captureCandidateStartIfPossible(from location: CLLocation? = nil, reason: String) {
+        guard currentTrip == nil else { return }
+
+        let candidate = location ?? lastKnownLocation
+        guard let candidate, candidate.horizontalAccuracy >= 0, candidate.horizontalAccuracy <= 100 else { return }
+
+        if let capturedAt = candidateStartCapturedAt, Date().timeIntervalSince(capturedAt) <= candidateStartMaxAge {
+            return
+        }
+
+        candidateStartLocation = candidate
+        candidateStartCapturedAt = Date()
+        logTrackingEvent("Candidate start captured (\(reason)), accuracy \(Int(candidate.horizontalAccuracy))m")
+    }
+
+    private func bestStartLocation(fallback location: CLLocation) -> CLLocation {
+        guard let candidateStartLocation, let candidateStartCapturedAt else { return location }
+
+        if Date().timeIntervalSince(candidateStartCapturedAt) <= candidateStartMaxAge {
+            return candidateStartLocation
+        }
+
+        clearCandidateStart()
+        return location
+    }
+
+    private func clearCandidateStart() {
+        candidateStartLocation = nil
+        candidateStartCapturedAt = nil
     }
 
     private func handleStoppedSignal(since detectedAt: Date = Date(), reason: String) {
@@ -366,6 +409,11 @@ extension TripManager: CLLocationManagerDelegate {
             return
         }
         
+        lastKnownLocation = location
+        if currentTrip == nil && isVehicleActivity {
+            captureCandidateStartIfPossible(from: location, reason: "vehicle location")
+        }
+
         let speed = location.speed // m/s
         
         let speedMph = speed * 2.23694
@@ -375,13 +423,14 @@ extension TripManager: CLLocationManagerDelegate {
         
         let speedIsReliable = speed >= 0
         let isMovingFastEnough = speedIsReliable && speed > speedThreshold
-        let isLikelyVehicleTrip = isVehicleActivity && speedIsReliable && speed > 0.5
+        let shouldStartFromVehicleActivity = isVehicleActivity
 
-        // Trip start detection - allow short, slow drives when motion says vehicle.
-        if currentTrip == nil && (isMovingFastEnough || isLikelyVehicleTrip) {
-            let reason = isMovingFastEnough ? "speed threshold" : "vehicle motion"
+        // Trip start detection - Apple automotive is the primary signal; speed remains a fallback.
+        if currentTrip == nil && (shouldStartFromVehicleActivity || isMovingFastEnough) {
+            let reason = shouldStartFromVehicleActivity ? "vehicle activity" : "speed threshold"
+            let startLocation = bestStartLocation(fallback: location)
             activatePreciseLocationUpdates(reason: reason)
-            startTrip(at: location)
+            startTrip(at: startLocation, reason: reason, triggerLocation: location)
             return
         }
         
