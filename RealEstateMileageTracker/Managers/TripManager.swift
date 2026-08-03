@@ -101,7 +101,7 @@ class TripManager: NSObject, ObservableObject {
                     self?.captureCandidateStartIfPossible(reason: "vehicle activity")
                 } else if activity.stationary && activity.confidence != .low {
                     if self?.currentTrip != nil {
-                        self?.handleStoppedSignal(since: activity.startDate, reason: "stationary activity")
+                        self?.handleStoppedSignal(reason: "stationary activity")
                     } else {
                         self?.deactivatePreciseLocationUpdates()
                     }
