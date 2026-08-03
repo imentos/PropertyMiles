@@ -33,7 +33,7 @@ class TripManager: NSObject, ObservableObject {
     private var stoppedTimer: Timer?
     private var stoppedAt: Date?
     private var stoppedLocation: CLLocation?
-    private let normalStoppedThreshold: TimeInterval = 300 // 5 minutes (prevents ending at traffic lights)
+    private let normalStoppedThreshold: TimeInterval = 180 // 3 minutes (prevents ending at traffic lights)
     private let speedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s
     private var totalDistance: CLLocationDistance = 0
     private var currentActivity: CMMotionActivity?
