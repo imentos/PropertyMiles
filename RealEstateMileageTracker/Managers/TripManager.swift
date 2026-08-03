@@ -16,7 +16,16 @@ class TripManager: NSObject, ObservableObject {
     @Published var locationPermissionStatus: CLAuthorizationStatus = .notDetermined
     @Published var debugMode: Bool = false {
         didSet {
+            if !debugMode {
+                debugTrackCycling = false
+            }
             logTrackingEvent("Debug mode: \(debugMode ? "ON" : "OFF")")
+        }
+    }
+    @Published var debugTrackCycling: Bool = UserDefaults.standard.bool(forKey: "debug_track_cycling") {
+        didSet {
+            UserDefaults.standard.set(debugTrackCycling, forKey: "debug_track_cycling")
+            logTrackingEvent("Debug track cycling: \(debugTrackCycling ? "ON" : "OFF")")
         }
     }
     private static let trackingLogKey = "tracking_debug_log"
@@ -93,12 +102,15 @@ class TripManager: NSObject, ObservableObject {
             motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
                 guard let activity = activity else { return }
                 self?.currentActivity = activity
-                self?.isVehicleActivity = activity.automotive && activity.confidence != .low
+                let supportsCycling = self?.debugMode == true && self?.debugTrackCycling == true && activity.cycling
+                let isTripActivity = (activity.automotive || supportsCycling) && activity.confidence != .low
+                let tripActivityReason = supportsCycling ? "cycling debug activity" : "vehicle activity"
+                self?.isVehicleActivity = isTripActivity
 
-                if activity.automotive && activity.confidence != .low {
-                    self?.resumeTripIfNeeded(reason: "vehicle activity")
-                    self?.activatePreciseLocationUpdates(reason: "vehicle activity")
-                    self?.captureCandidateStartIfPossible(reason: "vehicle activity")
+                if isTripActivity {
+                    self?.resumeTripIfNeeded(reason: tripActivityReason)
+                    self?.activatePreciseLocationUpdates(reason: tripActivityReason)
+                    self?.captureCandidateStartIfPossible(reason: tripActivityReason)
                 } else if activity.stationary && activity.confidence != .low {
                     if self?.currentTrip != nil {
                         self?.handleStoppedSignal(reason: "stationary activity")
@@ -107,7 +119,8 @@ class TripManager: NSObject, ObservableObject {
                     }
                 }
                 
-                let activityType = activity.automotive ? "🚗 Driving" : 
+                let activityType = activity.automotive ? "🚗 Driving" :
+                                   activity.cycling ? "🚲 Cycling" :
                                    activity.stationary ? "🛑 Stationary" : "❓ Other"
                 let activitySignature = "\(activityType)|\(activity.confidence.rawValue)"
                 if self?.lastActivityLogSignature != activitySignature {
@@ -433,7 +446,7 @@ extension TripManager: CLLocationManagerDelegate {
 
         // Trip start detection - Apple automotive is the primary signal; speed remains a fallback.
         if currentTrip == nil && (shouldStartFromVehicleActivity || isMovingFastEnough) {
-            let reason = shouldStartFromVehicleActivity ? "vehicle activity" : "speed threshold"
+            let reason = shouldStartFromVehicleActivity && debugMode && debugTrackCycling && currentActivity?.cycling == true ? "cycling debug activity" : shouldStartFromVehicleActivity ? "vehicle activity" : "speed threshold"
             let startLocation = bestStartLocation(fallback: location)
             activatePreciseLocationUpdates(reason: reason)
             startTrip(at: startLocation, reason: reason, triggerLocation: location)

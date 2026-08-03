@@ -141,6 +141,10 @@ struct SettingsView: View {
                         )) {
                             Label("Unlock Pro (Debug)", systemImage: "crown")
                         }
+
+                        Toggle(isOn: $tripManager.debugTrackCycling) {
+                            Label("Track Cycling Trips (Debug)", systemImage: "bicycle")
+                        }
                         
                         Button(role: .destructive) {
                             tripStore.clearAllTrips()
