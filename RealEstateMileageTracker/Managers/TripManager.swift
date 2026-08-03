@@ -441,12 +441,11 @@ extension TripManager: CLLocationManagerDelegate {
         logSpeedSampleIfNeeded(speedMph: speedMph, thresholdMph: thresholdMph, activityStatus: activityStatus)
         
         let speedIsReliable = speed >= 0
-        let isMovingFastEnough = speedIsReliable && speed > speedThreshold
-        let shouldStartFromVehicleActivity = isVehicleActivity
+        let shouldStartFromTripActivity = isVehicleActivity
 
-        // Trip start detection - Apple automotive is the primary signal; speed remains a fallback.
-        if currentTrip == nil && (shouldStartFromVehicleActivity || isMovingFastEnough) {
-            let reason = shouldStartFromVehicleActivity && debugMode && debugTrackCycling && currentActivity?.cycling == true ? "cycling debug activity" : shouldStartFromVehicleActivity ? "vehicle activity" : "speed threshold"
+        // Trip start detection - Apple motion activity is the start signal.
+        if currentTrip == nil && shouldStartFromTripActivity {
+            let reason = debugMode && debugTrackCycling && currentActivity?.cycling == true ? "cycling debug activity" : "vehicle activity"
             let startLocation = bestStartLocation(fallback: location)
             activatePreciseLocationUpdates(reason: reason)
             startTrip(at: startLocation, reason: reason, triggerLocation: location)
