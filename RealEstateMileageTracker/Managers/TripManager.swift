@@ -40,8 +40,11 @@ class TripManager: NSObject, ObservableObject {
     private var candidateStartLocation: CLLocation?
     private var candidateStartCapturedAt: Date?
     private var stoppedTimer: Timer?
+    private var locationProbeTimer: Timer?
     private var stoppedAt: Date?
     private var stoppedLocation: CLLocation?
+    private var previousTripEndLocation: CLLocation?
+    private var previousTripEndedAt: Date?
     private let normalStoppedThreshold: TimeInterval = 180 // 3 minutes (prevents ending at traffic lights)
     private let speedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s
     private var totalDistance: CLLocationDistance = 0
@@ -50,6 +53,8 @@ class TripManager: NSObject, ObservableObject {
     private var isPreciseLocationActive = false
     private let speedLogInterval: TimeInterval = 30
     private let candidateStartMaxAge: TimeInterval = 180
+    private let locationProbeDuration: TimeInterval = 180
+    private let previousTripEndCandidateMaxAge: TimeInterval = 21600
     private var lastSpeedLogTime: Date?
     private var lastActivityLogSignature: String?
     
@@ -114,7 +119,7 @@ class TripManager: NSObject, ObservableObject {
                 } else if activity.stationary && activity.confidence != .low {
                     if self?.currentTrip != nil {
                         self?.handleStoppedSignal(reason: "stationary activity")
-                    } else {
+                    } else if self?.locationProbeTimer == nil {
                         self?.deactivatePreciseLocationUpdates()
                     }
                 }
@@ -137,6 +142,7 @@ class TripManager: NSObject, ObservableObject {
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
         motionActivityManager.stopActivityUpdates()
+        cancelLocationProbe()
         isPreciseLocationActive = false
         configureIdleLocationMode()
         isTracking = false
@@ -147,10 +153,11 @@ class TripManager: NSObject, ObservableObject {
     func handleBackgroundLaunch() {
         logTrackingEvent("App launched in background for location event")
         // Significant location changes will trigger didUpdateLocations
-        // which will start a trip from vehicle activity or speed fallback
+        // which can briefly probe for precise location while waiting for trip activity
     }
     
     private func startTrip(at location: CLLocation, reason: String, triggerLocation: CLLocation? = nil) {
+        cancelLocationProbe()
         guard currentTrip == nil else { return }
         
         let locationData = LocationData(coordinate: location.coordinate)
@@ -177,6 +184,7 @@ class TripManager: NSObject, ObservableObject {
             logTrackingEvent("Trip started (\(reason)) at \(location.coordinate), accuracy \(Int(location.horizontalAccuracy))m")
         }
         clearCandidateStart()
+        clearPreviousTripEndCandidate()
     }
     
     private func endCurrentTrip() {
@@ -187,6 +195,8 @@ class TripManager: NSObject, ObservableObject {
         trip.distance = totalDistance * 0.000621371 // Convert meters to miles
         
         logTrackingEvent("Trip ended. Distance: \(String(format: "%.2f", trip.distance)) miles")
+        previousTripEndLocation = endLoc
+        previousTripEndedAt = trip.endTime
         
         // Check for nearby location at start and auto-assign nickname
         if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: nil) {
@@ -242,6 +252,7 @@ class TripManager: NSObject, ObservableObject {
         totalDistance = 0
         stoppedTimer?.invalidate()
         stoppedTimer = nil
+        cancelLocationProbe()
         stoppedAt = nil
         stoppedLocation = nil
         clearCandidateStart()
@@ -273,6 +284,29 @@ class TripManager: NSObject, ObservableObject {
         logTrackingEvent("Precise GPS ON (\(reason))")
     }
 
+    private func startLocationProbeIfNeeded(reason: String, location: CLLocation? = nil) {
+        guard isTracking, currentTrip == nil, !isVehicleActivity, locationProbeTimer == nil else { return }
+
+        captureCandidateStartIfPossible(from: location, reason: "location probe")
+        activatePreciseLocationUpdates(reason: "location probe: \(reason)")
+        logTrackingEvent("Location probe started (\(reason)); waiting \(Int(locationProbeDuration))s for activity")
+
+        locationProbeTimer = Timer.scheduledTimer(withTimeInterval: locationProbeDuration, repeats: false) { [weak self] _ in
+            guard let self = self else { return }
+            self.locationProbeTimer = nil
+
+            if self.currentTrip == nil && !self.isVehicleActivity {
+                self.logTrackingEvent("Location probe expired; no trip activity")
+                self.deactivatePreciseLocationUpdates()
+            }
+        }
+    }
+
+    private func cancelLocationProbe() {
+        locationProbeTimer?.invalidate()
+        locationProbeTimer = nil
+    }
+
     private func deactivatePreciseLocationUpdates() {
         guard isPreciseLocationActive else { return }
 
@@ -299,14 +333,29 @@ class TripManager: NSObject, ObservableObject {
     }
 
     private func bestStartLocation(fallback location: CLLocation) -> CLLocation {
-        guard let candidateStartLocation, let candidateStartCapturedAt else { return location }
+        if let candidateStartLocation, let candidateStartCapturedAt {
+            if Date().timeIntervalSince(candidateStartCapturedAt) <= candidateStartMaxAge {
+                return candidateStartLocation
+            }
 
-        if Date().timeIntervalSince(candidateStartCapturedAt) <= candidateStartMaxAge {
-            return candidateStartLocation
+            clearCandidateStart()
         }
 
-        clearCandidateStart()
+        if let previousTripEndLocation, let previousTripEndedAt {
+            if Date().timeIntervalSince(previousTripEndedAt) <= previousTripEndCandidateMaxAge {
+                logTrackingEvent("Using previous trip end as start candidate")
+                return previousTripEndLocation
+            }
+
+            clearPreviousTripEndCandidate()
+        }
+
         return location
+    }
+
+    private func clearPreviousTripEndCandidate() {
+        previousTripEndLocation = nil
+        previousTripEndedAt = nil
     }
 
     private func clearCandidateStart() {
@@ -429,6 +478,9 @@ extension TripManager: CLLocationManagerDelegate {
         }
         
         lastKnownLocation = location
+        if currentTrip == nil && !isVehicleActivity {
+            startLocationProbeIfNeeded(reason: "location update", location: location)
+        }
         if currentTrip == nil && isVehicleActivity {
             captureCandidateStartIfPossible(from: location, reason: "vehicle location")
         }
