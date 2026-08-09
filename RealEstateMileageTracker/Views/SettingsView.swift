@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var showingPaywall = false
     @State private var tapCount = 0
     @State private var showDebugModeAlert = false
+    @State private var showTrackingLogCopiedAlert = false
     @ObservedObject private var subscriptionManager = SubscriptionManager.shared
     
     var body: some View {
@@ -179,6 +180,14 @@ struct SettingsView: View {
                                 }
                             }
 
+                            Button {
+                                UIPasteboard.general.string = tripManager.recentTrackingEvents.joined(separator: "\n")
+                                showTrackingLogCopiedAlert = true
+                            } label: {
+                                Label("Copy Tracking Log", systemImage: "doc.on.doc")
+                            }
+                            .disabled(tripManager.recentTrackingEvents.isEmpty)
+
                             Button(role: .destructive) {
                                 tripManager.clearTrackingLog()
                             } label: {
@@ -242,6 +251,11 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Please go to Settings and allow 'Always' location access for automatic trip tracking.")
+            }
+            .alert("Tracking Log Copied", isPresented: $showTrackingLogCopiedAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Tracking log copied as plain text.")
             }
             .alert(tripManager.debugMode ? "Debug Mode Enabled" : "Debug Mode Disabled", isPresented: $showDebugModeAlert) {
                 Button("OK", role: .cancel) {}

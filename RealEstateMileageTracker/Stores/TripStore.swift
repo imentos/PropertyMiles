@@ -376,8 +376,8 @@ class TripStore: ObservableObject {
             let date = dateFormatter.string(from: trip.startTime)
             let startTime = timeFormatter.string(from: trip.startTime)
             let endTime = trip.endTime.map { timeFormatter.string(from: $0) } ?? ""
-            let startAddr = trip.startLocation.address ?? "\(trip.startLocation.latitude),\(trip.startLocation.longitude)"
-            let endAddr = trip.endLocation?.address ?? (trip.endLocation.map { "\($0.latitude),\($0.longitude)" } ?? "")
+            let startAddr = trip.startLocation.displayAddress
+            let endAddr = trip.endLocation?.displayAddress ?? ""
             let miles = String(format: "%.2f", trip.distance)
             let purpose = trip.purposeDisplayName
             let fromNickname = trip.startLocationDisplayName(tripStore: self)

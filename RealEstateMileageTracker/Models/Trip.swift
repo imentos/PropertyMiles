@@ -81,9 +81,9 @@ struct Trip: Identifiable, Codable {
             return nickname
         }
         
-        // Fall back to address or coordinates
+        // Fall back to address or short coordinates
         // Note: Stored nickname is ignored - location map is the only source of truth
-        return startLocation.address ?? "\(startLocation.latitude), \(startLocation.longitude)"
+        return startLocation.displayAddress
     }
     
     // Get display name for end location (location map is source of truth)
@@ -103,9 +103,9 @@ struct Trip: Identifiable, Codable {
             return nickname
         }
         
-        // Fall back to address or coordinates
+        // Fall back to address or short coordinates
         // Note: Stored nickname is ignored - location map is the only source of truth
-        return endLocation.address ?? "\(endLocation.latitude), \(endLocation.longitude)"
+        return endLocation.displayAddress
     }
 }
 
@@ -124,6 +124,18 @@ struct LocationData: Codable {
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    var coordinateDisplayName: String {
+        String(format: "%.5f, %.5f", latitude, longitude)
+    }
+
+    var displayAddress: String {
+        let trimmedAddress = address?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let trimmedAddress, !trimmedAddress.isEmpty {
+            return trimmedAddress
+        }
+        return coordinateDisplayName
     }
 }
 
