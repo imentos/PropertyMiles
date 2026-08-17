@@ -202,6 +202,36 @@ class TripStore: ObservableObject {
         }
     }
 
+    func removeLocationNickname(coordinate: CLLocationCoordinate2D, address: String?, within meters: Double = 500) {
+        let targetLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let removedIds = locationNicknames
+            .filter { shouldMatchLocation($0.coordinate, targetLocation: targetLocation, address: address, within: meters) }
+            .map(\.id)
+
+        guard !removedIds.isEmpty else { return }
+
+        locationNicknames.removeAll { removedIds.contains($0.id) }
+        locationNicknamesLastModified = Date()
+        saveLocationNicknames()
+
+        var didUpdateTrips = false
+        for index in trips.indices {
+            if let startId = trips[index].startLocation.locationNicknameId, removedIds.contains(startId) {
+                trips[index].startLocation.locationNicknameId = nil
+                didUpdateTrips = true
+            }
+
+            if let endId = trips[index].endLocation?.locationNicknameId, removedIds.contains(endId) {
+                trips[index].endLocation?.locationNicknameId = nil
+                didUpdateTrips = true
+            }
+        }
+
+        if didUpdateTrips {
+            saveTrips()
+        }
+    }
+
     private func addressesMatch(_ lhs: String, _ rhs: String) -> Bool {
         normalizedAddress(lhs) == normalizedAddress(rhs)
     }

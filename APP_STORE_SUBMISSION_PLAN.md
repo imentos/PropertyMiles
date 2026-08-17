@@ -210,14 +210,18 @@ The app uses CLLocationManager with:
 - .authorizedAlways permission
 - .automotiveNavigation activity type (battery optimized)
 - Significant location change monitoring for background wake
-- Speed-based trip detection (>10 mph to start)
+- Apple motion activity-based trip detection
+- Previous trip endpoint recovery to improve return-trip start accuracy
 
 No sensitive or personal data beyond location coordinates is collected.
 ```
 
 ### Build Details
-- [x] Version: 1.8
-- [x] Build number: 4
+- [x] Version: 1.9
+- [x] Build number: 5
+
+### What's New
+Improves automatic trip tracking reliability, especially return trips after the app is reopened or force quit.
 - [ ] Export compliance: No (not using encryption)
 
 ### What's New - Version 1.8

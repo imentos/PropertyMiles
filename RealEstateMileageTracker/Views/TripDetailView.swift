@@ -201,6 +201,10 @@ struct TripDetailView: View {
                                 address: trip.startLocation.address
                             )
                         } else {
+                            tripStore.removeLocationNickname(
+                                coordinate: trip.startLocation.coordinate,
+                                address: trip.startLocation.address
+                            )
                             trip.startLocation.locationNicknameId = nil
                         }
                         
@@ -216,7 +220,11 @@ struct TripDetailView: View {
                                 coordinate: endLocation.coordinate,
                                 address: endLocation.address
                             )
-                        } else {
+                        } else if let endLocation = trip.endLocation {
+                            tripStore.removeLocationNickname(
+                                coordinate: endLocation.coordinate,
+                                address: endLocation.address
+                            )
                             trip.endLocation?.locationNicknameId = nil
                         }
                         

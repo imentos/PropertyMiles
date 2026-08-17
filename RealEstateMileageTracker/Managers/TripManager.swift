@@ -30,6 +30,9 @@ class TripManager: NSObject, ObservableObject {
     }
     private static let trackingLogKey = "tracking_debug_log"
     private static let maxTrackingLogEntries = 500
+    private static let previousTripEndLatitudeKey = "previous_trip_end_latitude"
+    private static let previousTripEndLongitudeKey = "previous_trip_end_longitude"
+    private static let previousTripEndedAtKey = "previous_trip_ended_at"
 
     @Published var recentTrackingEvents: [String] = UserDefaults.standard.stringArray(forKey: TripManager.trackingLogKey) ?? []
     
@@ -65,6 +68,7 @@ class TripManager: NSObject, ObservableObject {
     
     override init() {
         super.init()
+        restorePreviousTripEndCandidate()
         setupLocationManager()
     }
     
@@ -115,7 +119,6 @@ class TripManager: NSObject, ObservableObject {
                 if isTripActivity {
                     self?.resumeTripIfNeeded(reason: tripActivityReason)
                     self?.activatePreciseLocationUpdates(reason: tripActivityReason)
-                    self?.captureCandidateStartIfPossible(reason: tripActivityReason)
                 } else if activity.stationary && activity.confidence != .low {
                     if self?.currentTrip != nil {
                         self?.handleStoppedSignal(reason: "stationary activity")
@@ -204,6 +207,7 @@ class TripManager: NSObject, ObservableObject {
         logTrackingEvent("Trip ended. Distance: \(String(format: "%.2f", trip.distance)) miles", isKeyEvent: true)
         previousTripEndLocation = endLoc
         previousTripEndedAt = trip.endTime
+        persistPreviousTripEndCandidate(location: endLoc, endedAt: trip.endTime)
         
         // Check for nearby location at start and auto-assign nickname
         if let nearbyEntry = tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: nil) {
@@ -360,9 +364,42 @@ class TripManager: NSObject, ObservableObject {
         return location
     }
 
+    private func persistPreviousTripEndCandidate(location: CLLocation, endedAt: Date?) {
+        guard let endedAt else { return }
+        let defaults = UserDefaults.standard
+        defaults.set(location.coordinate.latitude, forKey: Self.previousTripEndLatitudeKey)
+        defaults.set(location.coordinate.longitude, forKey: Self.previousTripEndLongitudeKey)
+        defaults.set(endedAt.timeIntervalSince1970, forKey: Self.previousTripEndedAtKey)
+    }
+
+    private func restorePreviousTripEndCandidate() {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: Self.previousTripEndLatitudeKey) != nil,
+              defaults.object(forKey: Self.previousTripEndLongitudeKey) != nil,
+              defaults.object(forKey: Self.previousTripEndedAtKey) != nil else { return }
+
+        let endedAt = Date(timeIntervalSince1970: defaults.double(forKey: Self.previousTripEndedAtKey))
+        guard Date().timeIntervalSince(endedAt) <= previousTripEndCandidateMaxAge else {
+            clearPreviousTripEndCandidate()
+            return
+        }
+
+        let coordinate = CLLocationCoordinate2D(
+            latitude: defaults.double(forKey: Self.previousTripEndLatitudeKey),
+            longitude: defaults.double(forKey: Self.previousTripEndLongitudeKey)
+        )
+        previousTripEndLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        previousTripEndedAt = endedAt
+        logTrackingEvent("Restored previous trip end candidate", isKeyEvent: true)
+    }
+
     private func clearPreviousTripEndCandidate() {
         previousTripEndLocation = nil
         previousTripEndedAt = nil
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: Self.previousTripEndLatitudeKey)
+        defaults.removeObject(forKey: Self.previousTripEndLongitudeKey)
+        defaults.removeObject(forKey: Self.previousTripEndedAtKey)
     }
 
     private func clearCandidateStart() {
