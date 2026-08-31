@@ -119,9 +119,10 @@ class TripManager: NSObject, ObservableObject {
                 if isTripActivity {
                     self?.resumeTripIfNeeded(reason: tripActivityReason)
                     self?.activatePreciseLocationUpdates(reason: tripActivityReason)
-                } else if activity.stationary && activity.confidence != .low {
+                } else if activity.confidence != .low {
                     if self?.currentTrip != nil {
-                        self?.handleStoppedSignal(reason: "stationary activity")
+                        let stopReason = activity.stationary ? "stationary activity" : "non-vehicle activity"
+                        self?.handleStoppedSignal(reason: stopReason)
                     } else if self?.locationProbeTimer == nil {
                         self?.deactivatePreciseLocationUpdates()
                     }
@@ -132,10 +133,14 @@ class TripManager: NSObject, ObservableObject {
                     activityType = "Driving"
                 } else if activity.cycling {
                     activityType = "Cycling"
+                } else if activity.walking {
+                    activityType = "Walking"
+                } else if activity.running {
+                    activityType = "Running"
                 } else if activity.stationary {
                     activityType = "Stationary"
                 } else {
-                    activityType = nil
+                    activityType = self?.currentTrip != nil ? "Non-vehicle" : nil
                 }
 
                 if let activityType = activityType, self?.lastActivityLogSignature != activityType {

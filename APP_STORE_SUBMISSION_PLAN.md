@@ -217,11 +217,11 @@ No sensitive or personal data beyond location coordinates is collected.
 ```
 
 ### Build Details
-- [x] Version: 1.9
-- [x] Build number: 5
+- [x] Version: 1.10
+- [x] Build number: 6
 
 ### What's New
-Improves automatic trip tracking reliability, especially return trips after the app is reopened or force quit.
+Improves automatic trip tracking reliability for return trips and multi-stop drives, especially after parking and carrying your phone with you.
 - [ ] Export compliance: No (not using encryption)
 
 ### What's New - Version 1.8
