@@ -10,6 +10,8 @@ import CoreLocation
 import StoreKit
 
 struct SettingsView: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     @EnvironmentObject var tripManager: TripManager
     @EnvironmentObject var tripStore: TripStore
     @State private var showingPermissionAlert = false
@@ -17,6 +19,7 @@ struct SettingsView: View {
     @State private var tapCount = 0
     @State private var showDebugModeAlert = false
     @State private var showTrackingLogCopiedAlert = false
+    @State private var showClearTrackingLogAlert = false
     @ObservedObject private var subscriptionManager = SubscriptionManager.shared
     
     var body: some View {
@@ -31,7 +34,9 @@ struct SettingsView: View {
                                 Label("Upgrade to Pro", systemImage: "star.fill")
                                     .foregroundColor(.blue)
                                 Spacer()
-                                Text("$4.99/mo")
+                                Text(subscriptionManager.product(for: .monthly).map {
+                                    String(format: NSLocalizedString("%@/mo", comment: "Monthly subscription price"), $0.displayPrice)
+                                } ?? NSLocalizedString("View Plans", comment: "Subscription plans"))
                                     .foregroundColor(.secondary)
                                     .font(.subheadline)
                             }
@@ -45,7 +50,7 @@ struct SettingsView: View {
                     HStack {
                         Label("Permission Status", systemImage: "location.circle")
                         Spacer()
-                        Text(permissionStatusText)
+                        Text(LocalizedStringKey(permissionStatusText))
                             .foregroundColor(permissionStatusColor)
                     }
                     
@@ -69,17 +74,56 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section("Mileage Rate") {
-                    HStack {
-                        Label("Current IRS Business Rate", systemImage: "dollarsign.circle")
-                        Spacer()
-                        Text("$0.76/mile")
-                            .foregroundColor(.secondary)
+                Section("Language") {
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        Label("App Language", systemImage: "globe")
                     }
-
-                    Text("Trips before July 1, 2026 use $0.725/mile. Trips on or after July 1, 2026 use $0.76/mile.")
+                    Text("Follows your iPhone's preferred app language. Language does not change your reporting country, currency or tax settings.")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                }
+
+                Section("Country & Reporting") {
+                    Picker("Country", selection: preferences.$regionCode) {
+                        Text("United States").tag("US")
+                        Text("Canada").tag("CA")
+                    }
+                    if mileage.isCanada {
+                        LabeledContent("Distance", value: "Kilometres")
+                        LabeledContent("Currency", value: "CAD (CA$)")
+                        HStack {
+                            Text("Custom reimbursement (CA$/km)")
+                            Spacer()
+                            TextField("0.00", value: preferences.$canadianRate, format: .number)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                                .frame(width: 90)
+                                .onChange(of: preferences.canadianRate) { value in
+                                    if !value.isFinite || value < 0 { preferences.canadianRate = 0 }
+                                }
+                        }
+                        Text("Leave the rate at zero for distance-only records. A custom rate estimates reimbursement across the selected trips, not a CRA tax deduction. Changing it recalculates existing report estimates.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text("Canadian vehicle deductions generally require eligible actual expenses and business kilometres relative to total annual kilometres. Rental-property travel has additional eligibility rules. Keep your odometer and expense records for your accountant.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    } else {
+                        HStack {
+                            Label("Current IRS Business Rate", systemImage: "dollarsign.circle")
+                            Spacer()
+                            Text("US$0.76/mile")
+                                .foregroundColor(.secondary)
+                        }
+
+                        Text("Trips before July 1, 2026 use US$0.725/mile. Trips on or after July 1, 2026 use US$0.76/mile.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Section("Vehicles") {
@@ -180,18 +224,26 @@ struct SettingsView: View {
                                 }
                             }
 
-                            Button {
-                                UIPasteboard.general.string = tripManager.recentTrackingEvents.joined(separator: "\n")
-                                showTrackingLogCopiedAlert = true
-                            } label: {
-                                Label("Copy Tracking Log", systemImage: "doc.on.doc")
-                            }
-                            .disabled(tripManager.recentTrackingEvents.isEmpty)
+                            HStack(spacing: 16) {
+                                Button {
+                                    UIPasteboard.general.string = tripManager.recentTrackingEvents.joined(separator: "\n")
+                                    showTrackingLogCopiedAlert = true
+                                } label: {
+                                    Label("Copy Tracking Log", systemImage: "doc.on.doc")
+                                }
+                                .disabled(tripManager.recentTrackingEvents.isEmpty)
 
-                            Button(role: .destructive) {
-                                tripManager.clearTrackingLog()
-                            } label: {
-                                Label("Clear Tracking Log", systemImage: "trash")
+                                Spacer()
+
+                                Button(role: .destructive) {
+                                    showClearTrackingLogAlert = true
+                                } label: {
+                                    Label("Clear Log", systemImage: "trash")
+                                        .font(.caption)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                                .disabled(tripManager.recentTrackingEvents.isEmpty)
                             }
                         }
                         .padding(.vertical, 4)
@@ -221,8 +273,10 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Link(destination: URL(string: "https://www.irs.gov/irb/2026-29_irb")!) {
-                        Label("IRS 2026 Rate Update", systemImage: "link")
+                    Link(destination: URL(string: mileage.isCanada
+                        ? "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/rental-income/completing-form-t776-statement-real-estate-rentals/rental-expenses-you-deduct.html"
+                        : "https://www.irs.gov/irb/2026-29_irb")!) {
+                        Label(LocalizedStringKey(mileage.isCanada ? "CRA Vehicle & Rental Expenses" : "IRS 2026 Rate Update"), systemImage: "link")
                     }
                 }
                 
@@ -257,7 +311,7 @@ struct SettingsView: View {
             } message: {
                 Text("Tracking log copied as plain text.")
             }
-            .alert(tripManager.debugMode ? "Debug Mode Enabled" : "Debug Mode Disabled", isPresented: $showDebugModeAlert) {
+            .alert(LocalizedStringKey(tripManager.debugMode ? "Debug Mode Enabled" : "Debug Mode Disabled"), isPresented: $showDebugModeAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
                 if tripManager.debugMode {
@@ -265,6 +319,14 @@ struct SettingsView: View {
                 } else {
                     Text("Debug mode disabled.")
                 }
+            }
+            .confirmationDialog("Clear Tracking Log?", isPresented: $showClearTrackingLogAlert, titleVisibility: .visible) {
+                Button("Clear Log", role: .destructive) {
+                    tripManager.clearTrackingLog()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This removes the saved tracking log from this device.")
             }
             .sheet(isPresented: $showingPaywall) {
                 OB10PaywallView(vm: OnboardingViewModel()) {

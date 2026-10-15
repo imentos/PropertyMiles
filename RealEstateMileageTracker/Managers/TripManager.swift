@@ -226,41 +226,35 @@ class TripManager: NSObject, ObservableObject {
             print("🏠 Auto-assigned to nickname (location map): \(nearbyEntry.nickname)")
         }
         
-        // Geocode end location and then save trip
+        saveCompletedTrip(trip)
+
+        // Geocode end location after saving so a slow/suspended geocode cannot drop the trip.
         geocodeLocation(endLoc) { [weak self] address in
             guard let self = self else { return }
+            guard var savedTrip = self.tripStore?.trips.first(where: { $0.id == trip.id }) else { return }
             
-            // Update trip with end address
-            trip.endLocation?.address = address
+            if let address { savedTrip.endLocation?.address = address }
             
             // Re-check nickname with actual address (might find exact address match)
-            if trip.endLocation?.locationNicknameId == nil, let address = address {
+            if savedTrip.endLocation?.locationNicknameId == nil, let address = address {
                 if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: endLoc.coordinate, address: address) {
-                    trip.endLocation?.locationNicknameId = entry.id
+                    savedTrip.endLocation?.locationNicknameId = entry.id
                     print("🏠 Auto-assigned to nickname with address: \(entry.nickname)")
                 }
             }
             
-            // Also ensure we have the start address from currentTrip
-            if let currentTripStartAddr = self.currentTrip?.startLocation.address {
-                trip.startLocation.address = currentTripStartAddr
+            if let currentTripStartAddr = savedTrip.startLocation.address {
                 
-                // Re-check start nickname with actual address too
-                if trip.startLocation.locationNicknameId == nil {
-                    if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: trip.startLocation.coordinate, address: currentTripStartAddr) {
-                        trip.startLocation.locationNicknameId = entry.id
+                if savedTrip.startLocation.locationNicknameId == nil {
+                    if let entry = self.tripStore?.findLocationNicknameEntry(coordinate: savedTrip.startLocation.coordinate, address: currentTripStartAddr) {
+                        savedTrip.startLocation.locationNicknameId = entry.id
                         print("🏠 Auto-assigned from nickname with address: \(entry.nickname)")
                     }
                 }
             }
             
-            print("📍 Trip addresses - From: \(trip.startLocation.address ?? "Unknown") → To: \(trip.endLocation?.address ?? "Unknown")")
-            
-            // Save trip (will be handled by TripStore)
-            NotificationCenter.default.post(
-                name: .tripCompleted,
-                object: trip
-            )
+            print("📍 Trip addresses - From: \(savedTrip.startLocation.address ?? "Unknown") → To: \(savedTrip.endLocation?.address ?? "Unknown")")
+            self.tripStore?.updateTrip(savedTrip)
         }
         
         currentTrip = nil
@@ -278,6 +272,18 @@ class TripManager: NSObject, ObservableObject {
         }
     }
     
+    private func saveCompletedTrip(_ trip: Trip) {
+        if let tripStore {
+            tripStore.addTrip(trip)
+        } else {
+            NotificationCenter.default.post(
+                name: .tripCompleted,
+                object: trip
+            )
+        }
+        logTrackingEvent("Trip saved", isKeyEvent: true)
+    }
+
     private func configureIdleLocationMode() {
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.distanceFilter = 100

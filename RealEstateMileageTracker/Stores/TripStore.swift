@@ -390,11 +390,14 @@ class TripStore: ObservableObject {
     
     func totalAmountForDateRange(start: Date, end: Date) -> Double {
         tripsForDateRange(start: start, end: end)
-            .reduce(0) { $0 + $1.mileageAmount }
+            .reduce(0) { $0 + MileageReporting.current.amount(for: $1) }
     }
     
     func generateCSV(for trips: [Trip]) -> String {
-        var csv = "Date,Start Time,End Time,Start Address,End Address,Miles,Purpose,From Nickname,To Nickname,Vehicle,Amount\n"
+        let reporting = MileageReporting.current
+        let distanceColumn = reporting.isCanada ? "Kilometres" : "Miles"
+        let amountColumn = reporting.showsAmounts ? ",\(reporting.csvAmountTitle)" : ""
+        var csv = "Date,Start Time,End Time,Start Address,End Address,\(distanceColumn),Purpose,From Nickname,To Nickname,Vehicle\(amountColumn)\n"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -408,14 +411,17 @@ class TripStore: ObservableObject {
             let endTime = trip.endTime.map { timeFormatter.string(from: $0) } ?? ""
             let startAddr = trip.startLocation.displayAddress
             let endAddr = trip.endLocation?.displayAddress ?? ""
-            let miles = String(format: "%.2f", trip.distance)
-            let purpose = trip.purposeDisplayName
+            let miles = String(format: "%.2f", locale: Locale(identifier: "en_US_POSIX"), reporting.distance(trip.distance))
+            let purpose = trip.purposeReportName
             let fromNickname = trip.startLocationDisplayName(tripStore: self)
             let toNickname = trip.endLocationDisplayName(tripStore: self) ?? ""
             let vehicle = trip.vehicle?.displayName ?? ""
-            let amount = String(format: "%.2f", trip.mileageAmount)
+            let amount = reporting.showsAmounts
+                ? "," + String(format: "%.2f", locale: Locale(identifier: "en_US_POSIX"), reporting.amount(for: trip))
+                : ""
             
-            csv += "\"\(date)\",\"\(startTime)\",\"\(endTime)\",\"\(startAddr)\",\"\(endAddr)\",\(miles),\"\(purpose)\",\"\(fromNickname)\",\"\(toNickname)\",\"\(vehicle)\",\(amount)\n"
+            let fields = [date, startTime, endTime, startAddr, endAddr, miles, purpose, fromNickname, toNickname, vehicle]
+            csv += fields.map { "\"" + $0.replacingOccurrences(of: "\"", with: "\"\"") + "\"" }.joined(separator: ",") + amount + "\n"
         }
         
         return csv

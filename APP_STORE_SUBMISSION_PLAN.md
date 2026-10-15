@@ -35,7 +35,7 @@ landlord,1099,deduction,tax,realtor,log,trip,agent,auto,rental,tracker,business,
 ### Promotional Text (170 characters max)
 *(Refreshable anytime without App Review resubmission — update seasonally)*
 ```
-Export your 2026 mileage log in one tap. LandMile tracks property and business drives with current IRS mileage rates.
+Now supports Simplified and Traditional Chinese. Track property trips in your preferred language and export records for your accountant.
 ```
 
 ---
@@ -50,6 +50,9 @@ Stop leaving thousands in tax deductions on the table. At the current 2026 IRS b
 ### Full Description
 ```
 BUILT FOR REAL ESTATE AGENTS, REALTORS, AND PROPERTY MANAGERS
+
+NOW IN SIMPLIFIED AND TRADITIONAL CHINESE
+Use LandMile in English, Simplified Chinese or Traditional Chinese. Your interface language is separate from your reporting country: Chinese-speaking users in the US can keep US reporting, miles and US dollar estimates. CSV column headings and built-in trip purposes remain in English for your accountant; your own property names and notes are preserved.
 
 The average agent drives 12,000+ miles a year for work. At the current 2026 IRS business rate, that can be up to $9,120 in deductions. LandMile captures every mile automatically so your log is always ready when your accountant asks.
 
@@ -88,6 +91,236 @@ Property Miles uses background location to automatically detect and log your tri
 
 NOTE: Continued use of GPS running in the background can decrease battery life. Property Miles is optimized for automotive navigation to minimize battery impact.
 ```
+
+---
+
+## Chinese App Store Localizations - US Chinese-Speaking Users
+
+Keep the existing app record and English primary language. Add Chinese (Simplified)
+and Chinese (Traditional) through the version page's localization menu in App Store
+Connect. These are language localizations, not separate China storefront apps.
+Use the copy below for the current editable version; do not replace English fields
+with Chinese text.
+
+The US storefront supports both Chinese localizations. The language shown depends
+on the customer's storefront and language settings; it is not based on ethnicity.
+An English-language user may continue to see the English page.
+
+References:
+- https://developer.apple.com/help/app-store-connect/manage-app-information/localize-app-information/
+- https://developer.apple.com/help/app-store-connect/reference/app-information/app-store-localizations/
+
+### Chinese (Traditional)
+
+**App Name (30 characters max)**
+```
+LandMile - 房東里程紀錄
+```
+
+**Subtitle (30 characters max)**
+```
+自動記錄房產行程，匯出報表給會計師
+```
+
+**Promotional Text (170 characters max)**
+```
+現在支援繁體與簡體中文。自動記錄看屋、巡查及維修行程，依物業與用途整理，匯出 CSV 給會計師。中文操作，美國報表仍使用英里與 US$。
+```
+
+**Keywords (100 characters max)**
+```
+房東,里程,房產,出租房,房仲,物業管理,行程,自動記錄,報稅,會計師,巡查,維修,看屋,IRS,CSV
+```
+
+**Description**
+```
+為美國華人房東、房仲與物業管理者整理行車紀錄。
+
+LandMile 現在支援繁體中文、簡體中文與英文，讓您用熟悉的語言記錄房產相關行程。
+
+自動記錄駕車行程
+在背景偵測並記錄行程，之後可在 App 中檢視及整理。
+
+為物業地點命名
+替常去的地點設定名稱，例如「家」、「出租房 A」或「物業管理公司」，讓行程更容易辨認。
+
+記錄行程用途
+依房屋巡查、維修、採購、收租或銀行事務等用途整理，並加入備註。
+
+匯出給會計師
+匯出 CSV 行程紀錄。欄位名稱與內建用途保持英文，方便交給會計師；您輸入的物業名稱與備註會保留原文。
+
+中文介面，美國報表
+介面語言與報表國家分開設定。選擇美國報表時，仍使用英里、US$ 與 App 內的 IRS 里程估算。切換中文不會改變報表國家或稅務設定。
+
+亦支援加拿大公里紀錄與自訂加幣報銷費率。加幣金額為報銷估算，不是 CRA 稅務扣除計算。
+
+免費下載，提供 App 內購買。訂閱內容與當地價格請參閱購買頁面。
+
+里程扣除估算不等於實際退稅金額。是否符合扣除資格取決於您的情況，請與會計師確認；本 App 不代為申報稅務。
+
+自動記錄需要背景定位權限，持續使用 GPS 可能影響電池續航。
+
+使用條款
+https://imentos.github.io/PropertyMiles/terms-of-use.html
+```
+
+### Chinese (Simplified)
+
+**App Name (30 characters max)**
+```
+LandMile - 房东里程记录
+```
+
+**Subtitle (30 characters max)**
+```
+自动记录房产业务行程，导出会计师报表
+```
+
+**Promotional Text (170 characters max)**
+```
+现在支持简体与繁体中文。自动记录看房、巡查及维修行程，按物业与用途整理，导出 CSV 给会计师。中文操作，美国报表仍使用英里与 US$。
+```
+
+**Keywords (100 characters max)**
+```
+房东,里程,房产,出租房,房产经纪,物业管理,行程,自动记录,报税,会计师,巡查,维修,看房,IRS,CSV
+```
+
+**Description**
+```
+为美国华人房东、房产经纪与物业管理者整理行车记录。
+
+LandMile 现在支持简体中文、繁体中文与英文，让您用熟悉的语言记录房产业务行程。
+
+自动记录驾车行程
+在后台识别并记录行程，之后可在 App 中查看及整理。
+
+为物业地点命名
+为常去的地点设置名称，例如“家”、“出租房 A”或“物业管理公司”，让行程更容易辨认。
+
+记录行程用途
+按房屋巡查、维修、采购、收租或银行事务等用途整理，并添加备注。
+
+导出给会计师
+导出 CSV 行程记录。列名与内置用途保持英文，方便交给会计师；您输入的物业名称与备注会保留原文。
+
+中文界面，美国报表
+界面语言与报表国家分开设置。选择美国报表时，仍使用英里、US$ 与 App 内的 IRS 里程估算。切换中文不会改变报表国家或税务设置。
+
+也支持加拿大公里记录与自定义加元报销费率。加元金额为报销估算，不是 CRA 税务扣除计算。
+
+免费下载，提供 App 内购买。订阅内容与当地价格请参阅购买页面。
+
+里程扣除估算不等于实际退税金额。是否符合扣除条件取决于您的情况，请与会计师确认；本 App 不代为申报税务。
+
+自动记录需要后台定位权限，持续使用 GPS 可能影响电池续航。
+
+使用条款
+https://imentos.github.io/PropertyMiles/terms-of-use.html
+```
+
+### Chinese Screenshots
+
+Keep the existing visual style, order, device size and number of screenshots.
+Capture the actual Chinese app interface with United States reporting selected,
+then apply matching Chinese headline overlays. Keep miles and US$; do not present
+Canadian estimates or change tax settings merely because the interface is Chinese.
+
+| Screenshot | Traditional Chinese | Simplified Chinese |
+| --- | --- | --- |
+| 1 - Automatic tracking | 中文操作，自動記錄房產行程 | 中文操作，自动记录房产业务行程 |
+| 2 - Property names | 每趟行程，對應物業 | 每趟行程，对应物业 |
+| 3 - Trip purposes | 按用途整理，一目了然 | 按用途整理，一目了然 |
+| 4 - Export | 匯出英文報表，交給會計師 | 导出英文报表，交给会计师 |
+
+Upload each set under its matching Chinese localization. Newly added localizations
+may initially inherit English screenshots; explicitly replace those with the
+Chinese assets. Screenshot assets have not been generated as part of this text update.
+
+### Current Submission Checklist
+
+- [ ] Confirm the build selected for review includes the Chinese app resources.
+- [ ] If the uploaded binary predates localization, upload a new build number under
+      the same unapproved app version and select that build for review; metadata
+      edits alone cannot add Chinese to an already uploaded binary.
+- [ ] If the version is already in review, use App Store Connect's available
+      submission controls to return it to an editable state as needed.
+- [ ] Keep English as primary and add both Chinese localizations.
+- [ ] Enter localized names/subtitles under App Information.
+- [ ] Enter localized descriptions, keywords, promotional text and What's New
+      under the current platform version.
+- [ ] Upload the matching Chinese screenshot set to each localization.
+- [ ] Verify with a US storefront account using Simplified and Traditional Chinese.
+- [ ] Confirm English users retain the English product page.
+
+---
+
+## Canada App Store Copy (English - Canada)
+
+Use this copy for the English (Canada) localization in App Store Connect.
+Canadian mode supports kilometre records and optional custom CAD reimbursement
+estimates, not Canadian tax deduction calculations. Check the localized preview and
+screenshots before submission so US deduction claims are not presented as Canadian
+tax benefits.
+
+### App Name (30 characters max)
+```
+LandMile: Property Mileage
+```
+
+### Subtitle (30 characters max)
+```
+Trip Logs for Real Estate
+```
+
+### Keywords (100 characters max)
+```
+landlord,realtor,property,rental,agent,trip,logbook,business,driving,tracker,mileage
+```
+
+### Promotional Text (170 characters max)
+```
+Track property visits, showings and inspections automatically. Organize drives by property and purpose, then export your trip records to share with your accountant.
+```
+
+### Full Description
+```
+PROPERTY TRIP RECORDS, ORGANIZED
+LandMile helps real estate agents, property managers and landlords keep track of drives to properties, showings, inspections and repair visits.
+
+AUTOMATIC TRIP TRACKING
+Record driving trips in the background, then review your trip history in the app.
+
+NAME YOUR LOCATIONS
+Give frequently visited locations a recognizable name so property trips are easier to identify.
+
+ADD A BUSINESS PURPOSE
+Categorize trips by purpose and add notes to explain the work performed.
+
+EXPORT YOUR RECORDS
+Export trip records as CSV to share with your accountant or use alongside your other vehicle records.
+
+IMPORTANT FOR CANADIAN USERS
+Select Canada in Country & Reporting for kilometre records. Canadian mode shows distances without tax estimates by default. You can optionally enter a custom reimbursement rate in CAD per kilometre; any CA$ amount is a reimbursement estimate, not a CRA tax deduction. LandMile does not calculate Canadian vehicle expense deductions or business-use percentages. Use your trip records alongside total annual kilometres and vehicle expense records, as applicable, and confirm eligibility with your accountant.
+
+FREE TO TRY
+Download LandMile and explore its trip tracking features. Optional in-app purchases are available; see the App Store for local pricing.
+
+BACKGROUND LOCATION
+LandMile uses background location to detect and record driving trips. You can disable automatic tracking in Settings. Background GPS use can affect battery life.
+
+TERMS OF USE
+https://imentos.github.io/PropertyMiles/terms-of-use.html
+```
+
+### Canada Submission Checks
+- [ ] Enter the copy in the English (Canada) localization and verify the preview.
+- [ ] Use screenshots focused on tracking, location names and trip purposes.
+- [ ] Review US dollar amounts and IRS captions in localized screenshots; do not imply Canadian deductions.
+- [ ] Verify Canadian kilometre exports, optional CAD reimbursement estimates and country switching on a device.
+- [ ] Do not use CRA-compliant, CRA-approved or Canadian tax calculator claims.
+- [ ] Confirm Canadian availability and local purchase prices in App Store Connect.
 
 ---
 
@@ -217,11 +450,61 @@ No sensitive or personal data beyond location coordinates is collected.
 ```
 
 ### Build Details
-- [x] Version: 1.10
-- [x] Build number: 6
+- [x] Version: 1.12
+- [x] Build number: 10
 
 ### What's New
-Improves automatic trip tracking reliability for return trips and multi-stop drives, especially after parking and carrying your phone with you.
+
+**English**
+```
+Now available in Simplified and Traditional Chinese, with Canadian kilometre reporting, optional CAD reimbursement estimates, and more reliable trip saving.
+```
+
+**Chinese (Traditional)**
+```
+新增繁體與簡體中文介面、加拿大公里報表及自訂加幣報銷估算，並改善行程儲存可靠性。美國使用者切換中文後，仍可使用英里與美國報表設定。
+```
+
+**Chinese (Simplified)**
+```
+新增简体与繁体中文界面、加拿大公里报表及自定义加元报销估算，并改善行程保存可靠性。美国用户切换中文后，仍可使用英里与美国报表设置。
+```
+
+### Language Update
+The current source includes English, Simplified Chinese and Traditional Chinese.
+Language follows the iPhone's preferred app language, independently of the reporting
+country. Create a fresh archive to include these resources; the previously validated
+1.12 build 9 archive predates the Chinese language changes. The current source is
+version 1.12, build 10; archive and upload build 10 to include Chinese support.
+
+### Review Notes - Version 1.12
+The app supports English, Simplified Chinese and Traditional Chinese. iOS selects
+the preferred app language independently of the reporting country. Chinese-speaking
+US users retain US reporting, miles and US dollar estimates. CSV column headings
+and built-in purpose names remain English; user-entered names and notes are preserved.
+
+Canadian reporting is available on the welcome screen and in Settings > Country & Reporting.
+Canada uses kilometres and distance-only records by default. An optional custom rate
+produces CAD reimbursement estimates, not Canadian tax deduction calculations.
+US reporting retains date-based IRS estimates. Existing trip data is preserved
+when changing the reporting country. Subscription prices are provided by StoreKit.
+
+### Release Validation - Version 1.12 (Build 10)
+Apple rejected the previous 1.11 upload because that version is already approved
+and closed. Create a new 1.12 archive; previous 1.11 archives cannot be reused.
+The earlier command-line signing attempt failed with `errSecInternalComponent`.
+Complete signing and upload through Xcode Organizer.
+
+- [ ] Release archive created and signing verified.
+- [ ] Create a fresh Release archive for version 1.12, build 10 including Chinese resources.
+- [ ] Verify build 10's archived version, Chinese resources, permission strings and background location mode.
+- [x] Reporting conversion and preference checks passed.
+- [ ] Test on an iPhone: Canada country selection, custom rate, CSV export and switch back to US.
+- [ ] Test completed-trip saving and Clear Log confirmation on an iPhone.
+- [ ] Use version 1.12 in App Store Connect, upload through Xcode Organizer, then select build 10.
+- [ ] Update Canadian metadata and screenshots before submitting for review.
+- [x] Version 1.12 is newer than the approved version 1.11 shown in Apple's upload error.
+
 - [ ] Export compliance: No (not using encryption)
 
 ### What's New - Version 1.8

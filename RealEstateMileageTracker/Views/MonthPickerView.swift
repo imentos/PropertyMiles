@@ -137,8 +137,7 @@ struct MonthButton: View {
     let isFuture: Bool
     let action: () -> Void
     
-    private let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    private var monthNames: [String] { Calendar.current.shortMonthSymbols }
     
     var body: some View {
         Button(action: action) {

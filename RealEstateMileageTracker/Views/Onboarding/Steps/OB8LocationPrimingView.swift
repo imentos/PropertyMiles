@@ -20,7 +20,7 @@ struct OB8LocationPrimingView: View {
                     .foregroundStyle(.blue.gradient)
 
                 VStack(spacing: 8) {
-                    Text("Track every mile\nautomatically.")
+                    Text("Track your drives\nautomatically.")
                         .font(.title.bold())
                         .multilineTextAlignment(.center)
                     Text("LandMile needs location access to detect\ntrips while you drive.")
@@ -76,7 +76,7 @@ private struct BenefitRow: View {
             Image(systemName: icon)
                 .foregroundColor(.blue)
                 .frame(width: 24)
-            Text(text).font(.subheadline)
+            Text(LocalizedStringKey(text)).font(.subheadline)
             Spacer()
         }
     }

@@ -63,7 +63,7 @@ private struct GoalOptionRow: View {
         Button(action: onTap) {
             HStack(spacing: 14) {
                 Text(icon).font(.title3)
-                Text(text).font(.subheadline).foregroundColor(.primary)
+                Text(LocalizedStringKey(text)).font(.subheadline).foregroundColor(.primary)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill").foregroundColor(.blue)

@@ -10,6 +10,8 @@ import MapKit
 import CoreLocation
 
 struct TripsView: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     @EnvironmentObject var tripStore: TripStore
     @EnvironmentObject var tripManager: TripManager
     @State private var selectedCurrentTrip: Trip?
@@ -48,7 +50,7 @@ struct TripsView: View {
     private var monthStats: (count: Int, miles: Double, amount: Double) {
         let count = filteredTrips.count
         let miles = filteredTrips.reduce(0) { $0 + $1.distance }
-        let amount = filteredTrips.reduce(0) { $0 + $1.mileageAmount }
+        let amount = filteredTrips.reduce(0) { $0 + mileage.amount(for: $1) }
         return (count, miles, amount)
     }
     
@@ -132,7 +134,7 @@ struct TripsView: View {
                             Text(formatMonthYear(selectedMonth))
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                            Text("\(monthStats.count) trips • \(String(format: "%.0f mi", monthStats.miles))")
+                            Text("\(monthStats.count) trips • \(mileage.distanceText(monthStats.miles, decimals: 0))")
                                 .font(.caption2)
                         }
                         
@@ -185,12 +187,14 @@ struct TripsView: View {
     
     private func formatMonthYear(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM"
+        formatter.setLocalizedDateFormatFromTemplate("MMMM")
         return formatter.string(from: date)
     }
 }
 
 struct CurrentTripBanner: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     let trip: Trip
     let tripStore: TripStore
     
@@ -214,7 +218,7 @@ struct CurrentTripBanner: View {
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text(String(format: "%.1f mi", trip.distance))
+                    Text(mileage.distanceText(trip.distance))
                         .font(.headline)
                     
                     if let duration = trip.duration {
@@ -234,14 +238,16 @@ struct CurrentTripBanner: View {
         let minutes = Int(duration) / 60 % 60
         
         if hours > 0 {
-            return "\(hours)h \(minutes)m"
+            return String(format: NSLocalizedString("%dh %dm", comment: "Trip duration"), hours, minutes)
         } else {
-            return "\(minutes)m"
+            return String(format: NSLocalizedString("%dm", comment: "Trip duration"), minutes)
         }
     }
 }
 
 struct TripRow: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     let trip: Trip
     let tripStore: TripStore
     
@@ -296,12 +302,14 @@ struct TripRow: View {
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text(String(format: "%.1f mi", trip.distance))
+                    Text(mileage.distanceText(trip.distance))
                         .font(.headline)
                     
-                    Text(String(format: "$%.2f", trip.mileageAmount))
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
+                    if mileage.showsAmounts {
+                        Text(mileage.money(mileage.amount(for: trip)))
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
                 }
             }
             
@@ -324,7 +332,7 @@ struct TripRow: View {
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
+        formatter.setLocalizedDateFormatFromTemplate("MMM d")
         return formatter.string(from: date)
     }
     
@@ -339,9 +347,9 @@ struct TripRow: View {
         let minutes = Int(duration) / 60 % 60
         
         if hours > 0 {
-            return "\(hours)h \(minutes)m"
+            return String(format: NSLocalizedString("%dh %dm", comment: "Trip duration"), hours, minutes)
         } else {
-            return "\(minutes)m"
+            return String(format: NSLocalizedString("%dm", comment: "Trip duration"), minutes)
         }
     }
     

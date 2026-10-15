@@ -9,6 +9,8 @@ import SwiftUI
 import StoreKit
 
 struct ReportsView: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     @EnvironmentObject var tripStore: TripStore
     @State private var selectedPeriod: ReportPeriod = .thisMonth
     @State private var customStartDate = Date()
@@ -45,7 +47,7 @@ struct ReportsView: View {
     }
     
     var totalAmount: Double {
-        filteredTrips.reduce(0) { $0 + $1.mileageAmount }
+        filteredTrips.reduce(0) { $0 + mileage.amount(for: $1) }
     }
     
     var body: some View {
@@ -60,7 +62,7 @@ struct ReportsView: View {
                         
                         Picker("Period", selection: $selectedPeriod) {
                             ForEach(ReportPeriod.allCases, id: \.self) { period in
-                                Text(period.rawValue).tag(period)
+                                Text(LocalizedStringKey(period.rawValue)).tag(period)
                             }
                         }
                         .pickerStyle(.segmented)
@@ -79,20 +81,31 @@ struct ReportsView: View {
                     // Summary cards
                     HStack(spacing: 16) {
                         SummaryCard(
-                            title: "Total Miles",
-                            value: String(format: "%.1f", totalMiles),
+                            title: mileage.isCanada ? "Total Kilometres" : "Total Miles",
+                            value: String(format: "%.1f", mileage.distance(totalMiles)),
                             icon: "road.lanes",
                             color: .blue
                         )
                         
-                        SummaryCard(
-                            title: "Total Amount",
-                            value: String(format: "$%.2f", totalAmount),
-                            icon: "dollarsign.circle",
-                            color: .green
-                        )
+                        if mileage.showsAmounts {
+                            SummaryCard(
+                                title: mileage.amountTitle,
+                                value: mileage.money(totalAmount),
+                                icon: "dollarsign.circle",
+                                color: .green
+                            )
+                        }
                     }
                     .padding(.horizontal)
+
+                    if mileage.isCanada {
+                        Text(LocalizedStringKey(mileage.showsAmounts
+                            ? "CA$ amounts use your custom reimbursement rate, not a CRA deduction calculation."
+                            : "Distance records only. Canadian deductions also require eligible expenses and total annual vehicle kilometres."))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
+                    }
                     
                     SummaryCard(
                         title: "Total Trips",
@@ -115,7 +128,7 @@ struct ReportsView: View {
                                 if !purposeTrips.isEmpty {
                                     let tripCount = purposeTrips.count
                                     let miles = purposeTrips.reduce(0.0) { $0 + $1.distance }
-                                    let amount = purposeTrips.reduce(0.0) { $0 + $1.mileageAmount }
+                                    let amount = purposeTrips.reduce(0.0) { $0 + mileage.amount(for: $1) }
                                     PurposeRow(
                                         purposeName: purpose.displayName,
                                         icon: purpose.icon,
@@ -133,7 +146,7 @@ struct ReportsView: View {
                                 if !purposeTrips.isEmpty {
                                     let tripCount = purposeTrips.count
                                     let miles = purposeTrips.reduce(0.0) { $0 + $1.distance }
-                                    let amount = purposeTrips.reduce(0.0) { $0 + $1.mileageAmount }
+                                    let amount = purposeTrips.reduce(0.0) { $0 + mileage.amount(for: $1) }
                                     PurposeRow(
                                         purposeName: purposeName,
                                         icon: "tag",
@@ -231,7 +244,7 @@ struct ReportsView: View {
         
         // Save to Documents directory (accessible via Files app)
         guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            exportMessage = "Could not access Documents directory"
+            exportMessage = NSLocalizedString("Could not access Documents directory", comment: "Export error")
             showingExportAlert = true
             return
         }
@@ -243,13 +256,13 @@ struct ReportsView: View {
             csvFileURL = fileURL
             
             // Show alert with options
-            exportMessage = "CSV file saved to Documents!\n\nFile: \(fileName)\n\nAccess it via:\n• Files app > On My iPhone > PropertyMiles\n• Or tap 'Share File' below"
+            exportMessage = String(format: NSLocalizedString("CSV saved: %@\n\nTap Share File to send it to your accountant or save a copy.", comment: "Export success"), fileName)
             print("⚠️ Setting showingExportAlert = true")
             showingExportAlert = true
 
             print("✅ CSV exported to: \(fileURL.path)")
         } catch {
-            exportMessage = "Error saving CSV: \(error.localizedDescription)"
+            exportMessage = String(format: NSLocalizedString("Error saving CSV: %@", comment: "Export error"), error.localizedDescription)
             showingExportAlert = true
             print("❌ Error saving CSV: \(error)")
         }
@@ -328,10 +341,14 @@ struct SummaryCard: View {
             Text(value)
                 .font(.title)
                 .fontWeight(.bold)
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
             
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.caption)
                 .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding()
@@ -341,6 +358,8 @@ struct SummaryCard: View {
 }
 
 struct PurposeRow: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     let purposeName: String
     let icon: String
     let trips: Int
@@ -356,7 +375,9 @@ struct PurposeRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(purposeName)
                     .font(.headline)
-                Text("\(trips) trip\(trips == 1 ? "" : "s")")
+                Text(trips == 1
+                    ? NSLocalizedString("1 trip", comment: "One trip")
+                    : String(format: NSLocalizedString("%lld trips", comment: "Trip count"), trips))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -364,11 +385,13 @@ struct PurposeRow: View {
             Spacer()
             
             VStack(alignment: .trailing, spacing: 4) {
-                Text(String(format: "%.1f mi", miles))
+                Text(mileage.distanceText(miles))
                     .font(.headline)
-                Text(String(format: "$%.2f", amount))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                if mileage.showsAmounts {
+                    Text(mileage.money(amount))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .padding()

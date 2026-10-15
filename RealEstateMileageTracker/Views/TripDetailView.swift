@@ -9,6 +9,8 @@ import SwiftUI
 import MapKit
 
 struct TripDetailView: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var tripStore: TripStore
     
@@ -66,7 +68,7 @@ struct TripDetailView: View {
                     HStack {
                         Label("Distance", systemImage: "road.lanes")
                         Spacer()
-                        Text(String(format: "%.2f miles", trip.distance))
+                        Text(mileage.distanceText(trip.distance, decimals: 2))
                             .foregroundColor(.secondary)
                     }
                     
@@ -79,11 +81,13 @@ struct TripDetailView: View {
                         }
                     }
                     
-                    HStack {
-                        Label("Amount", systemImage: "dollarsign.circle")
-                        Spacer()
-                        Text(String(format: "$%.2f", trip.mileageAmount))
-                            .foregroundColor(.secondary)
+                    if mileage.showsAmounts {
+                        HStack {
+                            Label(mileage.amountTitle, systemImage: "dollarsign.circle")
+                            Spacer()
+                            Text(mileage.money(mileage.amount(for: trip)))
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
                 
@@ -252,9 +256,9 @@ struct TripDetailView: View {
         let minutes = Int(duration) / 60 % 60
         
         if hours > 0 {
-            return "\(hours)h \(minutes)m"
+            return String(format: NSLocalizedString("%dh %dm", comment: "Trip duration"), hours, minutes)
         } else {
-            return "\(minutes)m"
+            return String(format: NSLocalizedString("%dm", comment: "Trip duration"), minutes)
         }
     }
 }

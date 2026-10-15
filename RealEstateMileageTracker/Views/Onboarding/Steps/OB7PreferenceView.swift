@@ -67,7 +67,7 @@ private struct TripTypeCell: View {
         Button(action: onTap) {
             VStack(spacing: 10) {
                 Text(icon).font(.largeTitle)
-                Text(text)
+                Text(LocalizedStringKey(text))
                     .font(.caption.bold())
                     .multilineTextAlignment(.center)
                     .foregroundColor(.primary)

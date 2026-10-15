@@ -11,7 +11,7 @@ struct OB9ProcessingView: View {
 
     private let steps = [
         "Configuring trip detection",
-        "Setting current IRS rate",
+        "Setting reporting preferences",
         "Ready to track"
     ]
 
@@ -38,7 +38,7 @@ struct OB9ProcessingView: View {
                     HStack(spacing: 12) {
                         Image(systemName: vm.processingStep > i ? "checkmark.circle.fill" : "circle")
                             .foregroundColor(vm.processingStep > i ? .green : Color(.systemGray3))
-                        Text(steps[i])
+                        Text(LocalizedStringKey(steps[i]))
                             .font(.subheadline)
                             .foregroundColor(vm.processingStep > i ? .primary : .secondary)
                     }

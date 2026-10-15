@@ -1,0 +1,4 @@
+"NSLocationWhenInUseUsageDescription" = "定位用於記錄您的駕車行程和里程。";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "定位用於在背景自動辨識駕車行程，並產生報稅參考用的里程紀錄。";
+"NSLocationAlwaysUsageDescription" = "請永遠允許定位，以便在背景自動記錄行程和準確的里程。";
+"NSMotionUsageDescription" = "動態活動用於辨識駕車狀態，協助僅記錄車輛行程。";

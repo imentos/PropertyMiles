@@ -66,7 +66,7 @@ private struct PainPointRow: View {
                 Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                     .foregroundColor(isSelected ? .blue : Color(.systemGray3))
                     .font(.title3)
-                Text(text).font(.subheadline).foregroundColor(.primary)
+                Text(LocalizedStringKey(text)).font(.subheadline).foregroundColor(.primary)
                 Spacer()
             }
             .padding()

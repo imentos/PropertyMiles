@@ -130,7 +130,7 @@ struct AddLocationNicknameView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(isSaving ? "Saving..." : "Save") {
+                    Button(LocalizedStringKey(isSaving ? "Saving..." : "Save")) {
                         saveLocation()
                     }
                     .disabled(!canSave || isSaving)
@@ -158,12 +158,12 @@ struct AddLocationNicknameView: View {
                 isSaving = false
 
                 if let error {
-                    errorMessage = "Could not find that address. \(error.localizedDescription)"
+                    errorMessage = String(format: NSLocalizedString("Could not find that address. %@", comment: "Address error"), error.localizedDescription)
                     return
                 }
 
                 guard let coordinate = placemarks?.first?.location?.coordinate else {
-                    errorMessage = "Could not find that address. Try a more specific address."
+                    errorMessage = NSLocalizedString("Could not find that address. Try a more specific address.", comment: "Address error")
                     return
                 }
 

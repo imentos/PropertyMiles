@@ -10,7 +10,7 @@ struct OB6SolutionView: View {
 
     private let rows: [(pain: String, solution: String, icon: String)] = [
         ("Forgetting to log trips", "Auto-detects short business drives", "car.fill"),
-        ("Unknown deduction value", "Live total updated after every trip", "dollarsign.circle.fill"),
+        ("Scattered trip records", "Distance totals updated after every trip", "road.lanes"),
         ("Tax-time scramble", "One-tap CSV ready for your accountant", "doc.text.fill"),
         ("Mixed personal/business", "Tag business trips in seconds", "tag.fill")
     ]
@@ -65,10 +65,10 @@ private struct SolutionRow: View {
                 .foregroundStyle(.blue.gradient)
                 .frame(width: 36)
             VStack(alignment: .leading, spacing: 4) {
-                Text(pain)
+                Text(LocalizedStringKey(pain))
                     .font(.caption)
                     .foregroundColor(.secondary)
-                Text(solution)
+                Text(LocalizedStringKey(solution))
                     .font(.subheadline.bold())
             }
             Spacer()

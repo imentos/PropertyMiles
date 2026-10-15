@@ -6,6 +6,8 @@
 import SwiftUI
 
 struct OB1WelcomeView: View {
+    private var preferences = MileagePreferences()
+    private var mileage: MileageReporting { preferences.reporting }
     @ObservedObject var vm: OnboardingViewModel
 
     var body: some View {
@@ -15,12 +17,12 @@ struct OB1WelcomeView: View {
             tripSummaryMock
                 .padding(.bottom, 40)
 
-            Text("Every business mile\ncan be worth up to $0.76.")
+            Text(LocalizedStringKey(mileage.isCanada ? "Every property trip.\nOrganized in kilometres." : "Every business mile\ncan be worth up to $0.76."))
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
-            Text("Property managers miss an average of\n$3,200 in tax deductions every year.")
+            Text(LocalizedStringKey(mileage.isCanada ? "Keep property visits and business purposes\ntogether for your accountant." : "Property managers miss an average of\n$3,200 in tax deductions every year."))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -28,6 +30,14 @@ struct OB1WelcomeView: View {
                 .padding(.top, 12)
 
             Spacer()
+
+            Picker("Country", selection: preferences.$regionCode) {
+                Text("United States").tag("US")
+                Text("Canada").tag("CA")
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 16)
 
             Button(action: { vm.advance() }) {
                 Text("Start Saving →")
@@ -50,9 +60,9 @@ struct OB1WelcomeView: View {
                     Text("This Month")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text("247.3 miles")
+                    Text(mileage.distanceText(247.3))
                         .font(.title2.bold())
-                    Text("$165.69 deduction")
+                    Text(LocalizedStringKey(mileage.isCanada ? "Property trip records" : "$165.69 deduction"))
                         .font(.subheadline)
                         .foregroundColor(.blue)
                 }
@@ -66,9 +76,9 @@ struct OB1WelcomeView: View {
             Divider()
 
             VStack(spacing: 8) {
-                MockTripRow(icon: "wrench.fill", purpose: "Maintenance", address: "123 Oak St", miles: "12.4 mi")
-                MockTripRow(icon: "key.fill", purpose: "Showing", address: "456 Elm Ave", miles: "8.7 mi")
-                MockTripRow(icon: "dollarsign.circle.fill", purpose: "Rent Collection", address: "789 Pine Rd", miles: "5.2 mi")
+                MockTripRow(icon: "wrench.fill", purpose: "Maintenance", address: "123 Oak St", miles: mileage.distanceText(12.4))
+                MockTripRow(icon: "key.fill", purpose: "Showing", address: "456 Elm Ave", miles: mileage.distanceText(8.7))
+                MockTripRow(icon: "dollarsign.circle.fill", purpose: "Rent Collection", address: "789 Pine Rd", miles: mileage.distanceText(5.2))
             }
             .padding()
         }
@@ -91,7 +101,7 @@ private struct MockTripRow: View {
                 .foregroundColor(.blue)
                 .frame(width: 20)
             VStack(alignment: .leading, spacing: 2) {
-                Text(purpose).font(.caption.bold())
+                Text(LocalizedStringKey(purpose)).font(.caption.bold())
                 Text(address).font(.caption2).foregroundColor(.secondary)
             }
             Spacer()

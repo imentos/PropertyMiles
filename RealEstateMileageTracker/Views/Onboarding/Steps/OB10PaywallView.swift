@@ -59,7 +59,7 @@ struct OB10PaywallView: View {
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
 
-            Text("Every mile tracked = more money back at tax time.")
+            Text(LocalizedStringKey(MileageReporting.current.isCanada ? "Keep your property trips organized for your accountant." : "Every mile tracked = more money back at tax time."))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -67,7 +67,7 @@ struct OB10PaywallView: View {
             // Features
             VStack(spacing: 10) {
                 PaywallFeatureRow(icon: "car.fill",       text: "Unlimited automatic trip tracking")
-                PaywallFeatureRow(icon: "doc.text.fill",  text: "IRS-compliant CSV export")
+                PaywallFeatureRow(icon: "doc.text.fill",  text: MileageReporting.current.isCanada ? "Kilometre CSV export" : "IRS-compliant CSV export")
                 PaywallFeatureRow(icon: "tag.fill",       text: "Vehicle & purpose management")
                 PaywallFeatureRow(icon: "chart.bar.fill", text: "Full trip history & reports")
             }
@@ -87,7 +87,7 @@ private struct PaywallFeatureRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon).foregroundColor(.blue).font(.subheadline).frame(width: 24)
-            Text(text).font(.subheadline)
+            Text(LocalizedStringKey(text)).font(.subheadline)
             Spacer()
         }
     }

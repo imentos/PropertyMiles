@@ -110,7 +110,7 @@ private struct TinderCard: View {
     let text: String
 
     var body: some View {
-        Text(text)
+        Text(LocalizedStringKey(text))
             .font(.title3)
             .italic()
             .multilineTextAlignment(.center)

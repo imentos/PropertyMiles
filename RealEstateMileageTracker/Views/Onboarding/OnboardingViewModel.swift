@@ -18,7 +18,7 @@ final class OnboardingViewModel: ObservableObject {
         ("🏢", "I manage multiple rental properties"),
         ("🔑", "I'm a real estate agent doing showings"),
         ("🔧", "I handle maintenance and repairs myself"),
-        ("📋", "I want to track miles for tax deductions"),
+        ("📋", "I want to keep records of business driving"),
         ("💼", "My accountant asked me to track mileage")
     ]
     @Published var selectedGoal: String = ""
@@ -26,7 +26,7 @@ final class OnboardingViewModel: ObservableObject {
     // MARK: - Screen 3: Pain Points
     let painPoints: [String] = [
         "I forget to log trips while I'm busy",
-        "I don't know what counts as a business mile",
+        "I don't know what counts as business driving",
         "I lose track at the end of the year",
         "My car is personal and business mixed",
         "Paper logs are too time-consuming",
@@ -39,7 +39,7 @@ final class OnboardingViewModel: ObservableObject {
         "\"I've driven to the same property 12 times this year and logged maybe 3 of those trips.\"",
         "\"Tax season used to stress me out. I knew I was missing deductions but couldn't prove it.\"",
         "\"I tried spreadsheets. I tried notes apps. I always fell behind within two weeks.\"",
-        "\"My accountant said I left over $2,000 on the table last year. That stings.\""
+        "\"My accountant asked for driving records I couldn't find.\""
     ]
     @Published var tinderIndex: Int = 0
     @Published var tinderOffset: CGFloat = 0

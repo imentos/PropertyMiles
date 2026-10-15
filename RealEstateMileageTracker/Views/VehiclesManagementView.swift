@@ -50,7 +50,7 @@ struct VehiclesManagementView: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    Text("Add vehicles for IRS reporting")
+                    Text("Add vehicles for trip reporting")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
@@ -112,7 +112,7 @@ struct AddVehicleView: View {
                 }
                 
                 Section {
-                    Text("Vehicle information is required for IRS mileage reporting. Enter the make, model, and year of the vehicle used for business trips.")
+                    Text("Enter the make, model, and year of the vehicle used for business trips.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

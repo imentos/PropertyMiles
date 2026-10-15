@@ -17,10 +17,10 @@ struct OB4SocialProofView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 8) {
-                Text("Property managers save\nan average of $3,200/year")
+                Text(LocalizedStringKey(MileageReporting.current.isCanada ? "Your property trips.\nTogether in one place." : "Property managers save\nan average of $3,200/year"))
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
-                Text("By tracking every business mile.")
+                Text(LocalizedStringKey(MileageReporting.current.isCanada ? "Track kilometres, locations and trip purposes." : "By tracking every business mile."))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -29,8 +29,19 @@ struct OB4SocialProofView: View {
 
             ScrollView {
                 VStack(spacing: 16) {
-                    ForEach(testimonials, id: \.name) { t in
-                        TestimonialCard(name: t.name, tag: t.tag, review: t.review)
+                    if MileageReporting.current.isCanada {
+                        VStack(alignment: .leading, spacing: 24) {
+                            Label("Automatic driving records", systemImage: "car.fill")
+                            Label("Named property locations", systemImage: "mappin.and.ellipse")
+                            Label("Trip purposes and notes", systemImage: "tag.fill")
+                            Label("CSV records for your accountant", systemImage: "doc.text.fill")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                    } else {
+                        ForEach(testimonials, id: \.name) { t in
+                            TestimonialCard(name: t.name, tag: t.tag, review: t.review)
+                        }
                     }
                 }
                 .padding(.horizontal, 24)
@@ -64,13 +75,13 @@ private struct TestimonialCard: View {
                     Image(systemName: "star.fill").foregroundColor(.yellow).font(.caption)
                 }
             }
-            Text(review)
+            Text(LocalizedStringKey(review))
                 .font(.subheadline)
                 .italic()
             HStack {
                 Text(name).font(.caption.bold())
                 Text("•").foregroundColor(.secondary).font(.caption)
-                Text(tag).font(.caption).foregroundColor(.secondary)
+                Text(LocalizedStringKey(tag)).font(.caption).foregroundColor(.secondary)
             }
         }
         .padding()

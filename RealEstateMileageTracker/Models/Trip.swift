@@ -65,6 +65,11 @@ struct Trip: Identifiable, Codable {
         guard let purposeName = purposeName else { return "" }
         return TripPurpose.fromStoredValue(purposeName)?.displayName ?? purposeName
     }
+
+    var purposeReportName: String {
+        guard let purposeName else { return "" }
+        return TripPurpose.fromStoredValue(purposeName)?.reportName ?? purposeName
+    }
     
     // Get display name for start location (location map is source of truth)
     func startLocationDisplayName(tripStore: TripStore?) -> String {
@@ -150,6 +155,10 @@ enum TripPurpose: String, Codable, CaseIterable {
     case bankingDeposit
 
     var displayName: String {
+        NSLocalizedString(reportName, comment: "Built-in trip purpose")
+    }
+
+    var reportName: String {
         switch self {
         case .repair: return "Repair/Maintenance"
         case .supplyRun: return "Supply Shopping"
