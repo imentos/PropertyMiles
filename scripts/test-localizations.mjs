@@ -11,6 +11,8 @@ const languages = ['en', 'zh-Hans', 'zh-Hant'];
 const placeholders = text => (text.match(/%(?:\d+\$)?(?:lld|ld|d|@|f)/g) ?? []).sort();
 
 for (const [key, entry] of Object.entries(catalog.strings)) {
+    // Xcode also extracts numeric and punctuation-only literals without translations.
+    if (entry.extractionState !== 'manual' && ['', '-', '%lld', '•', '0.00', '%@%@', '%lf, %lf'].includes(key)) continue;
     for (const language of languages) {
         const unit = entry.localizations[language]?.stringUnit;
         assert.equal(unit?.state, 'translated', `${language}: ${key}`);

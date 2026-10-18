@@ -149,9 +149,11 @@ struct TripDetailView: View {
                 // Map preview
                 if let endLocation = trip.endLocation {
                     Section("Route") {
-                        MapPreview(
+                        RecordedTripMap(
                             startCoordinate: trip.startLocation.coordinate,
-                            endCoordinate: endLocation.coordinate
+                            endCoordinate: endLocation.coordinate,
+                            routePoints: trip.routePoints ?? [],
+                            isInteractive: true
                         )
                         .frame(height: 200)
                         .cornerRadius(8)
@@ -259,42 +261,6 @@ struct TripDetailView: View {
             return String(format: NSLocalizedString("%dh %dm", comment: "Trip duration"), hours, minutes)
         } else {
             return String(format: NSLocalizedString("%dm", comment: "Trip duration"), minutes)
-        }
-    }
-}
-
-struct MapPreview: View {
-    let startCoordinate: CLLocationCoordinate2D
-    let endCoordinate: CLLocationCoordinate2D
-    
-    @State private var region: MKCoordinateRegion
-    
-    init(startCoordinate: CLLocationCoordinate2D, endCoordinate: CLLocationCoordinate2D) {
-        self.startCoordinate = startCoordinate
-        self.endCoordinate = endCoordinate
-        
-        // Calculate region to show both points
-        let centerLat = (startCoordinate.latitude + endCoordinate.latitude) / 2
-        let centerLon = (startCoordinate.longitude + endCoordinate.longitude) / 2
-        
-        let latDelta = abs(startCoordinate.latitude - endCoordinate.latitude) * 1.5
-        let lonDelta = abs(startCoordinate.longitude - endCoordinate.longitude) * 1.5
-        
-        _region = State(initialValue: MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: centerLat, longitude: centerLon),
-            span: MKCoordinateSpan(
-                latitudeDelta: max(latDelta, 0.01),
-                longitudeDelta: max(lonDelta, 0.01)
-            )
-        ))
-    }
-    
-    var body: some View {
-        Map(coordinateRegion: $region, annotationItems: [
-            MapPoint(coordinate: startCoordinate, title: "Start"),
-            MapPoint(coordinate: endCoordinate, title: "End")
-        ]) { point in
-            MapMarker(coordinate: point.coordinate, tint: point.title == "Start" ? .green : .red)
         }
     }
 }

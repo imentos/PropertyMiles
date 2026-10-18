@@ -51,6 +51,7 @@ class TripManager: NSObject, ObservableObject {
     private let normalStoppedThreshold: TimeInterval = 180 // 3 minutes (prevents ending at traffic lights)
     private let speedThreshold: CLLocationSpeed = 2.2352 // 5 mph in m/s
     private var totalDistance: CLLocationDistance = 0
+    private var routeRecorder = TripRouteRecorder()
     private var currentActivity: CMMotionActivity?
     private var isVehicleActivity: Bool = false // Tracks automotive only
     private var isPreciseLocationActive = false
@@ -186,6 +187,9 @@ class TripManager: NSObject, ObservableObject {
         
         lastLocation = location
         totalDistance = 0
+        routeRecorder = TripRouteRecorder()
+        routeRecorder.append(triggerLocation ?? location)
+        currentTrip?.routePoints = routeRecorder.points
         
         // Geocode start location
         geocodeLocation(location) { [weak self] address in
@@ -208,8 +212,10 @@ class TripManager: NSObject, ObservableObject {
         trip.endTime = Date()
         trip.endLocation = LocationData(coordinate: endLoc.coordinate)
         trip.distance = totalDistance * 0.000621371 // Convert meters to miles
+        trip.routePoints = routeRecorder.points
         
         logTrackingEvent("Trip ended. Distance: \(String(format: "%.2f", trip.distance)) miles", isKeyEvent: true)
+        logTrackingEvent("Recorded route: \(routeRecorder.points.count) points, \(TripRouteGeometry.segments(from: routeRecorder.points).count) segments", isKeyEvent: true)
         previousTripEndLocation = endLoc
         previousTripEndedAt = trip.endTime
         persistPreviousTripEndCandidate(location: endLoc, endedAt: trip.endTime)
@@ -260,6 +266,7 @@ class TripManager: NSObject, ObservableObject {
         currentTrip = nil
         lastLocation = nil
         totalDistance = 0
+        routeRecorder = TripRouteRecorder()
         stoppedTimer?.invalidate()
         stoppedTimer = nil
         cancelLocationProbe()
@@ -422,6 +429,7 @@ class TripManager: NSObject, ObservableObject {
         guard currentTrip != nil else { return }
 
         if stoppedAt == nil {
+            routeRecorder.breakSegment()
             if let tripStart = currentTrip?.startTime {
                 stoppedAt = max(detectedAt, tripStart)
             } else {
@@ -574,6 +582,13 @@ extension TripManager: CLLocationManagerDelegate {
         
         // Update trip distance only while Apple still classifies this as trip activity.
         if currentTrip != nil {
+            if isVehicleActivity, stoppedAt == nil {
+                var routeChanged = false
+                for sample in locations {
+                    if routeRecorder.append(sample) { routeChanged = true }
+                }
+                if routeChanged { currentTrip?.routePoints = routeRecorder.points }
+            }
             if isVehicleActivity, stoppedAt == nil, let lastLoc = lastLocation {
                 let distance = location.distance(from: lastLoc)
                 if distance > 0 && distance < 200 { // Ignore GPS jumps > 200m

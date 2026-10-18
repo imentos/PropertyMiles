@@ -18,6 +18,7 @@ struct Trip: Identifiable, Codable {
     var purposeName: String?
     var vehicle: Vehicle?
     var notes: String?
+    var routePoints: [TripRoutePoint]? = nil
     
     var duration: TimeInterval? {
         guard let endTime = endTime else { return nil }

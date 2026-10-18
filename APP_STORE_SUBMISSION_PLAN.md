@@ -451,23 +451,25 @@ No sensitive or personal data beyond location coordinates is collected.
 
 ### Build Details
 - [x] Version: 1.12
-- [x] Build number: 10
+- [x] Build number: 11
 
 ### What's New
 
 **English**
 ```
-Now available in Simplified and Traditional Chinese, with Canadian kilometre reporting, optional CAD reimbursement estimates, and more reliable trip saving.
+See the route you drove on newly recorded trips, even when you start and end at the same place. This update also adds Simplified and Traditional Chinese support, Canadian kilometre reporting, and improved trip saving.
+
+现已支持简体中文及繁體中文，新行程可在地图上查看行驶路线，并新增加拿大公里报表。
 ```
 
 **Chinese (Traditional)**
 ```
-新增繁體與簡體中文介面、加拿大公里報表及自訂加幣報銷估算，並改善行程儲存可靠性。美國使用者切換中文後，仍可使用英里與美國報表設定。
+新記錄的行程可在地圖上查看行駛路線，即使起點與終點相同，也能看見走過的路。另新增繁體與簡體中文介面、加拿大公里報表，並改善行程儲存可靠性。
 ```
 
 **Chinese (Simplified)**
 ```
-新增简体与繁体中文界面、加拿大公里报表及自定义加元报销估算，并改善行程保存可靠性。美国用户切换中文后，仍可使用英里与美国报表设置。
+新记录的行程可在地图上查看行驶路线，即使起点与终点相同，也能看见走过的路。另新增简体与繁体中文界面、加拿大公里报表，并改善行程保存可靠性。
 ```
 
 ### Language Update
@@ -475,9 +477,17 @@ The current source includes English, Simplified Chinese and Traditional Chinese.
 Language follows the iPhone's preferred app language, independently of the reporting
 country. Create a fresh archive to include these resources; the previously validated
 1.12 build 9 archive predates the Chinese language changes. The current source is
-version 1.12, build 10; archive and upload build 10 to include Chinese support.
+version 1.12, build 11; create a fresh archive to include Chinese support and recorded routes.
+
+For this release, keep the English App Store metadata and add a short Chinese-support
+notice. The full Chinese metadata drafts above are optional future localizations.
 
 ### Review Notes - Version 1.12
+Newly recorded trips display their captured GPS route in the trip list and details.
+Round trips can show a route even when both endpoints are Home. Existing trips
+without saved route points show their endpoints only; old routes are not reconstructed.
+Route points are stored locally with trip data and are not included in CSV exports.
+
 The app supports English, Simplified Chinese and Traditional Chinese. iOS selects
 the preferred app language independently of the reporting country. Chinese-speaking
 US users retain US reporting, miles and US dollar estimates. CSV column headings
@@ -489,19 +499,22 @@ produces CAD reimbursement estimates, not Canadian tax deduction calculations.
 US reporting retains date-based IRS estimates. Existing trip data is preserved
 when changing the reporting country. Subscription prices are provided by StoreKit.
 
-### Release Validation - Version 1.12 (Build 10)
+### Release Validation - Version 1.12 (Build 11)
 Apple rejected the previous 1.11 upload because that version is already approved
 and closed. Create a new 1.12 archive; previous 1.11 archives cannot be reused.
 The earlier command-line signing attempt failed with `errSecInternalComponent`.
 Complete signing and upload through Xcode Organizer.
 
 - [ ] Release archive created and signing verified.
-- [ ] Create a fresh Release archive for version 1.12, build 10 including Chinese resources.
-- [ ] Verify build 10's archived version, Chinese resources, permission strings and background location mode.
+- [x] Create a fresh unsigned Release validation archive for version 1.12, build 11 including routes and Chinese resources.
+- [x] Verify build 11's archived version, Chinese resources, permission strings and background location mode.
+- [x] Route persistence, legacy trip decoding, GPS filtering and round-trip map bounds checks passed.
+- [x] Compiled localization checks passed against the Release app (267 keys, three languages).
 - [x] Reporting conversion and preference checks passed.
 - [ ] Test on an iPhone: Canada country selection, custom rate, CSV export and switch back to US.
 - [ ] Test completed-trip saving and Clear Log confirmation on an iPhone.
-- [ ] Use version 1.12 in App Store Connect, upload through Xcode Organizer, then select build 10.
+- [ ] Test a new Home-to-Home drive on an iPhone: route visible in the list and details after relaunch; old trips remain readable.
+- [ ] Use version 1.12 in App Store Connect, upload a freshly signed archive through Xcode Organizer, then select build 11 instead of the previous pending build.
 - [ ] Update Canadian metadata and screenshots before submitting for review.
 - [x] Version 1.12 is newer than the approved version 1.11 shown in Apple's upload error.
 
